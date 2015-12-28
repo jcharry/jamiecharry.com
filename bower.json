@@ -1,0 +1,24 @@
+{
+  "name": "personalWebsite",
+  "description": "jamie charry's personal website",
+  "main": "",
+  "authors": [
+    "jcharry <jamie.charry@gmail.com>"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "jquery-ui": "~1.11.4",
+    "p5.js": "p5js#~0.4.19",
+    "typed.js": "~1.1.1"
+  }
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "title":"Plasmic Reflection",
+    "imgsrc": "/images/pulse_square.png",
+    "desc": "A private, reflective experience",
+    "id": "reflected",
+    "hasVideo":true,
+    "credits": "An ITP Project by Jamie Charry & Ella Dagan. Dec 2015",
+    "longDesc":"A unique and personal experience, the Plasmic Reflection mirror encourages the user to fully inhabit their body and mind.  Developed over the course of several weeks at NYU ITP, the mirror acts as an extension of the user's heartbeat, allowing them to enter a meditative place where they are invited to look inward, or find silence.  Ultimately, the experience is up to the viewer."
+  },
+  {
+    "title": "Question a Day",
+    "imgsrc": "/images/qadsquare.png",
+    "desc": "A public journal-a-day",
+    "id":"qad",
+    "projectLink":"http://questionaday.herokuapp.com/",
+    "hasVideo": false,
+    "credits": ""
+  },
+  {
+    "title":"Solar Synthesizer",
+    "imgsrc": "/images/solarsynthsquare.png",
+    "desc": "A musical solar system",
+    "id": "solarsynth",
+    "projectLink":"http://itp.jcharry.com/solarSystem/",
+    "hasVideo": false,
+    "credits": "By Jamie Charry"
+  },
+  {
+    "title":"Artist Comparator",
+    "imgsrc": "/images/artistcompsquare.png",
+    "desc": "How do your two favorite artists compare?",
+    "id":"artistcomp",
+    "projectLink":"http://itp.jcharry.com/artistComparator/",
+    "hasVideo": false,
+    "credits": ""
+  }
+]
