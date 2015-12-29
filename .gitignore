@@ -1,2 +1,3 @@
 *.swp
 bin/cred.json
+*.DS_STORE

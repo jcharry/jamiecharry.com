@@ -2,6 +2,9 @@ $(document).ready(function() {
   //$('#navTitle').hide();
 
   //$('#body').css('background-color','Azure');
+    
+  // remove border of page title since there is no title for the homepage
+    $('.pageTitle').css('border-bottom','0px');
   
   // Register event
   $('#homepageInput').keypress(function(e) {

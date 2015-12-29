@@ -1,0 +1,69 @@
+[ 
+    {
+        "title":"A baby is born",
+        "imgsrc":"/images/jamie_square.png",
+        "desc":"with significantly less beard.",
+        "year":"1989"
+    },
+    {
+        "title":"I played some video games",
+        "imgsrc":"/images/dayofthetentacle.png",
+        "desc":"and I had my first experience of 'fun' with technology.",
+        "year":"1993"
+
+    },
+    {
+        "title":"I got hooked on Mythbusters.",
+        "imgsrc":"/images/mythbusters.png",
+        "desc":"and to this day I honestly believe nothing has done more to interest me in science and technology than Jamie and Adam hurting themselves.",
+        "year":"2003"
+    },
+    {
+        "title":"I played with light",
+        "imgsrc":"/images/light.png",
+        "desc":"and still can't believe how mystical it is.",
+        "year":"2006"
+    },
+    {
+        "title":"I modded some Xbox's",
+        "imgsrc":"/images/xbox.png",
+        "desc":"so that I could play games for free. Oh, and use LED's. Tons of LED's.",
+        "year":"2007"
+    },
+    {
+        "title":"I joined an indie band",
+        "imgsrc":"/images/indie.png",
+        "desc":"But not really. I just love this pic.",
+        "year":"2008"
+    },
+    {
+        "title":"I became a zombie",
+        "imgsrc":"/images/zombie.png",
+        "desc":"I'd been waiting for this day.",
+        "year":"2010"
+    },
+    {
+        "title":"I jumped off something",
+        "imgsrc":"/images/bungee.png",
+        "desc":"and luckily made it back safely.",
+        "year":"2011"
+    },
+    {
+        "title":"I graduated from College",
+        "imgsrc":"/images/northeastern.png",
+        "desc":"with a degree in Physics.  I was really into science.",
+        "year":"2012"
+    },
+    {
+        "title":"I joined the craziness at MakerBot",
+        "imgsrc":"/images/makerbot.png",
+        "desc":"And helped push 3 hardware products out into the world.",
+        "year":"2013"
+    },
+    {
+        "title":"I started at NYU ITP",
+        "imgsrc":"/images/itp.png",
+        "desc":"and started playing with the web.",
+        "year":"2015"
+    }
+]

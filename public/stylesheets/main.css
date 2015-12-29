@@ -1,42 +1,53 @@
 /*$page-color: #18212F;*/
 /*$page-color: #f5f8fa;*/
+/* white;*/
 /*$general-text-color: white;*/
+/*white;*/
 /*$type-writer-text-color: white;*/
 /*$title-border-color: #0F0F0F;*/
 /**{*/
 /*border: 1px solid red;*/
 /*}*/
 /* TOP LEVEL */
+html {
+  /*height:100%;*/ }
+
 body {
   margin: 0px;
   padding: 0px;
   font: 14px Arial,Helvetica, sans-serif;
-  background-color: #173140; }
+  background-color: #172733;
+  /*height: 100%;*/ }
 
 h1 {
   /*color: #083800;*/
-  color: white;
+  color: #E3E7EA;
   font-family: Arial; }
 
 p {
-  color: white;
+  color: #E3E7EA;
   /*color: #083800*/
   font-family: Arial; }
 
 h2 {
-  color: white;
+  color: #E3E7EA;
   /*color:#083800*/
   font-family: Arial; }
 
 h3 {
-  color: white;
+  color: #E3E7EA;
+  font-family: Arial; }
+
+li {
+  color: #E3E7EA;
   font-family: Arial; }
 
 .pageTitle {
   text-align: center;
-  border-bottom: 2px solid white;
+  border-bottom: 2px solid #405769;
   margin-left: 20px;
-  margin-right: 20px; }
+  margin-right: 20px;
+  margin-bottom: 0px; }
 
 /* Nav bar */
 #menu {
@@ -198,7 +209,7 @@ h3 {
   margin-top: 15px; }
 
 #typewriter {
-  color: white; }
+  color: #E3E7EA; }
 
 #homepageInput {
   display: none;
@@ -211,7 +222,7 @@ h3 {
 
 .typed-cursor {
   display: block;
-  color: white;
+  color: #E3E7EA;
   opacity: 1;
   -webkit-animation: blink 0.7s infinite;
   -moz-animation: blink 0.7s infinite;
@@ -267,11 +278,8 @@ h3 {
   padding-bottom: 0.625rem;
   /*border: 2px solid DimGrey;*/
   background-color: #FFFFFF;
-  border-radius: 20px;
-  border: 1px solid #C5C5C5;
-  -moz-box-shadow: 8px 8px 4px #ccc;
-  -webkit-box-shadow: 8px 8px 4px #ccc;
-  box-shadow: 8px 8px 4px #ccc; }
+  border-radius: 5px;
+  border: 1px solid #C5C5C5; }
 
 .textContainer {
   margin: 0px;
@@ -292,3 +300,140 @@ h3 {
   font-size: 0.9em;
   margin: 0px;
   color: #162229; }
+
+/* ABOUT */
+.sectionHeader {
+  font-size: 2em;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-bottom: 0px;
+  border-bottom: 2px solid #405769;
+  text-align: left; }
+
+/*#whoami {*/
+/*margin-top: 90px;*/
+/*}*/
+.aboutContainer {
+  position: relative; }
+
+.aboutImage {
+  position: absolute;
+  top: 0px;
+  left: 0px; }
+
+.aboutText {
+  position: absolute;
+  font-family: Arial;
+  font-size: 1.3em;
+  top: 0px;
+  left: 0px;
+  /*margin-left: 10%;*/
+  /*margin-right: 10%;*/
+  /*margin-top: 10px;*/
+  /*padding-top:20px;*/ }
+
+.sectionHeader {
+  border-bottom: 1px solid white; }
+
+.listBlock {
+  /*margin-left: 10%;*/
+  /*margin-right: 10%;*/
+  list-style-type: none; }
+
+#topLevelList {
+  margin-left: 10%;
+  margin-right: 10%;
+  padding: 0px; }
+
+ul {
+  /*padding: 5px;*/ }
+
+/*.defaultCanvas0 {*/
+/*padding: 0px;*/
+/*margin: 0px;*/
+/*}*/
+#mainContentDiv {
+  display: flex;
+  flex-direction: row;
+  margin-top: 2%;
+  margin-bottom: 2%;
+  margin-left: 0;
+  margin-right: 0;
+  flex: 1;
+  /*justify-content: center;*/
+  background-color: #283844;
+  border-radius: 20px; }
+
+#mainContentOverlay {
+  width: 100%;
+  text-align: center; }
+
+#imageContainer {
+  display: none;
+  /*flex: 1;*/
+  width: 50%;
+  padding: 2%; }
+
+#textContainer {
+  display: none;
+  /*flex: 1;*/
+  padding: 2%;
+  flex-direction: column;
+  width: 50%;
+  /*align-items: center;*/
+  justify-content: center; }
+
+#mainContentImage {
+  width: 100%;
+  border-radius: 10px; }
+
+.mainContentText {
+  margin: 10px;
+  display: none; }
+
+#mainContentHeader {
+  font-size: 2em; }
+
+#mainContentP {
+  font-size: 1.5em; }
+
+#timeline {
+  display: flex; }
+
+.timelineItem {
+  display: flex;
+  width: 9.09%;
+  height: 100%;
+  text-align: center;
+  margin: 4px;
+  transition: all .2s ease-in-out;
+  background-color: #283844;
+  border-radius: 3px; }
+
+.timelineItem:hover {
+  transform: scale(1.2); }
+
+.timelineItemHidden {
+  display: none; }
+
+.timelineItemYear {
+  width: 100%; }
+
+#popover {
+  background-color: black;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #E3E7EA;
+  color: #283844; }
+
+#sectionTwo {
+  /*display:none;*/
+  height: 100vh;
+  margin-top: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
+  border-bottom: 1px solid #405769; }
+
+.sectionTitle {
+  margin: 0px;
+  padding: 0px; }

@@ -3,6 +3,7 @@ var router = express.Router();
 var projects = require('../projects.json');
 var tweets = require('../lib/tweets');
 var Sentiment = require('sentiment');
+var timeline = require('../timeline.json');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -10,7 +11,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/about', function(req, res, next) {
-  res.render('about', {title:'About.'});
+  res.render('about', {title:'About.', timeline: timeline});
 });
 
 router.get('/work', function(req, res, next) {
@@ -41,7 +42,10 @@ router.get('/twitterResults', function(req, res) {
   s = Sentiment(req.query.str);
   tweets.fetchTweets(req.query.str, function(data) {
     data.sentiment = s;
-    console.log(data.statuses);
+    for (var i = 0; i < data.statuses.length; i++) {
+        var sent = Sentiment(data.statuses[i].text);
+        data.statuses[i].sentiment = sent; 
+    }
     var m;
     if (s.score < 0) {
       m = "I'm sorry to hear that. These folks seem to be feeling the same.";	

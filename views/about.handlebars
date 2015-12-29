@@ -1,6 +1,31 @@
 <h1 class='pageTitle'>{{title}}</h1>
 
+<div id='mainContentDiv'>
+    <!--<div id='mainContentOverlay'>-->
+        <h2 id='mainContentOverlay'>Who am I? Click through the dates to find out.</h2> 
+    <!--</div>-->
+    <div id='imageContainer'>
+        <img id='mainContentImage' class='mainImage' src='/images/jamie_square.png' alt='mainImage'>
+    </div>
+    <div id='textContainer'>
+        <h2 id='mainContentHeader' class='mainContentText'></h2>
+        <p id='mainContentP' class='mainContentText'></p>
+    </div>
+</div>
 
-<p>I'm Jamie.  I'm currently a student at ITP, and I love to make things.</p>
+<div id='timeline'>
+    {{#each timeline}}
+        <div class='timelineItem'>
+            <h2 class='timelineItemHeader timelineItemHidden'>{{title}}</h2>
+            <p class='timelineItemImgSrc timelineItemHidden'>{{imgsrc}}</p>
+            <p class='timelineItemDesc timelineItemHidden'>{{desc}}</p>
+            <p class='timelineItemYear'>{{year}}</p>
+        </div>
+    {{/each}}
+</div> 
 
+<div id='sectionTwo'>
+    <h2 class='sectionTitle'>What Can I do?</h2>
+</div>
 
+<script src='/javascripts/about.js'></script>
