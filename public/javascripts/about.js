@@ -24,7 +24,6 @@ $(document).ready(function() {
         });
         popover.text(header);
         popover.fadeIn(200);
-
     });
     $('.timelineItem').mouseout(function() {
         $(this).find('.timelineItemHeader').hide();
@@ -43,7 +42,7 @@ $(document).ready(function() {
             $('#mainContentOverlay').fadeOut(800, function() {
 
                 //upon click, show section two
-                $('#sectionTwo').fadeIn(1000);
+                $('.sectionTwo').fadeIn(1000);
 
                 // get img link from html elements in timeline
                 // and set src attribute
@@ -67,7 +66,7 @@ $(document).ready(function() {
                 var arrow = $('#scrollArrow');
                 arrow.click(function() {
                    $('html, body').animate({
-                       scrollTop: $("#sectionTwo").offset().top - 50
+                       scrollTop: $(".sectionTwo").offset().top - 50
                    }, 1000); 
                 });
                 //var arrowTop = $(window).height() - 60;
