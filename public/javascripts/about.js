@@ -3,7 +3,10 @@ var windowHeight;
 $(document).ready(function() {
     windowHeight = $(window).height();
     console.log(windowHeight);
-    $('#sectionTwo').offset({top:windowHeight, left:0});
+    //$('#sectionTwo').offset({top:windowHeight, left:0});
+
+    //var sectionTwoTop = $(window).height() + 50;
+    //$('#sectionTwo').offset({top:sectionTwoTop});
     
     var popover = $('<p id=popover></p>');
     popover.hide();
@@ -34,10 +37,13 @@ $(document).ready(function() {
         var imgSrc = $(this).find('.timelineItemImgSrc').text();
         var header = $(this).find('.timelineItemHeader').html();
         var ptext = $(this).find('.timelineItemDesc').html();
-        
+
         if (overlayShowing) {
             // hide overlay and show image and text
             $('#mainContentOverlay').fadeOut(800, function() {
+
+                //upon click, show section two
+                $('#sectionTwo').fadeIn(1000);
 
                 // get img link from html elements in timeline
                 // and set src attribute
@@ -53,20 +59,22 @@ $(document).ready(function() {
                 $('.mainContentText').fadeIn(2000);
                 overlayShowing = false;
 
-                // show blinking arrow
-                var arrow = $('<img src=\'/images/arrow.png\'>');
-                var arrowTop = $(window).height() - 60;
-                console.log(arrowTop);
-                var arrowLeft = $(window).width() / 2;
-                arrow.css({
-                    position: 'absolute',
-                    top: arrowTop + 'px',
-                    left: arrowLeft + 'px'
-                });
-                $('#body').append(arrow); 
 
-                //$('#sectionTwo').fadeIn(3000);
-                $('#sectionTwo').offset({top:windowHeight, left:0});
+                // show blinking arrow
+                //var arrow = $('<img id=\'scrollArrow\' src=\'/images/arrow.png\'>');
+                $('#arrowContainer').fadeIn(1000);
+                $('#arrowContainer').css('display','flex');
+                var arrow = $('#scrollArrow');
+                arrow.click(function() {
+                   $('html, body').animate({
+                       scrollTop: $("#sectionTwo").offset().top - 50
+                   }, 1000); 
+                });
+                //var arrowTop = $(window).height() - 60;
+                //console.log(arrowTop);
+                //var arrowLeft = $(window).width() / 2;
+                //$('#body').append(arrow); 
+
 
             });
         } else {
