@@ -1,7 +1,4 @@
 $(document).ready(function() {
-  //$('#navTitle').hide();
-
-  //$('#body').css('background-color','Azure');
     
   // remove border of page title since there is no title for the homepage
     $('.pageTitle').css('border-bottom','0px');
@@ -16,7 +13,7 @@ $(document).ready(function() {
 
   $(function(){
       $("#typewriter").typed({
-	  strings: ["Hi.", "I'm Jamie.","Nice to meet you.","How are you today?"],
+	  strings: ["Hi.", "I'm Jamie.","Nice to meet you.","Thanks for coming out."],
 	  typeSpeed: 10,
 	  backSpeed: 10,
 	  backDelay: 800,
