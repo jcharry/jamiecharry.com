@@ -4,11 +4,26 @@
   <div id='typewriter'></div>
 </div>
 
-<div id='inputContainer' class='flexContainer'>
-  <input id='homepageInput' type='text'>
-</div>
+<ul id='allProjects'>
+  {{#each projects}}
+    <li class='projectItem' id={{id}}>
+      {{#if projectLink}}
+	<a class='projectLink' href={{projectLink}}>
+      {{else}}
+	<a class='projectLink' href='/work/{{id}}'>
+      {{/if}}
+	<div class='imgContainer'>
+	  <img class='projectImage' src={{imgsrc}}>
+	  <div class='imgMask'></div>
+	  <h2 class='projectTitle projectText'>{{title}}</h2>
+	  <p class='projectDesc projectText'>{{desc}}</p>
+	</div>
+      </a>
+    </li>
+  {{/each}}
+</ul>
 
-<div id='tweets'></div>
+
 
 <script src='/javascripts/home.js'></script>
 

@@ -1,4 +1,13 @@
 $(document).ready(function() {
+    $('#navTitle').hover(function(e) {
+        $(this).css('opacity','0');
+        $(this).text('jamiecharry.');
+        $(this).animate({opacity:'1'});
+    }, function() {
+        $(this).css('opacity','0');
+        $(this).text('jc.');
+        $(this).animate({opacity:'1'});
+    });
 
 });
 

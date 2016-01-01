@@ -1,7 +1,25 @@
 $(document).ready(function() {
     
+    // set project boxes size depending on screen size
+    setProjectBoxes($(window).innerWidth());
+
   // remove border of page title since there is no title for the homepage
     $('.pageTitle').css('border-bottom','0px');
+
+    // set mouseover for project boxes
+    $('.projectItem').hover(function(e) {
+        $(this).find('.projectText').each(function(index) {
+          $(this).show();
+        });
+        $(this).find('.imgMask').css('opacity','0.5');
+      }, 
+      function() {
+        $(this).find('.projectText').each(function(index) {
+          $(this).hide();
+        });
+        $(this).find('.imgMask').css('opacity','0');
+    });
+    
   
   // Register event
   $('#homepageInput').keypress(function(e) {
@@ -13,7 +31,7 @@ $(document).ready(function() {
 
   $(function(){
       $("#typewriter").typed({
-	  strings: ["Hi.", "I'm Jamie.","Nice to meet you.","Thanks for coming out."],
+	  strings: ["Hi.", "I'm Jamie.","I like to make things.","Here's some stuff I've done recently."],
 	  typeSpeed: 10,
 	  backSpeed: 10,
 	  backDelay: 800,
@@ -23,62 +41,34 @@ $(document).ready(function() {
   });
 });
 
-
 function typingDone() {
   // animate text box up
-  setTimeout(function() {
-
-    $('#homeWrapper').animate({
-      'margin-top':'0%'
-    }, {duration: 1000});
-
-    $('#homepageInput').show('drop', null, 1000, function() {
-
-      // add placeholder text to input
-      $('#homepageInput').attr('placeholder','great, terrible, beautiful, etc.');
-
-      // add nav menu
-    });
-  }, 300);
+    setTimeout(function() {
+        $('.flexContainer').animate({
+            'font-size': '3vw'
+        }, {duration: 1000});
+        $('#homeWrapper').animate({
+            'margin-top':'0%'
+        }, {duration: 1000});
+        $('#allProjects').animate({
+          'opacity':'1.0'
+        }, {duration: 1000});
+    }, 500);
 }
 
-function getSentimentScore(str) {
-  $.ajax({
-    type: 'GET',
-    url: '/sentiment',
-    data: {
-      str: str
-    },
-    success: displaySentiment,
-    error: oops
-  });
-}
+$(window).resize(function() {
+    setProjectBoxes($(window).innerWidth());
+});
 
-function sendRequestForTweets(str) {
-
-  // send get request
-  $.ajax({
-    type: 'GET',
-    url: '/twitterResults',
-    data: {
-      str: str
-    },
-    success: displayTweets,
-    error: oops
-  }); 
-}
-
-function displayTweets(responseHtml) {
-  //$('#tweets').show();
-  
-  //console.log(data.statuses); 
-  //console.log(data.sentiment);
-  //// if there are old tweets, clear them out
-  //$('#tweets').empty();
-  
-  $('#tweets').html(responseHtml); 
-}
-
-function oops(err) {
-  console.log('oops');
+function setProjectBoxes(width) {
+  if (width < 800) {
+      $('.projectItem').css('width','100%');
+    //$('.projectTitle').css('font-size','1.5em');
+    //$('.projectDesc').css('font-size','1em');
+  } else if (width > 800) {
+      $('.projectItem').css('width','50%');
+    //$('.projectTitle').css('font-size','2em');
+    //$('.projectDesc').css('font-size','1.7em');
+  }
+  console.log('resizing');
 }

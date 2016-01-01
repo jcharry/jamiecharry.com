@@ -7,16 +7,16 @@ var timeline = require('../timeline.json');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('home');
+  res.render('home', {projects: projects});
 });
 
 router.get('/about', function(req, res, next) {
   res.render('about', {title:'About.', timeline: timeline});
 });
 
-router.get('/work', function(req, res, next) {
-  res.render('work', {title: 'Work.', projects: projects});
-});
+//router.get('/work', function(req, res, next) {
+  //res.render('work', {title: 'Work.', projects: projects});
+//});
 
 router.get('/work/:projectID', function(req,res) {
 
