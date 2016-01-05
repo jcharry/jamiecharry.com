@@ -105,8 +105,9 @@ li {
   /*margin: 0.625rem;*/
   /*margin:0px;*/
   /*background-color: #00040C;*/
-  padding: 0px;
-  /*border-radius:20px;*/ }
+  padding: 10px;
+  /*border-radius:20px;*/
+  box-shadow: 10px 10px 5px #888888; }
 
 .projectLink {
   /*position: relative;*/
@@ -207,7 +208,7 @@ li {
 
 /*HOME PAGE*/
 #homeWrapper {
-  margin-top: 10%; }
+  margin-top: 30%; }
 
 .flexContainer {
   display: flex;
@@ -217,7 +218,8 @@ li {
   align-items: center;
   font-size: 4vw;
   /*font-family: Garamond;*/
-  margin-top: 15px; }
+  margin-top: 15px;
+  margin-bottom: 15px; }
 
 #typewriter {
   color: #001B4C; }

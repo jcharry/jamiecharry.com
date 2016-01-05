@@ -48,7 +48,7 @@ function typingDone() {
             'font-size': '3vw'
         }, {duration: 1000});
         $('#homeWrapper').animate({
-            'margin-top':'0%'
+            'margin-top':'15px'
         }, {duration: 1000});
         $('#allProjects').animate({
           'opacity':'1.0'
@@ -66,7 +66,7 @@ function setProjectBoxes(width) {
     //$('.projectTitle').css('font-size','1.5em');
     //$('.projectDesc').css('font-size','1em');
   } else if (width > 800) {
-      $('.projectItem').css('width','50%');
+      $('.projectItem').css('width','45%');
     //$('.projectTitle').css('font-size','2em');
     //$('.projectDesc').css('font-size','1.7em');
   }
