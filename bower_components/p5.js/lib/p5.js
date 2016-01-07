@@ -1,4 +1,4 @@
-/*! p5.js v0.4.19 November 11, 2015 */
+/*! p5.js v0.4.21 January 04, 2016 */
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.p5 = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 
 },{}],2:[function(_dereq_,module,exports){
@@ -5592,10 +5592,10 @@ p5.prototype.plane = function(width, height){
  * Draw a sphere with given raduis
  * @method sphere
  * @param  {Number} radius            radius of circle
- * @param  {Number} [detail]          optional: number of segments,
+ * @param  {Number} [detail]          number of segments,
  *                                    the more segments the smoother geometry
- *                                    default is 24
- * @return {p5}                       the p5 object
+ *                                    default is 24. Avoid detail number above
+ *                                    150, it may crash the browser.
  * @example
  * <div>
  * <code>
@@ -5646,13 +5646,78 @@ p5.prototype.sphere = function(radius, detail){
 };
 
 /**
+ * Draw an ellipsoid with given raduis
+ * @method ellipsoid
+ * @param  {Number} radiusx           xradius of circle
+ * @param  {Number} radiusy           yradius of circle
+ * @param  {Number} radiusz           zradius of circle
+ * @param  {Number} [detail]          number of segments,
+ *                                    the more segments the smoother geometry
+ *                                    default is 24. Avoid detail number above
+ *                                    150. It may crash the browser.
+ * @return {p5}                       the p5 object
+ * @example
+ * <div>
+ * <code>
+ * // draw an ellipsoid with radius 200, 300 and 400 .
+ * function setup(){
+ *   createCanvas(100, 100, WEBGL);
+ * }
+ *
+ * function draw(){
+ *   background(200);
+ *   ellipsoid(200,300,400);
+ * }
+ * </code>
+ * </div>
+ */
+p5.prototype.ellipsoid = function(radiusx, radiusy, radiusz, detail){
+
+  radiusx = radiusx || 50;
+  radiusy = radiusy || 50;
+  radiusz = radiusz || 50;
+
+  var detailX = detail || 24;
+  var detailY = detail || 24;
+
+  var gId = 'ellipsoid|'+radiusx+'|'+radiusy+
+  '|'+radiusz+'|'+detailX+'|'+detailY;
+
+
+  if(!this._renderer.geometryInHash(gId)){
+
+    var geometry3d = new p5.Geometry3D();
+
+    var createEllipsoid = function(u, v){
+      var theta = 2 * Math.PI * u;
+      var phi = Math.PI * v - Math.PI / 2;
+      var x = radiusx * Math.cos(phi) * Math.sin(theta);
+      var y = radiusy * Math.sin(phi);
+      var z = radiusz * Math.cos(phi) * Math.cos(theta);
+      return new p5.Vector(x, y, z);
+    };
+
+    geometry3d.parametricGeometry(createEllipsoid, detailX, detailY);
+
+    var obj = geometry3d.generateObj(true, true);
+
+    this._renderer.initBuffer(gId, [obj]);
+  }
+
+  this._renderer.drawBuffer(gId);
+
+  return this;
+};
+
+/**
  * Draw a cylinder with given radius and height
  * @method  cylinder
  * @param  {Number} radius            radius of the surface
  * @param  {Number} height            height of the cylinder
- * @param  {Number} [detail]          optional: number of segments,
+ * @param  {Number} [detail]          number of segments,
  *                                    the more segments the smoother geometry
- *                                    default is 24
+ *                                    default is 24. Avoid detail number above
+ *                                    150. It may crash the browser.
  * @return {p5}                       the p5 object
  * @example
  * <div>
@@ -5746,10 +5811,10 @@ p5.prototype.cylinder = function(radius, height, detail){
  * @method cone
  * @param  {Number} radius            radius of the bottom surface
  * @param  {Number} height            height of the cone
- * @param  {Number} [detail]          optional: number of segments,
+ * @param  {Number} [detail]          number of segments,
  *                                    the more segments the smoother geometry
- *                                    default is 24
- * @return {p5}                       the p5 object
+ *                                    default is 24. Avoid detail number above
+ *                                    150. It may crash the browser.
  * @example
  * <div>
  * <code>
@@ -5819,10 +5884,10 @@ p5.prototype.cone = function(radius, height, detail){
  * @method torus
  * @param  {Number} radius            radius of the whole ring
  * @param  {Number} tubeRadius        radius of the tube
- * @param  {Number} [detail]          optional: number of segments,
+ * @param  {Number} [detail]          number of segments,
  *                                    the more segments the smoother geometry
- *                                    default is 24
- * @return {p5}                       the p5 object
+ *                                    default is 24. Avoid detail number above
+ *                                    150. It may crash the browser.
  * @example
  * <div>
  * <code>
@@ -6407,7 +6472,7 @@ p5.prototype.ambientLight = function(v1, v2, v3, a){
  *   var dirY = (mouseY / height - 0.5) *(-2);
  *   directionalLight(250, 250, 250, dirX, dirY, 0.25);
  *   ambientMaterial(250);
- *   sphere(200, 128);
+ *   sphere(200);
  * }
  * </code>
  * </div>
@@ -6534,7 +6599,7 @@ p5.prototype.directionalLight = function(v1, v2, v3, a, x, y, z) {
  *   // -1,-1---------1,-1
  *   pointLight(250, 250, 250, locX, locY, 0);
  *   ambientMaterial(250);
- *   sphere(200, 128);
+ *   sphere(200);
  * }
  * </code>
  * </div>
@@ -6677,7 +6742,7 @@ p5.prototype.normalMaterial = function(){
  * var img;
  * function setup(){
  *   createCanvas(100, 100, WEBGL);
- *   img = loadImage("assets/cat.jpg");
+ *   img = loadImage("assets/laDefense.jpg");
  * }
  *
  * function draw(){
@@ -6847,7 +6912,7 @@ p5.prototype.basicMaterial = function(v1, v2, v3, a){
  *  ambientLight(100);
  *  pointLight(250, 250, 250, 100, 100, 0);
  *  ambientMaterial(250);
- *  sphere(200, 128);
+ *  sphere(200);
  * }
  * </code>
  * </div>
@@ -6898,7 +6963,7 @@ p5.prototype.ambientMaterial = function(v1, v2, v3, a) {
  *  ambientLight(100);
  *  pointLight(250, 250, 250, 100, 100, 0);
  *  specularMaterial(250);
- *  sphere(200, 128);
+ *  sphere(200);
  * }
  * </code>
  * </div>
@@ -6907,7 +6972,7 @@ p5.prototype.specularMaterial = function(v1, v2, v3, a) {
   var gl = this._renderer.GL;
   var shaderProgram =
     this._renderer._getShader('lightVert', 'lightTextureFrag');
-
+  gl.uniform1i(gl.getUniformLocation(shaderProgram, 'isTexture'), false);
   gl.useProgram(shaderProgram);
   shaderProgram.uMaterialColor = gl.getUniformLocation(
     shaderProgram, 'uMaterialColor' );
@@ -6922,8 +6987,6 @@ p5.prototype.specularMaterial = function(v1, v2, v3, a) {
   shaderProgram.uSpecular = gl.getUniformLocation(
     shaderProgram, 'uSpecular' );
   gl.uniform1i(shaderProgram.uSpecular, true);
-
-  gl.uniform1i(gl.getUniformLocation(shaderProgram, 'isTexture'), false);
 
   return this;
 };
@@ -7657,7 +7720,7 @@ p5.Matrix.prototype.rotate = function(a, axis){
 p5.Matrix.prototype.translate = function(v){
   var x = v[0],
     y = v[1],
-    z = v[2];
+    z = v[2] || 0;
   this.mat4[12] =
     this.mat4[0] * x +this.mat4[4] * y +this.mat4[8] * z +this.mat4[12];
   this.mat4[13] =
@@ -8446,8 +8509,6 @@ module.exports = p5;
  */
 
 var p5 = _dereq_('../core/core');
-var RGBA = [];  // We will reuse this array whenever we convert to RGBA.
-
 p5.ColorConversion = {};
 
 /**
@@ -8484,7 +8545,7 @@ p5.ColorConversion._hsbaToRGBA = function(hsba) {
   var sat = hsba[1];
   var val = hsba[2];
 
-  RGBA.length = 0;  // Clear persistent RGBA array.
+  var RGBA = [];
 
   if (sat === 0) {
     RGBA = [val, val, val, hsba[3]];  // Return early if grayscale.
@@ -8561,7 +8622,7 @@ p5.ColorConversion._hslaToRGBA = function(hsla){
   var sat = hsla[1];
   var li = hsla[2];
 
-  RGBA.length = 0;  // Clear persistent RGBA array.
+  var RGBA = [];
 
   if (sat === 0) {
     RGBA = [li, li, li, hsla[3]]; // Return early if grayscale.
@@ -8784,7 +8845,7 @@ p5.prototype.brightness = function(c) {
  * current colorMode(). The default mode is RGB values from 0 to 255
  * and, therefore, the function call color(255, 204, 0) will return a
  * bright yellow color.
- *
+ * <br><br>
  * Note that if only one value is provided to color(), it will be interpreted
  * as a grayscale value. Add a second value, and it will be used for alpha
  * transparency. When three values are specified, they are interpreted as
@@ -9006,7 +9067,7 @@ p5.prototype.hue = function(c) {
  * above 1 will be capped at 1. This is different from the behavior of lerp(),
  * but necessary because otherwise numbers outside the range will produce
  * strange and unexpected colors.
- *
+ * <br><br>
  * The way that colours are interpolated depends on the current color mode.
  *
  * @method lerpColor
@@ -9916,6 +9977,18 @@ p5.prototype.background = function() {
  * @example
  * <div>
  * <code>
+ * // Clear the screen on mouse press.
+ * function setup() {
+ *   createCanvas(100, 100);
+ * }
+ *
+ * function draw() {
+ *   ellipse(mouseX, mouseY, 20, 20);
+ * }
+ *
+ * function mousePressed() {
+ *   clear();
+ * }
  * </code>
  * </div>
  */
@@ -9931,7 +10004,7 @@ p5.prototype.clear = function() {
  * setting colorMode(RGB, 255). Setting colorMode(HSB) lets you use the HSB
  * system instead. By default, this is colorMode(HSB, 360, 100, 100, 1). You
  * can also use HSL.
- *
+ * <br><br>
  * Note: existing color objects remember the mode that they were created in,
  * so you can change modes as you like without affecting their appearance.
  *
@@ -10032,9 +10105,11 @@ p5.prototype.colorMode = function() {
  * fill(204, 102, 0), all subsequent shapes will be filled with orange. This
  * color is either specified in terms of the RGB or HSB color depending on
  * the current colorMode(). (The default color space is RGB, with each value
- * in the range from 0 to 255.) If a single string argument is provided, RGB,
- * RGBA and Hex CSS color strings and all named color strings are supported.
- * A p5 Color object can also be provided to set the fill color.
+ * in the range from 0 to 255).
+ * <br><br>
+ * If a single string argument is provided, RGB, RGBA and Hex CSS color strings
+ * and all named color strings are supported. A p5 Color object can also be
+ * provided to set the fill color.
  *
  * @method fill
  * @param {Number|Array|String|p5.Color} v1   gray value, red or hue value
@@ -10187,9 +10262,11 @@ p5.prototype.noStroke = function() {
  * Sets the color used to draw lines and borders around shapes. This color
  * is either specified in terms of the RGB or HSB color depending on the
  * current colorMode() (the default color space is RGB, with each value in
- * the range from 0 to 255). If a single string argument is provided, RGB,
- * RGBA and Hex CSS color strings and all named color strings are supported.
- * A p5 Color object can also be provided to set the stroke color.
+ * the range from 0 to 255).
+ * <br><br>
+ * If a single string argument is provided, RGB, RGBA and Hex CSS color
+ * strings and all named color strings are supported. A p5 Color object
+ * can also be provided to set the stroke color.
  *
  * @method stroke
  * @param {Number|Array|String|p5.Color} v1   gray value, red or hue value
@@ -10709,11 +10786,12 @@ p5.prototype.quad = function() {
 * every angle at ninety degrees. By default, the first two parameters set
 * the location of the upper-left corner, the third sets the width, and the
 * fourth sets the height. The way these parameters are interpreted, however,
-* may be changed with the rectMode() function. If provided, the fifth, sixth
-* seventh and eighth parameters, if specified, determine corner radius for
-* the top-right, top-left, lower-right and lower-left corners, respectively.
-* An omitted corner radius parameter is set to the value of the previously
-* specified radius value in the parameter list.
+* may be changed with the rectMode() function.
+* <br><br>
+* The fifth, sixth, seventh and eighth parameters, if specified,
+* determine corner radius for the top-right, top-left, lower-right and
+* lower-left corners, respectively. An omitted corner radius parameter is set
+* to the value of the previously specified radius value in the parameter list.
 *
 * @method rect
 * @param  {Number} x  x-coordinate of the rectangle.
@@ -10728,7 +10806,7 @@ p5.prototype.quad = function() {
 * @example
 * <div>
 * <code>
-* // Draw a rectangle at location (30, 25) with a width and height of 55.
+* // Draw a rectangle at location (30, 20) with a width and height of 55.
 * rect(30, 20, 55, 55);
 * </code>
 * </div>
@@ -10859,24 +10937,24 @@ var constants = _dereq_('./constants');
 /**
  * Modifies the location from which ellipses are drawn by changing the way
  * in which parameters given to ellipse() are interpreted.
- *
+ * <br><br>
  * The default mode is ellipseMode(CENTER), which interprets the first two
  * parameters of ellipse() as the shape's center point, while the third and
  * fourth parameters are its width and height.
- *
+ * <br><br>
  * ellipseMode(RADIUS) also uses the first two parameters of ellipse() as
  * the shape's center point, but uses the third and fourth parameters to
  * specify half of the shapes's width and height.
- *
+ * <br><br>
  * ellipseMode(CORNER) interprets the first two parameters of ellipse() as
  * the upper-left corner of the shape, while the third and fourth parameters
  * are its width and height.
- *
+ * <br><br>
  * ellipseMode(CORNERS) interprets the first two parameters of ellipse() as
  * the location of one corner of the ellipse's bounding box, and the third
  * and fourth parameters as the location of the opposite corner.
- *
- * The parameter must be written in ALL CAPS because Processing is a
+ * <br><br>
+ * The parameter must be written in ALL CAPS because Javascript is a
  * case-sensitive language.
  *
  * @method ellipseMode
@@ -10944,24 +11022,24 @@ p5.prototype.noSmooth = function() {
 /**
  * Modifies the location from which rectangles are drawn by changing the way
  * in which parameters given to rect() are interpreted.
- *
+ * <br><br>
  * The default mode is rectMode(CORNER), which interprets the first two
  * parameters of rect() as the upper-left corner of the shape, while the
  * third and fourth parameters are its width and height.
- *
+ * <br><br>
  * rectMode(CORNERS) interprets the first two parameters of rect() as the
  * location of one corner, and the third and fourth parameters as the
  * location of the opposite corner.
- *
+ * <br><br>
  * rectMode(CENTER) interprets the first two parameters of rect() as the
  * shape's center point, while the third and fourth parameters are its
  * width and height.
- *
+ * <br><br>
  * rectMode(RADIUS) also uses the first two parameters of rect() as the
  * shape's center point, but uses the third and fourth parameters to specify
  * half of the shapes's width and height.
- *
- * The parameter must be written in ALL CAPS because Processing is a
+ * <br><br>
+ * The parameter must be written in ALL CAPS because Javascript is a
  * case-sensitive language.
  *
  * @method rectMode
@@ -11463,9 +11541,10 @@ var p5 = function(sketch, node, sync) {
    * define initial environment properties such as screen size and background
    * color and to load media such as images and fonts as the program starts.
    * There can only be one setup() function for each program and it shouldn't
-   * be called again after its initial execution. Note: Variables declared
-   * within setup() are not accessible within other functions, including
-   * draw().
+   * be called again after its initial execution.
+   * <br><br>
+   * Note: Variables declared within setup() are not accessible within other
+   * functions, including draw().
    *
    * @method setup
    * @example
@@ -11489,15 +11568,15 @@ var p5 = function(sketch, node, sync) {
    * the lines of code contained inside its block until the program is stopped
    * or noLoop() is called. draw() is called automatically and should never be
    * called explicitly.
-   *
+   * <br><br>
    * It should always be controlled with noLoop(), redraw() and loop(). After
    * noLoop() stops the code in draw() from executing, redraw() causes the
    * code inside draw() to execute once, and loop() will cause the code
    * inside draw() to resume executing continuously.
-   *
+   * <br><br>
    * The number of times draw() executes in each second may be controlled with
    * the frameRate() function.
-   *
+   * <br><br>
    * There can only be one draw() function for each sketch, and draw() must
    * exist if you want the code to run continuously, or to process events such
    * as mousePressed(). Sometimes, you might have an empty call to draw() in
@@ -11567,12 +11646,7 @@ var p5 = function(sketch, node, sync) {
     this._events.devicemotion = null;
   }
 
-  //FF doesn't recognize mousewheel as of FF3.x
-  if (/Firefox/i.test(navigator.userAgent)) {
-    this._events.DOMMouseScroll = null;
-  } else {
-    this._events.mousewheel = null;
-  }
+  this._events.wheel = null;
 
 
   this._loadingScreenId = 'p5_loading';
@@ -11713,17 +11787,20 @@ var p5 = function(sketch, node, sync) {
     // if looping is off, so we bypass the time delay if that
     // is the case.
     var epsilon = 5;
-    if (!this.loop ||
+    if (!this._loop ||
         time_since_last >= target_time_between_frames - epsilon) {
+
+      //mandatory update values(matrixs and stack) for 3d
+      if(this._renderer.isP3D){
+        this._renderer._update();
+      }
+
       this._setProperty('frameCount', this.frameCount + 1);
+      this._updateMouseCoords();
+      this._updateTouchCoords();
       this.redraw();
       this._frameRate = 1000.0/(now - this._lastFrameTime);
       this._lastFrameTime = now;
-    }
-
-    //mandatory update values(matrixs and stack) for 3d
-    if(this._renderer.isP3D){
-      this._renderer._update();
     }
 
     // get notified the next time the browser gives us
@@ -12371,7 +12448,7 @@ if (window.console && console.log) {
    * producing. This function creates a new line of text for each call to
    * the function. Individual elements can be
    * separated with quotes ("") and joined with the addition operator (+).
-   *
+   * <br><br>
    * While print() is similar to console.log(), it does not directly map to
    * it in order to simulate easier to understand behavior than
    * console.log(). Due to this, it is slower. For fastest results, use
@@ -12383,7 +12460,7 @@ if (window.console && console.log) {
    * @example
    * <div><code class='norender'>
    * var x = 10;
-   * print("The value of x is "+x);
+   * print("The value of x is " + x);
    * // prints "The value of x is 10"
    * </code></div>
    */
@@ -12515,9 +12592,12 @@ p5.prototype.cursor = function(type, x, y) {
  * frame rate will not be achieved. Setting the frame rate within setup() is
  * recommended. The default rate is 60 frames per second. This is the same as
  * setFrameRate(val).
- *
+ * <br><br>
  * Calling frameRate() with no arguments returns the current framerate. This
  * is the same as getFrameRate().
+ * <br><br>
+ * Calling frameRate() with arguments that are not of the type numbers
+ * or are non positive also returns current framerate.
  *
  * @method frameRate
  * @param  {Number} [fps] number of frames to be displayed every second
@@ -12527,11 +12607,12 @@ p5.prototype.cursor = function(type, x, y) {
  * <div><code>
  * var rectX = 0;
  * var fr = 30; //starting FPS
- * var clr = color(255,0,0);
+ * var clr;
  *
  * function setup() {
  *   background(200);
  *   frameRate(fr); // Attempt to refresh at starting FPS
+ *   clr = color(255,0,0);
  * }
  *
  * function draw() {
@@ -12557,7 +12638,7 @@ p5.prototype.cursor = function(type, x, y) {
  *
  */
 p5.prototype.frameRate = function(fps) {
-  if (typeof fps === 'undefined') {
+  if (typeof fps !== 'number' || fps <= 0) {
     return this._frameRate;
   } else {
     this._setProperty('_targetFrameRate', fps);
@@ -13195,6 +13276,40 @@ function friendlyWelcome() {
   report(str, 'println', '#4DB200'); // auto dark green
 } */
 
+// This is a list of p5 functions/variables that are commonly misused
+// by beginners at top-level code, outside of setup/draw. We'd like to
+// detect these errors and help the user by suggesting they move them
+// into setup/draw.
+//
+// For more details, see https://github.com/processing/p5.js/issues/1121.
+var misusedAtTopLevelCode = [
+  'color',
+  'random'
+];
+
+function helpForMisusedAtTopLevelCode(e) {
+  misusedAtTopLevelCode.forEach(function(name) {
+    if (e.message && e.message.indexOf(name) !== -1) {
+      console.log('%c Did you just try to use p5.js\'s \'' + name + '\' ' +
+                  'function or variable? If so, you may want to ' +
+                  'move it into your sketch\'s setup() function.',
+                  'color: #B40033' /* Dark magenta */);
+    }
+  });
+}
+
+if (document.readyState !== 'complete') {
+  window.addEventListener('error', helpForMisusedAtTopLevelCode, false);
+
+  // Our job is only to catch ReferenceErrors that are thrown when
+  // global (non-instance mode) p5 APIs are used at the top-level
+  // scope of a file, so we'll unbind our error listener now to make
+  // sure we don't log false positives later.
+  window.addEventListener('load', function() {
+    window.removeEventListener('error', helpForMisusedAtTopLevelCode, false);
+  });
+}
+
 module.exports = p5;
 
 },{"./core":48}],52:[function(_dereq_,module,exports){
@@ -13294,8 +13409,14 @@ p5.Element.prototype.parent = function(p) {
  * @return {p5.Element}
  */
 p5.Element.prototype.id = function(id) {
-  this.elt.id = id;
-  return this;
+  if (arguments.length === 0) {
+    return this.elt.id;
+  } else {
+    this.elt.id = id;
+    this.width = this.elt.offsetWidth;
+    this.height = this.elt.offsetHeight;
+    return this;
+  }
 };
 
 /**
@@ -13307,8 +13428,14 @@ p5.Element.prototype.id = function(id) {
  * @return {p5.Element}
  */
 p5.Element.prototype.class = function(c) {
-  this.elt.className = c;
-  return this;
+  if (arguments.length === 0) {
+    return this.elt.className;
+  } else {
+    this.elt.className = c;
+    this.width = this.elt.offsetWidth;
+    this.height = this.elt.offsetHeight;
+    return this;
+  }
 };
 
 /**
@@ -13371,7 +13498,7 @@ p5.Element.prototype.mousePressed = function (fxn) {
  * @return {p5.Element}
  */
 p5.Element.prototype.mouseWheel = function (fxn) {
-  attachListener('mousewheel', fxn, this);
+  attachListener('wheel', fxn, this);
   return this;
 };
 
@@ -14035,34 +14162,9 @@ var filters = _dereq_('../image/filters');
 _dereq_('./p5.Renderer');
 
 /**
- * 2D graphics renderer class.  Can also be used as an off-screen
- * graphics buffer. A p5.Renderer2D object can be constructed
- * with the <code>createRenderer2D()</code> function. The fields and methods
- * for this class are extensive, but mirror the normal drawing API for p5.
- *
- * @class p5.Renderer2D
- * @constructor
- * @extends p5.Renderer
- * @param {String} elt DOM node that is wrapped
- * @param {Object} [pInst] pointer to p5 instance
- * @example
- * <div>
- * <code>
- * var pg;
- * function setup() {
- *   createCanvas(100, 100);
- *   pg = createRenderer2D(40, 40);
- * }
- * function draw() {
- *   background(200);
- *   pg.background(100);
- *   pg.noStroke();
- *   pg.ellipse(pg.width/2, pg.height/2, 50, 50);
- *   image(pg, 9, 30);
- *   image(pg, 51, 30);
- * }
- * </code>
- * </div>
+ * p5.Renderer2D
+ * The 2D graphics canvas renderer class.
+ * extends p5.Renderer
  */
 var styleEmpty = 'rgba(0,0,0,0)';
 // var alphaThreshold = 0.00125; // minimum visible
@@ -14137,15 +14239,21 @@ p5.Renderer2D.prototype.stroke = function() {
 
 p5.Renderer2D.prototype.image =
   function (img, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight) {
-  var frame = img.canvas || img.elt;
+  var cnv;
   try {
-    if (this._tint && img.canvas) {
-      this.drawingContext.drawImage(this._getTintedImageCanvas(img), sx, sy,
-        sWidth, sHeight, dx, dy, dWidth, dHeight);
-    } else {
-      this.drawingContext.drawImage(frame, sx, sy, sWidth, sHeight, dx, dy,
-        dWidth, dHeight);
+    if (this._tint) {
+      if (p5.MediaElement && img instanceof p5.MediaElement) {
+        img.loadPixels();
+      }
+      if (img.canvas) {
+        cnv = this._getTintedImageCanvas(img);
+      }
     }
+    if (!cnv) {
+      cnv = img.canvas || img.elt;
+    }
+    this.drawingContext.drawImage(cnv, sx, sy, sWidth, sHeight, dx, dy,
+      dWidth, dHeight);
   } catch (e) {
     if (e.name !== 'NS_ERROR_NOT_AVAILABLE') {
       throw e;
@@ -14259,6 +14367,10 @@ p5.Renderer2D.prototype.get = function(x, y, w, h) {
 
   this.loadPixels.call(ctx);
 
+  // round down to get integer numbers
+  x = Math.floor(x);
+  y = Math.floor(y);
+
   if (w === 1 && h === 1){
 
     return [
@@ -14302,6 +14414,9 @@ p5.Renderer2D.prototype.loadPixels = function () {
 };
 
 p5.Renderer2D.prototype.set = function (x, y, imgOrCol) {
+  // round down to get integer numbers
+  x = Math.floor(x);
+  y = Math.floor(y);
   if (imgOrCol instanceof p5.Image) {
     this.drawingContext.save();
     this.drawingContext.setTransform(1, 0, 0, 1, 0, 0);
@@ -15207,7 +15322,7 @@ p5.Renderer2D.prototype._renderText = function(p, line, x, y, maxY) {
   }
   else { // an opentype font, let it handle the rendering
 
-    this._textFont._renderPath(line, x, y);
+    this._textFont._renderPath(line, x, y, { renderer: this });
   }
 
   p.pop();
@@ -15322,7 +15437,8 @@ var defaultId = 'defaultCanvas0'; // this gets set again in createCanvas
  * in pixels. This method should be called only once at the start of setup.
  * Calling createCanvas more than once in a sketch will result in very
  * unpredicable behavior. If you want more than one drawing canvas
- * you could use createGraphics (hidden by default but it can be shown).<br>
+ * you could use createGraphics (hidden by default but it can be shown).
+ * <br><br>
  * The system variables width and height are set by the parameters passed
  * to this function. If createCanvas() is not used, the window will be
  * given a default size of 100x100 pixels.
@@ -15414,10 +15530,9 @@ p5.prototype.createCanvas = function(w, h, renderer) {
 };
 
 /**
- * Resizes the canvas to given width and height. Note that the
- * canvas will be cleared so anything drawn previously in setup
- * or draw will disappear on resize. Setup will not be called
- * again.
+ * Resizes the canvas to given width and height. The canvas will be cleared
+ * and draw will be called immediately, allowing the sketch to re-render itself
+ * in the resized canvas.
  * @method resizeCanvas
  * @example
  * <div class="norender"><code>
@@ -15436,8 +15551,20 @@ p5.prototype.createCanvas = function(w, h, renderer) {
  */
 p5.prototype.resizeCanvas = function (w, h, noRedraw) {
   if (this._renderer) {
+
+    // save canvas properties
+    var props = {};
+    for (var key in this.drawingContext) {
+      var val = this.drawingContext[key];
+      if (typeof val !== 'object' && typeof val !== 'function') {
+        props[key] = val;
+      }
+    }
     this._renderer.resize(w, h);
-    this._renderer._applyDefaults();
+    // reset canvas properties
+    for (var savedKey in props) {
+      this.drawingContext[savedKey] = props[savedKey];
+    }
     if (!noRedraw) {
       this.redraw();
     }
@@ -15669,21 +15796,20 @@ p5.prototype.exit = function() {
   throw 'exit() not implemented, see remove()';
 };
 /**
- * <p>Stops p5.js from continuously executing the code within draw().
+ * Stops p5.js from continuously executing the code within draw().
  * If loop() is called, the code in draw() begins to run continuously again.
  * If using noLoop() in setup(), it should be the last line inside the block.
- * </p>
- *
- * <p>When noLoop() is used, it's not possible to manipulate or access the
+ * <br><br>
+ * When noLoop() is used, it's not possible to manipulate or access the
  * screen inside event handling functions such as mousePressed() or
  * keyPressed(). Instead, use those functions to call redraw() or loop(),
  * which will run draw(), which can update the screen properly. This means
  * that when noLoop() has been called, no drawing can happen, and functions
- * like saveFrame() or loadPixels() may not be used.</p>
- *
- * <p>Note that if the sketch is resized, redraw() will be called to update
+ * like saveFrame() or loadPixels() may not be used.
+ * <br><br>
+ * Note that if the sketch is resized, redraw() will be called to update
  * the sketch, even after noLoop() has been specified. Otherwise, the sketch
- * would enter an odd state until loop() was called.</p>
+ * would enter an odd state until loop() was called.
  *
  * @method noLoop
  * @example
@@ -15904,12 +16030,12 @@ p5.prototype.popStyle = function() {
  * Executes the code within draw() one time. This functions allows the
  * program to update the display window only when necessary, for example
  * when an event registered by mousePressed() or keyPressed() occurs.
- *
+ * <br><br>
  * In structuring a program, it only makes sense to call redraw() within
  * events such as mousePressed(). This is because redraw() does not run
  * draw() immediately (it only sets a flag that indicates an update is
  * needed).
- *
+ * <br><br>
  * The redraw() function does not work properly when called inside draw().
  * To enable/disable animations, use loop() and noLoop().
  *
@@ -15946,11 +16072,11 @@ p5.prototype.redraw = function () {
     this._registeredMethods.pre.forEach(function (f) {
       f.call(self);
     });
-    this.pop();
     userDraw();
     this._registeredMethods.post.forEach(function (f) {
       f.call(self);
     });
+    this.pop();
   }
 };
 
@@ -16036,14 +16162,14 @@ p5.prototype.resetMatrix = function() {
  * Rotates a shape the amount specified by the angle parameter. This
  * function accounts for angleMode, so angles can be entered in either
  * RADIANS or DEGREES.
- *
+ * <br><br>
  * Objects are always rotated around their relative position to the
  * origin and positive numbers rotate objects in a clockwise direction.
  * Transformations apply to everything that happens after and subsequent
  * calls to the function accumulates the effect. For example, calling
  * rotate(HALF_PI) and then rotate(HALF_PI) is the same as rotate(PI).
  * All tranformations are reset when draw() begins again.
- *
+ * <br><br>
  * Technically, rotate() multiplies the current transformation matrix
  * by a rotation matrix. This function can be further controlled by
  * the push() and pop().
@@ -16157,12 +16283,12 @@ p5.prototype.rotateZ = function(rad) {
  * coordinate system. Scale values are specified as decimal percentages.
  * For example, the function call scale(2.0) increases the dimension of a
  * shape by 200%.
- *
+ * <br><br>
  * Transformations apply to everything that happens after and subsequent
  * calls to the function multiply the effect. For example, calling scale(2.0)
  * and then scale(1.5) is the same as scale(3.0). If scale() is called
  * within draw(), the transformation is reset when the loop begins again.
- *
+ * <br><br>
  * Using this fuction with the z parameter requires using P3D as a
  * parameter for size(), as shown in the third example above. This function
  * can be further controlled with push() and pop().
@@ -16233,13 +16359,13 @@ p5.prototype.scale = function() {
  * parameter. Angles should be specified in the current angleMode.
  * Objects are always sheared around their relative position to the origin
  * and positive numbers shear objects in a clockwise direction.
- *
+ * <br><br>
  * Transformations apply to everything that happens after and subsequent
  * calls to the function accumulates the effect. For example, calling
  * shearX(PI/2) and then shearX(PI/2) is the same as shearX(PI).
  * If shearX() is called within the draw(), the transformation is reset when
  * the loop begins again.
- *
+ * <br><br>
  * Technically, shearX() multiplies the current transformation matrix by a
  * rotation matrix. This function can be further controlled by the
  * push() and pop() functions.
@@ -16270,13 +16396,13 @@ p5.prototype.shearX = function(angle) {
  * parameter. Angles should be specified in the current angleMode. Objects
  * are always sheared around their relative position to the origin and
  * positive numbers shear objects in a clockwise direction.
- *
+ * <br><br>
  * Transformations apply to everything that happens after and subsequent
  * calls to the function accumulates the effect. For example, calling
  * shearY(PI/2) and then shearY(PI/2) is the same as shearY(PI). If
  * shearY() is called within the draw(), the transformation is reset when
  * the loop begins again.
- *
+ * <br><br>
  * Technically, shearY() multiplies the current transformation matrix by a
  * rotation matrix. This function can be further controlled by the
  * push() and pop() functions.
@@ -16306,7 +16432,7 @@ p5.prototype.shearY = function(angle) {
  * Specifies an amount to displace objects within the display window.
  * The x parameter specifies left/right translation, the y parameter
  * specifies up/down translation.
- *
+ * <br><br>
  * Transformations are cumulative and apply to everything that happens after
  * and subsequent calls to the function accumulates the effect. For example,
  * calling translate(50, 0) and then translate(20, 0) is the same as
@@ -16438,13 +16564,14 @@ p5.prototype.beginContour = function() {
  * complex forms. beginShape() begins recording vertices for a shape and
  * endShape() stops recording. The value of the kind parameter tells it which
  * types of shapes to create from the provided vertices. With no mode
- * specified, the shape can be any irregular polygon. The parameters
- * available for beginShape() are POINTS, LINES, TRIANGLES, TRIANGLE_FAN,
- * TRIANGLE_STRIP, QUADS, and QUAD_STRIP. After calling the beginShape()
- * function, a series of vertex() commands must follow. To stop drawing the
- * shape, call endShape(). Each shape will be outlined with the current
- * stroke color and filled with the fill color.
- *
+ * specified, the shape can be any irregular polygon.
+ * <br><br>
+ * The parameters available for beginShape() are POINTS, LINES, TRIANGLES,
+ * TRIANGLE_FAN, TRIANGLE_STRIP, QUADS, and QUAD_STRIP. After calling the
+ * beginShape() function, a series of vertex() commands must follow. To stop
+ * drawing the shape, call endShape(). Each shape will be outlined with the
+ * current stroke color and filled with the fill color.
+ * <br><br>
  * Transformations such as translate(), rotate(), and scale() do not work
  * within beginShape(). It is also not possible to use other shapes, such as
  * ellipse() or rect() within beginShape().
@@ -16621,7 +16748,9 @@ p5.prototype.beginShape = function(kind) {
  * Specifies vertex coordinates for Bezier curves. Each call to
  * bezierVertex() defines the position of two control points and
  * one anchor point of a Bezier curve, adding a new segment to a
- * line or shape. The first time bezierVertex() is used within a
+ * line or shape.
+ * <br><br>
+ * The first time bezierVertex() is used within a
  * beginShape() call, it must be prefaced with a call to vertex()
  * to set the first anchor point. This function must be used between
  * beginShape() and endShape() and only when there is no MODE
@@ -16678,8 +16807,9 @@ p5.prototype.bezierVertex = function(x2, y2, x3, y3, x4, y4) {
 /**
  * Specifies vertex coordinates for curves. This function may only
  * be used between beginShape() and endShape() and only when there
- * is no MODE parameter specified to beginShape(). The first and
- * last points in a series of curveVertex() lines will be used to
+ * is no MODE parameter specified to beginShape().
+ * <br><br>
+ * The first and last points in a series of curveVertex() lines will be used to
  * guide the beginning and end of a the curve. A minimum of four
  * points is required to draw a tiny curve between the second and
  * third points. Adding a fifth point with curveVertex() will draw
@@ -17691,11 +17821,12 @@ p5.prototype._onkeyup = function (e) {
  * key pressed will be stored in the key variable.
  * <br><br>
  * Because of how operating systems handle key repeats, holding down a key
- * will cause multiple calls to keyTyped(), the rate is set by the operating
- * system and how each computer is configured.<br><br>
- * Browsers may have different default
- * behaviors attached to various key events. To prevent any default
- * behavior for this event, add "return false" to the end of the method.
+ * will cause multiple calls to keyTyped() (and keyReleased() as well). The
+ * rate of repeat is set by the operating system and how each computer is
+ * configured.<br><br>
+ * Browsers may have different default behaviors attached to various key
+ * events. To prevent any default behavior for this event, add "return false"
+ * to the end of the method.
  *
  * @method keyTyped
  * @example
@@ -17730,7 +17861,7 @@ p5.prototype._onkeypress = function (e) {
 };
 /**
  * The onblur function is called when the user is no longer focused
- * on the p5 element. Because the keyup events will no fire if the user is
+ * on the p5 element. Because the keyup events will not fire if the user is
  * not focused on the element we must assume all keys currently down have
  * been released.
  */
@@ -17739,7 +17870,7 @@ p5.prototype._onblur = function (e) {
 };
 
 /**
- * The keyIsDown function checks if the key is currently down, i.e. pressed.
+ * The keyIsDown() function checks if the key is currently down, i.e. pressed.
  * It can be used if you have an object that moves, and you want several keys
  * to be able to affect its behaviour simultaneously, such as moving a
  * sprite diagonally. You can put in any number representing the keyCode of
@@ -17797,6 +17928,17 @@ module.exports = p5;
 
 var p5 = _dereq_('../core/core');
 var constants = _dereq_('../core/constants');
+
+/*
+ * These are helper vars that store the mouseX and mouseY vals
+ * between the time that a mouse event happens and the next frame
+ * of draw. This is done to deal with the asynchronicity of event
+ * calls interacting with the draw loop. When a mouse event occurs
+ * the _nextMouseX/Y vars are updated, then on each call of draw, mouseX/Y
+ * and pmouseX/Y are updated using the _nextMouseX/Y vals.
+ */
+p5.prototype._nextMouseX = 0;
+p5.prototype._nextMouseY = 0;
 
 /**
  * The system variable mouseX always contains the current horizontal
@@ -18086,28 +18228,28 @@ p5.prototype.mouseButton = 0;
 p5.prototype.mouseIsPressed = false;
 p5.prototype.isMousePressed = false; // both are supported
 
-p5.prototype._updateMouseCoords = function(e) {
+p5.prototype._updateNextMouseCoords = function(e) {
   if(e.type === 'touchstart' ||
      e.type === 'touchmove' ||
      e.type === 'touchend') {
-    this._updatePTouchCoords();
-    this._setProperty('mouseX', this.touchX);
-    this._setProperty('mouseY', this.touchY);
+    this._setProperty('_nextMouseX', this._nextTouchX);
+    this._setProperty('_nextMouseY', this._nextTouchY);
   } else {
     if(this._curElement !== null) {
-      this._updatePMouseCoords();
       var mousePos = getMousePos(this._curElement.elt, e);
-      this._setProperty('mouseX', mousePos.x);
-      this._setProperty('mouseY', mousePos.y);
+      this._setProperty('_nextMouseX', mousePos.x);
+      this._setProperty('_nextMouseY', mousePos.y);
     }
   }
   this._setProperty('winMouseX', e.pageX);
   this._setProperty('winMouseY', e.pageY);
 };
 
-p5.prototype._updatePMouseCoords = function() {
+p5.prototype._updateMouseCoords = function() {
   this._setProperty('pmouseX', this.mouseX);
   this._setProperty('pmouseY', this.mouseY);
+  this._setProperty('mouseX', this._nextMouseX);
+  this._setProperty('mouseY', this._nextMouseY);
   this._setProperty('pwinMouseX', this.winMouseX);
   this._setProperty('pwinMouseY', this.winMouseY);
 };
@@ -18127,10 +18269,6 @@ p5.prototype._setMouseButton = function(e) {
     this._setProperty('mouseButton', constants.RIGHT);
   } else {
     this._setProperty('mouseButton', constants.LEFT);
-    if(e.type === 'touchstart' || e.type === 'touchmove') {
-      this._setProperty('mouseX', this.touchX);
-      this._setProperty('mouseY', this.touchY);
-    }
   }
 };
 
@@ -18139,7 +18277,7 @@ p5.prototype._setMouseButton = function(e) {
  * button is not pressed.<br><br>
  * Browsers may have different default
  * behaviors attached to various mouse events. To prevent any default
- * behavior for this event, add `return false` to the end of the method.
+ * behavior for this event, add "return false" to the end of the method.
  *
  * @method mouseMoved
  * @example
@@ -18179,7 +18317,7 @@ p5.prototype._setMouseButton = function(e) {
  * touchMoved() function will be called instead if it is defined.<br><br>
  * Browsers may have different default
  * behaviors attached to various mouse events. To prevent any default
- * behavior for this event, add `return false` to the end of the method.
+ * behavior for this event, add "return false" to the end of the method.
  *
  * @method mouseDragged
  * @example
@@ -18215,7 +18353,8 @@ p5.prototype._setMouseButton = function(e) {
 p5.prototype._onmousemove = function(e){
   var context = this._isGlobal ? window : this;
   var executeDefault;
-  this._updateMouseCoords(e);
+  this._updateNextMouseCoords(e);
+  this._updateNextTouchCoords(e);
   if (!this.isMousePressed) {
     if (typeof context.mouseMoved === 'function') {
       executeDefault = context.mouseMoved(e);
@@ -18235,7 +18374,6 @@ p5.prototype._onmousemove = function(e){
       if(executeDefault === false) {
         e.preventDefault();
       }
-      this._updateTouchCoords(e);
     }
   }
 };
@@ -18248,7 +18386,7 @@ p5.prototype._onmousemove = function(e){
  * called instead if it is defined.<br><br>
  * Browsers may have different default
  * behaviors attached to various mouse events. To prevent any default
- * behavior for this event, add `return false` to the end of the method.
+ * behavior for this event, add "return false" to the end of the method.
  *
  * @method mousePressed
  * @example
@@ -18288,7 +18426,8 @@ p5.prototype._onmousedown = function(e) {
   this._setProperty('isMousePressed', true);
   this._setProperty('mouseIsPressed', true);
   this._setMouseButton(e);
-  this._updateMouseCoords(e);
+  this._updateNextMouseCoords(e);
+  this._updateNextTouchCoords(e);
   if (typeof context.mousePressed === 'function') {
     executeDefault = context.mousePressed(e);
     if(executeDefault === false) {
@@ -18299,7 +18438,6 @@ p5.prototype._onmousedown = function(e) {
     if(executeDefault === false) {
       e.preventDefault();
     }
-    this._updateTouchCoords(e);
   }
 };
 
@@ -18309,7 +18447,7 @@ p5.prototype._onmousedown = function(e) {
  * function will be called instead if it is defined.<br><br>
  * Browsers may have different default
  * behaviors attached to various mouse events. To prevent any default
- * behavior for this event, add `return false` to the end of the method.
+ * behavior for this event, add "return false" to the end of the method.
  *
  *
  * @method mouseReleased
@@ -18360,7 +18498,6 @@ p5.prototype._onmouseup = function(e) {
     if(executeDefault === false) {
       e.preventDefault();
     }
-    this._updateTouchCoords(e);
   }
 };
 
@@ -18372,7 +18509,7 @@ p5.prototype._ondragover = p5.prototype._onmousemove;
  * pressed and then released.<br><br>
  * Browsers may have different default
  * behaviors attached to various mouse events. To prevent any default
- * behavior for this event, add `return false` to the end of the method.
+ * behavior for this event, add "return false" to the end of the method.
  *
  * @method mouseClicked
  * @example
@@ -18418,51 +18555,46 @@ p5.prototype._onclick = function(e) {
 };
 
 /**
- * The function mouseWheel is executed every time a scroll event is detected
- * either triggered by an actual mouse wheel or by a touchpad.<br>
- * The event.delta property returns -1 or +1 depending on the scroll
- * direction and the user's settings. (on OS X with "natural" scrolling
- * enabled, the values are inverted).<br><br>
+ * The function mouseWheel() is executed every time a vertical mouse wheel
+ * event is detected either triggered by an actual mouse wheel or by a
+ * touchpad.<br><br>
+ * The event.delta property returns the amount the mouse wheel
+ * have scrolled. The values can be positive or negative depending on the
+ * scroll direction (on OS X with "natural" scrolling enabled, the signs
+ * are inverted).<br><br>
  * Browsers may have different default behaviors attached to various
  * mouse events. To prevent any default behavior for this event, add
- * `return false` to the end of the method.
- *
- * The event.wheelDelta or event.detail properties can also be accessed but
- * their behavior may differ depending on the browser.
- * See <a href="http://www.javascriptkit.com/javatutors/onmousewheel.shtml">
- * mouse wheel event in JS</a>.
+ * "return false" to the end of the method.<br><br>
+ * Due to the current support of the "wheel" event on Safari, the function
+ * may only work as expected if "return false" is included while using Safari.
  *
  * @method mouseWheel
  *
-	* @example
-	* <div>
-	* <code>
-	* var pos = 25;
-	*
-	* function draw() {
-	*   background(237, 34, 93);
-	*   fill(0);
-	*   rect(25, pos, 50, 50);
-	* }
-	*
-	* function mouseWheel(event) {
-	*   //event.delta can be +1 or -1 depending
-	*   //on the wheel/scroll direction
-	*   print(event.delta);
-	*   //move the square one pixel up or down
-	*   pos += event.delta;
-	*   //uncomment to block page scrolling
-	*   //return false;
-	* }
-	* </code>
-	* </div>
+ * @example
+ * <div>
+ * <code>
+ * var pos = 25;
+ *
+ * function draw() {
+ *   background(237, 34, 93);
+ *   fill(0);
+ *   rect(25, pos, 50, 50);
+ * }
+ *
+ * function mouseWheel(event) {
+ *   print(event.delta);
+ *   //move the square according to the vertical scroll amount
+ *   pos += event.delta;
+ *   //uncomment to block page scrolling
+ *   //return false;
+ * }
+ * </code>
+ * </div>
  */
-p5.prototype._onmousewheel = p5.prototype._onDOMMouseScroll = function(e) {
+p5.prototype._onwheel = function(e) {
   var context = this._isGlobal ? window : this;
   if (typeof context.mouseWheel === 'function') {
-    //creating a delta property (either +1 or -1)
-    //for cross-browser compatibility
-    e.delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+    e.delta = e.deltaY;
     var executeDefault = context.mouseWheel(e);
     if(executeDefault === false) {
       e.preventDefault();
@@ -18483,6 +18615,17 @@ module.exports = p5;
 'use strict';
 
 var p5 = _dereq_('../core/core');
+
+/*
+ * These are helper vars that store the touchX and touchY vals
+ * between the time that a mouse event happens and the next frame
+ * of draw. This is done to deal with the asynchronicity of event
+ * calls interacting with the draw loop. When a touch event occurs
+ * the _nextTouchX/Y vars are updated, then on each call of draw, touchX/Y
+ * and ptouchX/Y are updated using the _nextMouseX/Y vals.
+ */
+p5.prototype._nextTouchX = 0;
+p5.prototype._nextTouchY = 0;
 
 /**
  * The system variable touchX always contains the horizontal position of
@@ -18540,30 +18683,32 @@ p5.prototype.touches = [];
  */
 p5.prototype.touchIsDown = false;
 
-p5.prototype._updateTouchCoords = function(e) {
+p5.prototype._updateNextTouchCoords = function(e) {
   if(e.type === 'mousedown' ||
      e.type === 'mousemove' ||
      e.type === 'mouseup'){
-    this._updatePMouseCoords();
-    this._setProperty('touchX', this.mouseX);
-    this._setProperty('touchY', this.mouseY);
+    this._setProperty('_nextTouchX', this._nextMouseX);
+    this._setProperty('_nextTouchY', this._nextMouseY);
   } else {
-    this._updatePTouchCoords();
-    var touchInfo = getTouchInfo(this._curElement.elt, e, 0);
-    this._setProperty('touchX', touchInfo.x);
-    this._setProperty('touchY', touchInfo.y);
+    if(this._curElement !== null) {
+      var touchInfo = getTouchInfo(this._curElement.elt, e, 0);
+      this._setProperty('_nextTouchX', touchInfo.x);
+      this._setProperty('_nextTouchY', touchInfo.y);
 
-    var touches = [];
-    for(var i = 0; i < e.touches.length; i++){
-      touches[i] = getTouchInfo(this._curElement.elt, e, i);
+      var touches = [];
+      for(var i = 0; i < e.touches.length; i++){
+        touches[i] = getTouchInfo(this._curElement.elt, e, i);
+      }
+      this._setProperty('touches', touches);
     }
-    this._setProperty('touches', touches);
   }
 };
 
-p5.prototype._updatePTouchCoords = function() {
+p5.prototype._updateTouchCoords = function() {
   this._setProperty('ptouchX', this.touchX);
   this._setProperty('ptouchY', this.touchY);
+  this._setProperty('touchX', this._nextTouchX);
+  this._setProperty('touchY', this._nextTouchY);
 };
 
 function getTouchInfo(canvas, e, i) {
@@ -18580,10 +18725,10 @@ function getTouchInfo(canvas, e, i) {
 /**
  * The touchStarted() function is called once after every time a touch is
  * registered. If no touchStarted() function is defined, the mousePressed()
- * function will be called instead if it is defined. Browsers may have
- * different default
- * behaviors attached to various touch events. To prevent any default
- * behavior for this event, add `return false` to the end of the method.
+ * function will be called instead if it is defined.<br><br>
+ * Browsers may have different default behaviors attached to various touch
+ * events. To prevent any default behavior for this event, add "return false"
+ * to the end of the method.
  *
  * @method touchStarted
  * @example
@@ -18620,7 +18765,8 @@ function getTouchInfo(canvas, e, i) {
 p5.prototype._ontouchstart = function(e) {
   var context = this._isGlobal ? window : this;
   var executeDefault;
-  this._updateTouchCoords(e);
+  this._updateNextTouchCoords(e);
+  this._updateNextMouseCoords(e);
   this._setProperty('touchIsDown', true);
   if(typeof context.touchStarted === 'function') {
     executeDefault = context.touchStarted(e);
@@ -18638,10 +18784,11 @@ p5.prototype._ontouchstart = function(e) {
 
 /**
  * The touchMoved() function is called every time a touch move is registered.
- * If no touchStarted() function is defined, the mouseDragged() function will
- * be called instead if it is defined. Browsers may have different default
- * behaviors attached to various touch events. To prevent any default
- * behavior for this event, add `return false` to the end of the method.
+ * If no touchMoved() function is defined, the mouseDragged() function will
+ * be called instead if it is defined.<br><br>
+ * Browsers may have different default behaviors attached to various touch
+ * events. To prevent any default behavior for this event, add "return false"
+ * to the end of the method.
  *
  * @method touchMoved
  * @example
@@ -18677,7 +18824,8 @@ p5.prototype._ontouchstart = function(e) {
 p5.prototype._ontouchmove = function(e) {
   var context = this._isGlobal ? window : this;
   var executeDefault;
-  this._updateTouchCoords(e);
+  this._updateNextTouchCoords(e);
+  this._updateNextMouseCoords(e);
   if (typeof context.touchMoved === 'function') {
     executeDefault = context.touchMoved(e);
     if(executeDefault === false) {
@@ -18688,16 +18836,16 @@ p5.prototype._ontouchmove = function(e) {
     if(executeDefault === false) {
       e.preventDefault();
     }
-    this._updateMouseCoords(e);
   }
 };
 
 /**
  * The touchEnded() function is called every time a touch ends. If no
- * touchStarted() function is defined, the mouseReleased() function will be
- * called instead if it is defined. Browsers may have different default
- * behaviors attached to various touch events. To prevent any default
- * behavior for this event, add `return false` to the end of the method.
+ * touchEnded() function is defined, the mouseReleased() function will be
+ * called instead if it is defined.<br><br>
+ * Browsers may have different default behaviors attached to various touch
+ * events. To prevent any default behavior for this event, add "return false"
+ * to the end of the method.
  *
  * @method touchEnded
  * @example
@@ -18732,7 +18880,8 @@ p5.prototype._ontouchmove = function(e) {
  * </div>
  */
 p5.prototype._ontouchend = function(e) {
-  this._updateTouchCoords(e);
+  this._updateNextTouchCoords(e);
+  this._updateNextMouseCoords(e);
   if (this.touches.length === 0) {
     this._setProperty('touchIsDown', false);
   }
@@ -18748,7 +18897,6 @@ p5.prototype._ontouchend = function(e) {
     if(executeDefault === false) {
       e.preventDefault();
     }
-    this._updateMouseCoords(e);
   }
 };
 
@@ -19385,7 +19533,7 @@ var frames = [];
  * Creates a new p5.Image (the datatype for storing images). This provides a
  * fresh buffer of pixels to play with. Set the size of the buffer with the
  * width and height parameters.
- *
+ * <br><br>
  * .pixels gives access to an array containing the values for all the pixels
  * in the display window.
  * These values are numbers. This array is the size (including an appropriate
@@ -19395,9 +19543,8 @@ var frames = [];
  * more info. It may also be simpler to use set() or get().
  * <br><br>
  * Before accessing the pixels of an image, the data must loaded with the
- * loadPixels()
- * function. After the array data has been modified, the updatePixels()
- * function must be run to update the changes.
+ * loadPixels() function. After the array data has been modified, the
+ * updatePixels() function must be run to update the changes.
  *
  * @method createImage
  * @param  {Integer} width  width in pixels
@@ -19456,7 +19603,7 @@ p5.prototype.createImage = function(width, height) {
 };
 
 /**
- *  Save the current canvas as an image. In Safari, will open the
+ *  Save the current canvas as an image. In Safari, this will open the
  *  image in the window and the user must provide their own
  *  filename on save-as. Other browsers will either save the
  *  file immediately, or prompt the user with a dialogue window.
@@ -19893,12 +20040,12 @@ p5.prototype.image =
 /**
  * Sets the fill value for displaying images. Images can be tinted to
  * specified colors or made transparent by including an alpha value.
- *
+ * <br><br>
  * To apply transparency to an image without affecting its color, use
  * white as the tint color and specify an alpha value. For instance,
  * tint(255, 128) will make an image 50% transparent (assuming the default
  * alpha range of 0-255, which can be changed with colorMode()).
- *
+ * <br><br>
  * The value for the gray parameter must be less than or equal to the current
  * maximum value as specified by colorMode(). The default maximum value is
  * 255.
@@ -20027,10 +20174,11 @@ p5.prototype._getTintedImageCanvas = function(img) {
  * third parameters of image() as the upper-left corner of the image. If
  * two additional parameters are specified, they are used to set the image's
  * width and height.
- *
+ * <br><br>
  * imageMode(CORNERS) interprets the second and third parameters of image()
  * as the location of one corner, and the fourth and fifth parameters as the
  * opposite corner.
+ * <br><br>
  * imageMode(CENTER) interprets the second and third parameters of image()
  * as the image's center point. If two additional parameters are specified,
  * they are used to set the image's width and height.
@@ -20114,14 +20262,17 @@ var Filters = _dereq_('./filters');
 
 /**
  * Creates a new p5.Image. A p5.Image is a canvas backed representation of an
- * image. p5 can display .gif, .jpg and .png images. Images may be displayed
+ * image.
+ * <br><br>
+ * p5 can display .gif, .jpg and .png images. Images may be displayed
  * in 2D and 3D space. Before an image is used, it must be loaded with the
  * loadImage() function. The p5.Image class contains fields for the width and
  * height of the image, as well as an array called pixels[] that contains the
- * values for every pixel in the image. The methods described below allow
- * easy access to the image's pixels and alpha channel and simplify the
- * process of compositing.
- *
+ * values for every pixel in the image.
+ * <br><br>
+ * The methods described below allow easy access to the image's pixels and
+ * alpha channel and simplify the process of compositing.
+ * <br><br>
  * Before using the pixels[] array, be sure to use the loadPixels() method on
  * the image to make sure that the pixel data is properly loaded.
  *
@@ -20135,11 +20286,45 @@ p5.Image = function(width, height){
   /**
    * Image width.
    * @property width
+   * @example
+   * <div><code>
+   * var img;
+   * function preload() {
+   *   img = loadImage("assets/rockies.jpg");
+   * }
+   *
+   * function setup() {
+   *   createCanvas(100, 100);
+   *   image(img, 0, 0);
+   *   for (var i=0; i < img.width; i++) {
+   *     var c = img.get(i, img.height/2);
+   *     stroke(c);
+   *     line(i, height/2, i, height);
+   *   }
+   * }
+   * </code></div>
    */
   this.width = width;
   /**
    * Image height.
    * @property height
+   * @example
+   * <div><code>
+   * var img;
+   * function preload() {
+   *   img = loadImage("assets/rockies.jpg");
+   * }
+   *
+   * function setup() {
+   *   createCanvas(100, 100);
+   *   image(img, 0, 0);
+   *   for (var i=0; i < img.height; i++) {
+   *     var c = img.get(img.width/2, i);
+   *     stroke(c);
+   *     line(0, i, width/2, i);
+   *   }
+   * }
+   * </code></div>
    */
   this.height = height;
   this.canvas = document.createElement('canvas');
@@ -20392,21 +20577,34 @@ p5.Image.prototype.copy = function () {
 
 /**
  * Masks part of an image from displaying by loading another
- * image and using it's alpha channel as an alpha channel for
+ * image and using it's blue channel as an alpha channel for
  * this image.
  *
  * @method mask
- * @param {p5.Image|undefined} srcImage source image
+ * @param {p5.Image} srcImage source image
+ * @example
+ * <div><code>
+ * var photo, maskImage;
+ * function preload() {
+ *   photo = loadImage("assets/rockies.jpg");
+ *   maskImage = loadImage("assets/mask2.png");
+ * }
  *
- * TODO: - Accept an array of alpha values.
- *       - Use other channels of an image. p5 uses the
- *       blue channel (which feels kind of arbitrary). Note: at the
- *       moment this method does not match native processings original
- *       functionality exactly.
+ * function setup() {
+ *   createCanvas(100, 100);
+ *   photo.mask(maskImage);
+ *   image(photo, 0, 0);
+ * }
+ * </code></div>
  *
  * http://blogs.adobe.com/webplatform/2013/01/28/blending-features-in-canvas/
  *
  */
+// TODO: - Accept an array of alpha values.
+//       - Use other channels of an image. p5 uses the
+//       blue channel (which feels kind of arbitrary). Note: at the
+//       moment this method does not match native processings original
+//       functionality exactly.
 p5.Image.prototype.mask = function(p5Image) {
   if(p5Image === undefined){
     p5Image = this;
@@ -20555,16 +20753,18 @@ _dereq_('../color/p5.Color');
  * high denisty displays will have more pixels[] (by a factor of
  * pixelDensity^2).
  * For example, if the image is 100x100 pixels, there will be 40,000. On a
- * retina display, there will be 160,000. The first four values
- * (indices 0-3) in the array will be the R, G, B, A values of the pixel at
- * (0, 0). The second four values (indices 4-7) will contain the R, G, B, A
- * values of the pixel at (1, 0). More generally, to set values for a pixel
- * at (x, y):
- * <code><pre>var d = pixelDensity;
+ * retina display, there will be 160,000.
+ * <br><br>
+ * The first four values (indices 0-3) in the array will be the R, G, B, A
+ * values of the pixel at (0, 0). The second four values (indices 4-7) will
+ * contain the R, G, B, A values of the pixel at (1, 0). More generally, to
+ * set values for a pixel at (x, y):
+ * <code><pre>
+ * var d = pixelDensity;
  * for (var i = 0; i < d; i++) {
  *   for (var j = 0; j < d; j++) {
  *     // loop over
- *     idx = 4*((y * d + j) * width * d + (x * d + i));
+ *     idx = 4 * ((y * d + j) * width * d + (x * d + i));
  *     pixels[idx] = r;
  *     pixels[idx+1] = g;
  *     pixels[idx+2] = b;
@@ -20572,7 +20772,8 @@ _dereq_('../color/p5.Color');
  *   }
  * }
  * </pre></code>
- * While the above method is complex, it is flexible enough to work with
+ *
+ * <p>While the above method is complex, it is flexible enough to work with
  * any pixelDensity. Note that set() will automatically take care of
  * setting all the appropriate values in pixels[] for a given (x, y) at
  * any pixelDensity, but the performance may not be as fast when lots of
@@ -20585,7 +20786,7 @@ _dereq_('../color/p5.Color');
  * Note that this is not a standard javascript array.  This means that
  * standard javascript functions such as <code>slice()</code> or
  * <code>arrayCopy()</code> do not
- * work.
+ * work.</p>
  *
  * @property pixels[]
  * @example
@@ -20886,18 +21087,19 @@ p5.prototype.filter = function(operation, value) {
  * the display window by specifying additional w and h parameters. When
  * getting an image, the x and y parameters define the coordinates for the
  * upper-left corner of the image, regardless of the current imageMode().
- *
+ * <br><br>
  * If the pixel requested is outside of the image window, [0,0,0,255] is
  * returned. To get the numbers scaled according to the current color ranges
  * and taking into account colorMode, use getColor instead of get.
- *
+ * <br><br>
  * Getting the color of a single pixel with get(x, y) is easy, but not as fast
  * as grabbing the data directly from pixels[]. The equivalent statement to
  * get(x, y) using pixels[] with pixel density d is
- * [pixels[(y*width*d+x)*d],
+ * <code>[pixels[(y*width*d+x)*d],
  * pixels[(y*width*d+x)*d+1],
  * pixels[(y*width*d+x)*d+2],
- * pixels[(y*width*d+x)*d+3] ].
+ * pixels[(y*width*d+x)*d+3]]</code>.
+ * <br><br>
  * See the reference for pixels[] for more information.
  *
  * @method get
@@ -21077,6 +21279,11 @@ p5.prototype.set = function (x, y, imgOrCol) {
  * </div>
  */
 p5.prototype.updatePixels = function (x, y, w, h) {
+  // graceful fail - if loadPixels() or set() has not been called, pixel
+  // array will be empty, ignore call to updatePixels()
+  if (this.pixels.length === 0) {
+    return;
+  }
   this._renderer.updatePixels(x, y, w, h);
 };
 
@@ -21104,7 +21311,7 @@ _dereq_('../core/error_helpers');
  * only be used in loadX() functions.
  * @private
  */
-p5._getDecrementPreload = function() {
+p5._getDecrementPreload = function () {
   var decrementPreload = arguments[arguments.length - 1];
 
   // when in preload decrementPreload will always be the last arg as it is set
@@ -21183,14 +21390,14 @@ p5._getDecrementPreload = function() {
  *   var myDiv = createDiv('hello there');
  *   myDiv.style('font-family', 'Avenir');
  * }
-* </code></div>
+ * </code></div>
  */
-p5.prototype.loadFont = function(path, onSuccess, onError) {
+p5.prototype.loadFont = function (path, onSuccess, onError) {
 
   var p5Font = new p5.Font(this);
   var decrementPreload = p5._getDecrementPreload.apply(this, arguments);
 
-  opentype.load(path, function(err, font) {
+  opentype.load(path, function (err, font) {
 
     if (err) {
 
@@ -21205,41 +21412,44 @@ p5.prototype.loadFont = function(path, onSuccess, onError) {
     if (typeof onSuccess !== 'undefined') {
       onSuccess(p5Font);
     }
+
     if (decrementPreload && (onSuccess !== decrementPreload)) {
       decrementPreload();
     }
-    /*jshint multistr: true */
-    var exp =/\/[a-zA-Z]*((.ttf)|(.otf)|(.woff)|(.woff2))$/i;
-    if(!exp) {
-      return p5Font;
+
+    // check that we have an acceptable font type
+    var validFontTypes = [ 'ttf', 'otf', 'woff', 'woff2' ],
+      fileNoPath = path.split('\\').pop().split('/').pop(),
+      lastDotIdx = fileNoPath.lastIndexOf('.'), fontFamily, newStyle,
+      fileExt = lastDotIdx < 1 ? null : fileNoPath.substr(lastDotIdx + 1);
+
+    // if so, add it to the DOM (name-only) for use with p5.dom
+    if (validFontTypes.indexOf(fileExt) > -1) {
+
+      fontFamily = fileNoPath.substr(0, lastDotIdx);
+      newStyle = document.createElement('style');
+      newStyle.appendChild(document.createTextNode('\n@font-face {' +
+        '\nfont-family: ' + fontFamily + ';\nsrc: url(' + path + ');\n}\n'));
+      document.head.appendChild(newStyle);
     }
-    var i = (exp).exec( path ).index + 1;
-    var fontName = path.substring(i);
-    fontName = fontName.match(/[A-Za-z]*/);
-    var fontFamily = fontName[0];
-    var newStyle = document.createElement('style');
-    newStyle.appendChild(document.createTextNode('\n@font-face {\
-      \nfont-family: '+fontFamily+';\nsrc: url('+path+');\n}\n'));
-    document.head.appendChild(newStyle);
 
   });
 
   return p5Font;
 };
 
-
 //BufferedReader
-p5.prototype.createInput = function() {
+p5.prototype.createInput = function () {
   // TODO
   throw 'not yet implemented';
 };
 
-p5.prototype.createReader = function() {
+p5.prototype.createReader = function () {
   // TODO
   throw 'not yet implemented';
 };
 
-p5.prototype.loadBytes = function() {
+p5.prototype.loadBytes = function () {
   // TODO
   throw 'not yet implemented';
 };
@@ -21309,7 +21519,7 @@ p5.prototype.loadBytes = function() {
  * </code></div>
  *
  */
-p5.prototype.loadJSON = function() {
+p5.prototype.loadJSON = function () {
   var path = arguments[0];
   var callback = arguments[1];
   var errorCallback;
@@ -21320,9 +21530,9 @@ p5.prototype.loadJSON = function() {
   var t = 'json'; //= path.indexOf('http') === -1 ? 'json' : 'jsonp';
 
   // check for explicit data type argument
-  for (var i=2; i<arguments.length; i++) {
+  for (var i = 2; i < arguments.length; i++) {
     var arg = arguments[i];
-    if (typeof arg === 'string'){
+    if (typeof arg === 'string') {
       if (arg === 'jsonp' || arg === 'json') {
         t = arg;
       }
@@ -21343,7 +21553,7 @@ p5.prototype.loadJSON = function() {
         console.log(resp.statusText);
       }
     },
-    success: function(resp) {
+    success: function (resp) {
       for (var k in resp) {
         ret[k] = resp[k];
       }
@@ -21363,12 +21573,12 @@ p5.prototype.loadJSON = function() {
  * Reads the contents of a file and creates a String array of its individual
  * lines. If the name of the file is used as the parameter, as in the above
  * example, the file must be located in the sketch directory/folder.
- *
+ * <br><br>
  * Alternatively, the file maybe be loaded from anywhere on the local
  * computer using an absolute path (something that starts with / on Unix and
  * Linux, or a drive letter on Windows), or the filename parameter can be a
  * URL for a file found on a network.
- *
+ * <br><br>
  * This method is asynchronous, meaning it may not finish before the next
  * line in your sketch is executed.
  *
@@ -21497,43 +21707,43 @@ p5.prototype.loadStrings = function (path, callback, errorCallback) {
  * @return {Object}                    Table object containing data
  *
  * @example
-	* <div class="norender">
-	* <code>
-	* // Given the following CSV file called "mammals.csv"
+ * <div class="norender">
+ * <code>
+ * // Given the following CSV file called "mammals.csv"
  * // located in the project's "assets" folder:
  * //
-	* // id,species,name
-	* // 0,Capra hircus,Goat
-	* // 1,Panthera pardus,Leopard
-	* // 2,Equus zebra,Zebra
-	*
-	* var table;
-	*
-	* function preload() {
-	*   //my table is comma separated value "csv"
-	*   //and has a header specifying the columns labels
-	*   table = loadTable("assets/mammals.csv", "csv", "header");
-	*   //the file can be remote
-	*   //table = loadTable("http://p5js.org/reference/assets/mammals.csv",
-	*   //                  "csv", "header");
-	* }
-	*
-	* function setup() {
-	*   //count the columns
-	*   print(table.getRowCount() + " total rows in table");
-	*   print(table.getColumnCount() + " total columns in table");
-	*
-	*   print(table.getColumn("name"));
-	*   //["Goat", "Leopard", "Zebra"]
-	*
-	*   //cycle through the table
-	*   for (var r = 0; r < table.getRowCount(); r++)
-	*     for (var c = 0; c < table.getColumnCount(); c++) {
-	*       print(table.getString(r, c));
-	*     }
-	* }
-	* </code>
-	* </div>
+ * // id,species,name
+ * // 0,Capra hircus,Goat
+ * // 1,Panthera pardus,Leopard
+ * // 2,Equus zebra,Zebra
+ *
+ * var table;
+ *
+ * function preload() {
+ *   //my table is comma separated value "csv"
+ *   //and has a header specifying the columns labels
+ *   table = loadTable("assets/mammals.csv", "csv", "header");
+ *   //the file can be remote
+ *   //table = loadTable("http://p5js.org/reference/assets/mammals.csv",
+ *   //                  "csv", "header");
+ * }
+ *
+ * function setup() {
+ *   //count the columns
+ *   print(table.getRowCount() + " total rows in table");
+ *   print(table.getColumnCount() + " total columns in table");
+ *
+ *   print(table.getColumn("name"));
+ *   //["Goat", "Leopard", "Zebra"]
+ *
+ *   //cycle through the table
+ *   for (var r = 0; r < table.getRowCount(); r++)
+ *     for (var c = 0; c < table.getColumnCount(); c++) {
+ *       print(table.getString(r, c));
+ *     }
+ * }
+ * </code>
+ * </div>
  */
 p5.prototype.loadTable = function (path) {
   var callback = null;
@@ -21544,11 +21754,10 @@ p5.prototype.loadTable = function (path) {
   var decrementPreload = p5._getDecrementPreload.apply(this, arguments);
 
   for (var i = 1; i < arguments.length; i++) {
-    if ((typeof(arguments[i]) === 'function') &&
+    if ((typeof (arguments[i]) === 'function') &&
       (arguments[i] !== decrementPreload)) {
       callback = arguments[i];
-    }
-    else if (typeof(arguments[i]) === 'string') {
+    } else if (typeof (arguments[i]) === 'string') {
       options.push(arguments[i]);
       if (arguments[i] === 'header') {
         header = true;
@@ -21556,17 +21765,14 @@ p5.prototype.loadTable = function (path) {
       if (arguments[i] === 'csv') {
         if (separatorSet) {
           throw new Error('Cannot set multiple separator types.');
-        }
-        else {
+        } else {
           sep = ',';
           separatorSet = true;
         }
-      }
-      else if (arguments[i] === 'tsv') {
+      } else if (arguments[i] === 'tsv') {
         if (separatorSet) {
           throw new Error('Cannot set multiple separator types.');
-        }
-        else {
+        } else {
           sep = '\t';
           separatorSet = true;
         }
@@ -21575,21 +21781,25 @@ p5.prototype.loadTable = function (path) {
   }
 
   var t = new p5.Table();
-  reqwest({url: path, crossOrigin: true, type: 'csv'})
-    .then(function(resp) {
+  reqwest({
+      url: path,
+      crossOrigin: true,
+      type: 'csv'
+    })
+    .then(function (resp) {
       resp = resp.responseText;
 
       var state = {};
 
       // define constants
       var PRE_TOKEN = 0,
-          MID_TOKEN = 1,
-          POST_TOKEN = 2,
-          POST_RECORD = 4;
+        MID_TOKEN = 1,
+        POST_TOKEN = 2,
+        POST_RECORD = 4;
 
       var QUOTE = '\"',
-             CR = '\r',
-             LF = '\n';
+        CR = '\r',
+        LF = '\n';
 
       var records = [];
       var offset = 0;
@@ -21608,31 +21818,31 @@ p5.prototype.loadTable = function (path) {
         currentRecord = null;
       };
 
-      var tokenBegin = function() {
+      var tokenBegin = function () {
         state.currentState = PRE_TOKEN;
         state.token = '';
       };
 
-      var tokenEnd = function() {
+      var tokenEnd = function () {
         currentRecord.push(state.token);
         tokenBegin();
       };
 
-      while(true) {
+      while (true) {
         currentChar = resp[offset++];
 
         // EOF
-        if(currentChar == null) {
+        if (currentChar == null) {
           if (state.escaped) {
             throw new Error('Unclosed quote in file.');
           }
-          if (currentRecord){
+          if (currentRecord) {
             tokenEnd();
             recordEnd();
             break;
           }
         }
-        if(currentRecord === null) {
+        if (currentRecord === null) {
           recordBegin();
         }
 
@@ -21652,35 +21862,29 @@ p5.prototype.loadTable = function (path) {
             if (resp[offset] === QUOTE) {
               state.token += QUOTE;
               offset++;
-            }
-            else {
+            } else {
               state.escaped = false;
               state.currentState = POST_TOKEN;
             }
-          }
-          else {
+          } else {
             state.token += currentChar;
           }
           continue;
         }
 
-
         // fall-through: mid-token or post-token, not escaped
-        if (currentChar === CR ) {
-          if( resp[offset] === LF  ) {
+        if (currentChar === CR) {
+          if (resp[offset] === LF) {
             offset++;
           }
           tokenEnd();
           recordEnd();
-        }
-        else if (currentChar === LF) {
+        } else if (currentChar === LF) {
           tokenEnd();
           recordEnd();
-        }
-        else if (currentChar === sep) {
+        } else if (currentChar === sep) {
           tokenEnd();
-        }
-        else if( state.currentState === MID_TOKEN ){
+        } else if (state.currentState === MID_TOKEN) {
           state.token += currentChar;
         }
       }
@@ -21688,17 +21892,16 @@ p5.prototype.loadTable = function (path) {
       // set up column names
       if (header) {
         t.columns = records.shift();
-      }
-      else {
-        for (i = 0; i < records.length; i++){
+      } else {
+        for (i = 0; i < records.length; i++) {
           t.columns[i] = i.toString();
         }
       }
       var row;
-      for (i =0; i<records.length; i++) {
+      for (i = 0; i < records.length; i++) {
         //Handles row of 'undefined' at end of some CSVs
         if (i === records.length - 1 && records[i].length === 1) {
-          if(records[i][0] === 'undefined'){
+          if (records[i][0] === 'undefined') {
             break;
           }
         }
@@ -21714,8 +21917,8 @@ p5.prototype.loadTable = function (path) {
         decrementPreload();
       }
     })
-    .fail(function(err,msg){
-      p5._friendlyFileLoadError(2,path);
+    .fail(function (err, msg) {
+      p5._friendlyFileLoadError(2, path);
       // don't get error callback mixed up with decrementPreload
       if ((typeof callback !== 'undefined') &&
         (callback !== decrementPreload)) {
@@ -21730,12 +21933,12 @@ p5.prototype.loadTable = function (path) {
 function makeObject(row, headers) {
   var ret = {};
   headers = headers || [];
-  if (typeof(headers) === 'undefined'){
-    for (var j = 0; j < row.length; j++ ){
+  if (typeof (headers) === 'undefined') {
+    for (var j = 0; j < row.length; j++) {
       headers[j.toString()] = j;
     }
   }
-  for (var i = 0; i < headers.length; i++){
+  for (var i = 0; i < headers.length; i++) {
     var key = headers[i];
     var val = row[i];
     ret[key] = val;
@@ -21747,18 +21950,18 @@ function makeObject(row, headers) {
  * Reads the contents of a file and creates an XML object with its values.
  * If the name of the file is used as the parameter, as in the above example,
  * the file must be located in the sketch directory/folder.
- *
+ * <br><br>
  * Alternatively, the file maybe be loaded from anywhere on the local
  * computer using an absolute path (something that starts with / on Unix and
  * Linux, or a drive letter on Windows), or the filename parameter can be a
  * URL for a file found on a network.
- *
+ * <br><br>
  * This method is asynchronous, meaning it may not finish before the next
  * line in your sketch is executed. Calling loadXML() inside preload()
  * guarantees to complete the operation before setup() and draw() are called.
- *
- * <p>Outside of preload(), you may supply a callback function to handle the
- * object:</p>
+ * <br><br>
+ * Outside of preload(), you may supply a callback function to handle the
+ * object:
  *
  * @method loadXML
  * @param  {String}   filename   name of the file or URL to load
@@ -21770,34 +21973,34 @@ function makeObject(row, headers) {
  *                               in as first argument
  * @return {Object}              XML object containing data
  */
-p5.prototype.loadXML = function(path, callback, errorCallback) {
+p5.prototype.loadXML = function (path, callback, errorCallback) {
   var ret = document.implementation.createDocument(null, null);
   var decrementPreload = p5._getDecrementPreload.apply(this, arguments);
 
   reqwest({
-    url: path,
-    type: 'xml',
-    crossOrigin: true,
-    error: function(resp){
-      // pass to error callback if defined
-      if (errorCallback) {
-        errorCallback(resp);
-      } else { // otherwise log error msg
-        console.log(resp.statusText);
+      url: path,
+      type: 'xml',
+      crossOrigin: true,
+      error: function (resp) {
+        // pass to error callback if defined
+        if (errorCallback) {
+          errorCallback(resp);
+        } else { // otherwise log error msg
+          console.log(resp.statusText);
+        }
+        //p5._friendlyFileLoadError(1,path);
       }
-      //p5._friendlyFileLoadError(1,path);
-    }
-  })
-  .then(function(resp){
-    var x = resp.documentElement;
-    ret.appendChild(x);
-    if (typeof callback !== 'undefined') {
-      callback(ret);
-    }
-    if (decrementPreload && (callback !== decrementPreload)) {
-      decrementPreload();
-    }
-  });
+    })
+    .then(function (resp) {
+      var x = resp.documentElement;
+      ret.appendChild(x);
+      if (typeof callback !== 'undefined') {
+        callback(ret);
+      }
+      if (decrementPreload && (callback !== decrementPreload)) {
+        decrementPreload();
+      }
+    });
   return ret;
 };
 
@@ -21807,19 +22010,19 @@ p5.prototype.loadXML = function(path, callback, errorCallback) {
 
 // };
 
-p5.prototype.parseXML = function() {
+p5.prototype.parseXML = function () {
   // TODO
   throw 'not yet implemented';
 
 };
 
-p5.prototype.selectFolder = function() {
+p5.prototype.selectFolder = function () {
   // TODO
   throw 'not yet implemented';
 
 };
 
-p5.prototype.selectInput = function() {
+p5.prototype.selectInput = function () {
   // TODO
   throw 'not yet implemented';
 
@@ -21845,7 +22048,6 @@ p5.prototype.httpGet = function () {
   args.push('GET');
   p5.prototype.httpDo.apply(this, args);
 };
-
 
 /**
  * Method for executing an HTTP POST request. If data type is not specified,
@@ -21889,7 +22091,7 @@ p5.prototype.httpPost = function () {
  *                                    there is an error, response is passed
  *                                    in as first argument
  */
-p5.prototype.httpDo = function() {
+p5.prototype.httpDo = function () {
   if (typeof arguments[0] === 'object') {
     reqwest(arguments[0]);
   } else {
@@ -21900,7 +22102,7 @@ p5.prototype.httpDo = function() {
     var callback;
     var errorCallback;
 
-    for (var i=1; i<arguments.length; i++) {
+    for (var i = 1; i < arguments.length; i++) {
       var a = arguments[i];
       if (typeof a === 'string') {
         if (a === 'GET' || a === 'POST' || a === 'PUT') {
@@ -21936,7 +22138,7 @@ p5.prototype.httpDo = function() {
       data: data,
       type: type,
       crossOrigin: true,
-      success: function(resp) {
+      success: function (resp) {
         if (typeof callback !== 'undefined') {
           if (type === 'text') {
             callback(resp.response);
@@ -21945,7 +22147,7 @@ p5.prototype.httpDo = function() {
           }
         }
       },
-      error: function(resp) {
+      error: function (resp) {
         if (errorCallback) {
           errorCallback(resp);
         } else {
@@ -21955,7 +22157,6 @@ p5.prototype.httpDo = function() {
     });
   }
 };
-
 
 /**
  * @module IO
@@ -21968,25 +22169,25 @@ window.URL = window.URL || window.webkitURL;
 // private array of p5.PrintWriter objects
 p5.prototype._pWriters = [];
 
-p5.prototype.beginRaw = function() {
+p5.prototype.beginRaw = function () {
   // TODO
   throw 'not yet implemented';
 
 };
 
-p5.prototype.beginRecord = function() {
+p5.prototype.beginRecord = function () {
   // TODO
   throw 'not yet implemented';
 
 };
 
-p5.prototype.createOutput = function() {
+p5.prototype.createOutput = function () {
   // TODO
 
   throw 'not yet implemented';
 };
 
-p5.prototype.createWriter  = function(name, extension) {
+p5.prototype.createWriter = function (name, extension) {
   var newPW;
   // check that it doesn't already exist
   for (var i in p5.prototype._pWriters) {
@@ -21995,35 +22196,41 @@ p5.prototype.createWriter  = function(name, extension) {
       // return p5.prototype._pWriters[i]; // return it w/ contents intact.
       // or, could return a new, empty one with a unique name:
       newPW = new p5.PrintWriter(name + window.millis(), extension);
-      p5.prototype._pWriters.push( newPW );
+      p5.prototype._pWriters.push(newPW);
       return newPW;
     }
   }
   newPW = new p5.PrintWriter(name, extension);
-  p5.prototype._pWriters.push( newPW );
+  p5.prototype._pWriters.push(newPW);
   return newPW;
 };
 
-p5.prototype.endRaw = function() {
+p5.prototype.endRaw = function () {
   // TODO
 
   throw 'not yet implemented';
 };
 
-p5.prototype.endRecord  = function() {
+p5.prototype.endRecord = function () {
   // TODO
   throw 'not yet implemented';
 
 };
 
-p5.PrintWriter = function(filename, extension) {
+p5.PrintWriter = function (filename, extension) {
   var self = this;
   this.name = filename;
   this.content = '';
-  this.print = function(data) { this.content += data; };
-  this.println = function(data) { this.content += data + '\n'; };
-  this.flush = function() { this.content = ''; };
-  this.close = function() {
+  this.print = function (data) {
+    this.content += data;
+  };
+  this.println = function (data) {
+    this.content += data + '\n';
+  };
+  this.flush = function () {
+    this.content = '';
+  };
+  this.close = function () {
     // convert String to Array for the writeFile Blob
     var arr = [];
     arr.push(this.content);
@@ -22040,7 +22247,7 @@ p5.PrintWriter = function(filename, extension) {
   };
 };
 
-p5.prototype.saveBytes = function() {
+p5.prototype.saveBytes = function () {
   // TODO
   throw 'not yet implemented';
 
@@ -22113,7 +22320,7 @@ p5.prototype.saveBytes = function() {
  *                            output will be optimized for filesize,
  *                            rather than readability.
  */
-p5.prototype.save = function(object, _filename, _options) {
+p5.prototype.save = function (object, _filename, _options) {
   // parse the arguments and figure out which things we are saving
   var args = arguments;
   // =================================================
@@ -22135,35 +22342,31 @@ p5.prototype.save = function(object, _filename, _options) {
   }
 
   // if 1st param is String and only one arg, assume it is canvas filename
-  else if (args.length === 1 && typeof(args[0]) === 'string') {
+  else if (args.length === 1 && typeof (args[0]) === 'string') {
     p5.prototype.saveCanvas(cnv, args[0]);
   }
 
   // =================================================
   // OPTION 2: extension clarifies saveStrings vs. saveJSON
-
   else {
     var extension = _checkFileExtension(args[1], args[2])[1];
-    switch(extension){
+    switch (extension) {
     case 'json':
       p5.prototype.saveJSON(args[0], args[1], args[2]);
       return;
     case 'txt':
       p5.prototype.saveStrings(args[0], args[1], args[2]);
       return;
-    // =================================================
-    // OPTION 3: decide based on object...
+      // =================================================
+      // OPTION 3: decide based on object...
     default:
       if (args[0] instanceof Array) {
         p5.prototype.saveStrings(args[0], args[1], args[2]);
-      }
-      else if (args[0] instanceof p5.Table) {
+      } else if (args[0] instanceof p5.Table) {
         p5.prototype.saveTable(args[0], args[1], args[2], args[3]);
-      }
-      else if (args[0] instanceof p5.Image) {
+      } else if (args[0] instanceof p5.Image) {
         p5.prototype.saveCanvas(args[0].canvas, args[1]);
-      }
-      else if (args[0] instanceof p5.SoundFile) {
+      } else if (args[0] instanceof p5.SoundFile) {
         p5.prototype.saveSound(args[0], args[1], args[2], args[3]);
       }
     }
@@ -22206,12 +22409,12 @@ p5.prototype.save = function(object, _filename, _options) {
  *  // }
  *  </div></code>
  */
-p5.prototype.saveJSON = function(json, filename, opt) {
+p5.prototype.saveJSON = function (json, filename, opt) {
   var stringify;
-  if (opt){
-    stringify = JSON.stringify( json );
+  if (opt) {
+    stringify = JSON.stringify(json);
   } else {
-    stringify = JSON.stringify( json, undefined, 2);
+    stringify = JSON.stringify(json, undefined, 2);
   }
   console.log(stringify);
   this.saveStrings(stringify.split('\n'), filename, 'json');
@@ -22220,7 +22423,7 @@ p5.prototype.saveJSON = function(json, filename, opt) {
 p5.prototype.saveJSONObject = p5.prototype.saveJSON;
 p5.prototype.saveJSONArray = p5.prototype.saveJSON;
 
-p5.prototype.saveStream = function() {
+p5.prototype.saveStream = function () {
   // TODO
   throw 'not yet implemented';
 
@@ -22252,7 +22455,7 @@ p5.prototype.saveStream = function() {
  *  // dog
  *  </code></div>
  */
-p5.prototype.saveStrings = function(list, filename, extension) {
+p5.prototype.saveStrings = function (list, filename, extension) {
   var ext = extension || 'txt';
   var pWriter = this.createWriter(filename, ext);
   for (var i = 0; i < list.length; i++) {
@@ -22266,13 +22469,13 @@ p5.prototype.saveStrings = function(list, filename, extension) {
   pWriter.flush();
 };
 
-p5.prototype.saveXML = function() {
+p5.prototype.saveXML = function () {
   // TODO
   throw 'not yet implemented';
 
 };
 
-p5.prototype.selectOutput = function() {
+p5.prototype.selectOutput = function () {
   // TODO
   throw 'not yet implemented';
 
@@ -22327,7 +22530,7 @@ function escapeHelper(content) {
  *    // 0,Panthera leo,Lion
  *  </code></div>
  */
-p5.prototype.saveTable = function(table, filename, options) {
+p5.prototype.saveTable = function (table, filename, options) {
   var pWriter = this.createWriter(filename, options);
 
   var header = table.columns;
@@ -22339,8 +22542,8 @@ p5.prototype.saveTable = function(table, filename, options) {
   if (options !== 'html') {
     // make header if it has values
     if (header[0] !== '0') {
-      for (var h = 0; h < header.length; h++ ) {
-        if (h < header.length - 1){
+      for (var h = 0; h < header.length; h++) {
+        if (h < header.length - 1) {
           pWriter.print(header[h] + sep);
         } else {
           pWriter.println(header[h]);
@@ -22349,13 +22552,12 @@ p5.prototype.saveTable = function(table, filename, options) {
     }
 
     // make rows
-    for (var i = 0; i < table.rows.length; i++ ) {
+    for (var i = 0; i < table.rows.length; i++) {
       var j;
       for (j = 0; j < table.rows[i].arr.length; j++) {
         if (j < table.rows[i].arr.length - 1) {
           pWriter.print(table.rows[i].arr[j] + sep);
-        }
-        else if (i < table.rows.length - 1) {
+        } else if (i < table.rows.length - 1) {
           pWriter.println(table.rows[i].arr[j]);
         } else {
           pWriter.print(table.rows[i].arr[j]); // no line break
@@ -22379,9 +22581,9 @@ p5.prototype.saveTable = function(table, filename, options) {
     // make header if it has values
     if (header[0] !== '0') {
       pWriter.println('    <tr>');
-      for (var k = 0; k < header.length; k++ ) {
+      for (var k = 0; k < header.length; k++) {
         var e = escapeHelper(header[k]);
-        pWriter.println('      <td>' +e);
+        pWriter.println('      <td>' + e);
         pWriter.println('      </td>');
       }
       pWriter.println('    </tr>');
@@ -22393,7 +22595,7 @@ p5.prototype.saveTable = function(table, filename, options) {
       for (var col = 0; col < table.columns.length; col++) {
         var entry = table.rows[row].getString(col);
         var htmlEntry = escapeHelper(entry);
-        pWriter.println('      <td>' +htmlEntry);
+        pWriter.println('      <td>' + htmlEntry);
         pWriter.println('      </td>');
       }
       pWriter.println('    </tr>');
@@ -22418,12 +22620,14 @@ p5.prototype.saveTable = function(table, filename, options) {
  *  @param  {[String]} extension
  *  @private
  */
-p5.prototype.writeFile = function(dataToDownload, filename, extension) {
+p5.prototype.writeFile = function (dataToDownload, filename, extension) {
   var type = 'application\/octet-stream';
-  if (p5.prototype._isSafari() ) {
+  if (p5.prototype._isSafari()) {
     type = 'text\/plain';
   }
-  var blob = new Blob(dataToDownload, {'type': type});
+  var blob = new Blob(dataToDownload, {
+    'type': type
+  });
   var href = window.URL.createObjectURL(blob);
   p5.prototype.downloadFile(href, filename, extension);
 };
@@ -22438,7 +22642,7 @@ p5.prototype.writeFile = function(dataToDownload, filename, extension) {
  *  @param  {[String]} filename
  *  @param  {[String]} extension
  */
-p5.prototype.downloadFile = function(href, fName, extension) {
+p5.prototype.downloadFile = function (href, fName, extension) {
   var fx = _checkFileExtension(fName, extension);
   var filename = fx[0];
   var ext = fx[1];
@@ -22453,11 +22657,11 @@ p5.prototype.downloadFile = function(href, fName, extension) {
   document.body.appendChild(a);
 
   // Safari will open this file in the same page as a confusing Blob.
-  if (p5.prototype._isSafari() ) {
+  if (p5.prototype._isSafari()) {
     var aText = 'Hello, Safari user! To download this file...\n';
     aText += '1. Go to File --> Save As.\n';
     aText += '2. Choose "Page Source" as the Format.\n';
-    aText += '3. Name it with this extension: .\"' + ext+'\"';
+    aText += '3. Name it with this extension: .\"' + ext + '\"';
     alert(aText);
   }
   a.click();
@@ -22503,7 +22707,7 @@ p5.prototype._checkFileExtension = _checkFileExtension;
  *  @return  {Boolean} [description]
  *  @private
  */
-p5.prototype._isSafari = function() {
+p5.prototype._isSafari = function () {
   var x = Object.prototype.toString.call(window.HTMLElement);
   return x.indexOf('Constructor') > 0;
 };
@@ -24121,6 +24325,7 @@ p5.prototype.mag = function(x, y) {
 
 /**
  * Re-maps a number from one range to another.
+ * <br><br>
  * In the first example above, the number 25 is converted from a value in the
  * range of 0 to 100 into a value that ranges from the left edge of the
  * window (0) to the right edge (width).
@@ -24134,24 +24339,22 @@ p5.prototype.mag = function(x, y) {
  * @return {Number}        remapped number
  * @example
  *   <div><code>
- *     createCanvas(200, 200);
  *     var value = 25;
  *     var m = map(value, 0, 100, 0, width);
- *     ellipse(m, 200, 10, 10);
+ *     ellipse(m, 50, 10, 10);
  *   </code></div>
  *
  *   <div><code>
  *     function setup() {
- *       createCanvs(200, 200);
  *       noStroke();
  *     }
  *
  *     function draw() {
  *       background(204);
- *       var x1 = map(mouseX, 0, width, 50, 150);
- *       ellipse(x1, 75, 50, 50);
- *       var x2 = map(mouseX, 0, width, 0, 200);
- *       ellipse(x2, 125, 50, 50);
+ *       var x1 = map(mouseX, 0, width, 25, 75);
+ *       ellipse(x1, 25, 25, 25);
+ *       var x2 = map(mouseX, 0, width, 0, 100);
+ *       ellipse(x2, 75, 25, 25);
  *     }
  *   </code></div>
  */
@@ -24381,6 +24584,7 @@ p5.prototype.round = Math.round;
  *   line(0, height/2, width, height/2);
  *
  *   // Draw text.
+ *   var spacing = 15;
  *   noStroke();
  *   fill(0);
  *   text("x = " + x1, 0, y1 + spacing);
@@ -24639,15 +24843,17 @@ p5.prototype.noise = function(x,y,z) {
  * function. Similar to harmonics in physics, noise is computed over
  * several octaves. Lower octaves contribute more to the output signal and
  * as such define the overall intensity of the noise, whereas higher octaves
- * create finer grained details in the noise sequence. By default, noise is
- * computed over 4 octaves with each octave contributing exactly half than
- * its predecessor, starting at 50% strength for the 1st octave. This
- * falloff amount can be changed by adding an additional function
+ * create finer grained details in the noise sequence.
+ * <br><br>
+ * By default, noise is computed over 4 octaves with each octave contributing
+ * exactly half than its predecessor, starting at 50% strength for the 1st
+ * octave. This falloff amount can be changed by adding an additional function
  * parameter. Eg. a falloff factor of 0.75 means each octave will now have
  * 75% impact (25% less) of the previous lower octave. Any value between
  * 0.0 and 1.0 is valid, however note that values greater than 0.5 might
- * result in greater than 1.0 values returned by <b>noise()</b>.<br /><br
- * />By changing these parameters, the signal created by the <b>noise()</b>
+ * result in greater than 1.0 values returned by <b>noise()</b>.
+ * <br><br>
+ * By changing these parameters, the signal created by the <b>noise()</b>
  * function can be adapted to fit very specific needs and characteristics.
  *
  * @method noiseDetail
@@ -24772,18 +24978,20 @@ var constants = _dereq_('../core/constants');
  * A class to describe a two or three dimensional vector, specifically
  * a Euclidean (also known as geometric) vector. A vector is an entity
  * that has both magnitude and direction. The datatype, however, stores
- * the components of the vector (x,y for 2D, and x,y,z for 3D). The magnitude
- * and direction can be accessed via the methods mag() and heading(). In many
- * of the p5.js examples, you will see p5.Vector used to describe a position,
- * velocity, or acceleration. For example, if you consider a rectangle moving
- * across the screen, at any given instant it has a position (a vector that
- * points from the origin to its location), a velocity (the rate at which the
- * object's position changes per time unit, expressed as a vector), and
+ * the components of the vector (x, y for 2D, and x, y, z for 3D). The magnitude
+ * and direction can be accessed via the methods mag() and heading().
+ * <br><br>
+ * In many of the p5.js examples, you will see p5.Vector used to describe a
+ * position, velocity, or acceleration. For example, if you consider a rectangle
+ * moving across the screen, at any given instant it has a position (a vector
+ * that points from the origin to its location), a velocity (the rate at which
+ * the object's position changes per time unit, expressed as a vector), and
  * acceleration (the rate at which the object's velocity changes per time
- * unit, expressed as a vector). Since vectors represent groupings of values,
- * we cannot simply use traditional addition/multiplication/etc. Instead,
- * we'll need to do some "vector" math, which is made easy by the methods
- * inside the p5.Vector class.
+ * unit, expressed as a vector).
+ * <br><br>
+ * Since vectors represent groupings of values, we cannot simply use
+ * traditional addition/multiplication/etc. Instead, we'll need to do some
+ * "vector" math, which is made easy by the methods inside the p5.Vector class.
  *
  * @class p5.Vector
  * @constructor
@@ -25949,14 +26157,15 @@ p5.prototype.random = function (min, max) {
  *
  * Returns a random number fitting a Gaussian, or
  * normal, distribution. There is theoretically no minimum or maximum
- * value that <b>randomGaussian()</b> might return. Rather, there is
+ * value that randomGaussian() might return. Rather, there is
  * just a very low probability that values far from the mean will be
  * returned; and a higher probability that numbers near the mean will
  * be returned.
- * Takes either 0, 1 or 2 arguments.
- * If no args, returns a mean of 0 and standard deviation of 1
- * If one arg, that arg is the mean (standard deviation is 1)
- * If two args, first is mean, second is standard deviation
+ * <br><br>
+ * Takes either 0, 1 or 2 arguments.<br>
+ * If no args, returns a mean of 0 and standard deviation of 1.<br>
+ * If one arg, that arg is the mean (standard deviation is 1).<br>
+ * If two args, first is mean, second is standard deviation.
  *
  * @method randomGaussian
  * @param  {Number} mean  the mean
@@ -26160,9 +26369,11 @@ p5.prototype.atan = function(ratio) {
  * Calculates the angle (in radians) from a specified point to the coordinate
  * origin as measured from the positive x-axis. Values are returned as a
  * float in the range from PI to -PI. The atan2() function is most often used
- * for orienting geometry to the position of the cursor. Note: The
- * y-coordinate of the point is the first parameter, and the x-coordinate is
- * the second parameter, due the the structure of calculating the tangent.
+ * for orienting geometry to the position of the cursor.
+ * <br><br>
+ * Note: The y-coordinate of the point is the first parameter, and the
+ * x-coordinate is the second parameter, due the the structure of calculating
+ * the tangent.
  *
  * @method atan2
  * @param  {Number} y y-coordinate of the point
@@ -26596,10 +26807,10 @@ _dereq_('../core/error_helpers');
  * with textSize(). Change the color of the text with the fill() function.
  * Change the outline of the text with the stroke() and strokeWeight()
  * functions.
- *
+ * <br><br>
  * The text displays in relation to the textAlign() function, which gives the
  * option to draw to the left, right, and center of the coordinates.
- *
+ * <br><br>
  * The x2 and y2 parameters define a rectangular area to display within and
  * may only be used with string data. When these parameters are specified,
  * they are interpreted based on the current rectMode() setting. Text that
@@ -26791,22 +27002,23 @@ p5.Font.prototype.list = function() {
  * <div>
  * <code>
  * var font;
- * var text = 'Lorem ipsum dolor sit amet.';
+ * var textString = 'Lorem ipsum dolor sit amet.';
  * function preload() {
- *    font = loadFont('./assets/fonts/Regular.otf');
+ *    font = loadFont('./assets/Regular.otf');
  * };
  * function setup() {
  *    background(210);
-
- *    var bbox = font.textBounds(text, 10, 30, 12);
+ *
+ *    var bbox = font.textBounds(textString, 10, 30, 12);
  *    fill(255);
  *    stroke(0);
  *    rect(bbox.x, bbox.y, bbox.w, bbox.h);
  *    fill(0);
  *    noStroke();
- *     *    textFont(font);
-  *    textSize(12);
- *    text(text, 10, 30);
+ *
+ *    textFont(font);
+ *    textSize(12);
+ *    text(textString, 10, 30);
  * };
  * </code>
  * </div>
@@ -26860,6 +27072,53 @@ p5.Font.prototype.textBounds = function(str, x, y, fontSize, options) {
     this.cache[cacheKey('textBounds', str, x, y, fontSize)] = result;
   }
   //else console.log('cache-hit');
+
+  return result;
+};
+
+
+/**
+ * Computes an array of points following the path for specified text
+ *
+ * @param  {String} txt     a line of text
+ * @param  {Number} x        x-position
+ * @param  {Number} y        y-position
+ * @param  {Number} fontSize font size to use (optional)
+ * @param  {Object} options  an (optional) object that can contain:
+ *
+ * <br>sampleFactor - the ratio of path-length to number of samples
+ * (default=.25); higher values yield more points and are therefore
+ * more precise
+ *
+ * <br>simplifyThreshold - if set to a non-zero value, collinear points will be
+ * be removed from the polygon; the value represents the threshold angle to use
+ * when determining whether two edges are collinear
+ *
+ * @return {Array}  an array of points, each with x, y, alpha (the path angle)
+ */
+p5.Font.prototype.textToPoints = function(txt, x, y, fontSize, options) {
+
+  var xoff = 0, result = [], glyphs = this._getGlyphs(txt);
+
+  fontSize = fontSize || this.parent._renderer._textSize;
+
+  for (var i = 0; i < glyphs.length; i++) {
+
+    var gpath = glyphs[i].getPath(x, y, fontSize),
+      paths = splitPaths(gpath.commands);
+
+    for (var j = 0; j < paths.length; j++) {
+
+      var pts = pathToPoints(paths[j], options);
+
+      for (var k = 0; k < pts.length; k++) {
+        pts[k].x += xoff;
+        result.push(pts[k]);
+      }
+    }
+
+    xoff += glyphs[i].advanceWidth * this._scale(fontSize);
+  }
 
   return result;
 };
@@ -27004,8 +27263,7 @@ p5.Font.prototype._getSVG = function(line, x, y, options) {
  */
 p5.Font.prototype._renderPath = function(line, x, y, options) {
 
-  // /console.log('_renderPath', typeof line);
-  var pdata, pg = this.parent._renderer,
+  var pdata, pg = (options && options.renderer) || this.parent._renderer,
     ctx = pg.drawingContext;
 
   if (typeof line === 'object' && line.commands) {
@@ -27101,6 +27359,602 @@ p5.Font.prototype._handleAlignment = function(p, ctx, line, x, y) {
   return { x: x, y: y };
 };
 
+// path-utils
+
+function pathToPoints(cmds, options) {
+
+  var opts = parseOpts(options, {
+    sampleFactor: 0.1,
+    simplifyThreshold: 0,
+  });
+
+  var len = pointAtLength(cmds,0,1), // total-length
+    t = len / (len * opts.sampleFactor),
+    pts = [];
+
+  for (var i = 0; i < len; i += t) {
+    pts.push(pointAtLength(cmds, i));
+  }
+
+  if (opts.simplifyThreshold) {
+    /*var count = */simplify(pts, opts.simplifyThreshold);
+    //console.log('Simplify: removed ' + count + ' pts');
+  }
+
+  return pts;
+}
+
+function simplify(pts, angle) {
+
+  angle = (typeof angle === 'undefined') ? 0 : angle;
+
+  var num = 0;
+  for (var i = pts.length - 1; pts.length > 3 && i >= 0; --i) {
+
+    if (collinear(at(pts, i - 1), at(pts, i), at(pts, i + 1), angle)) {
+
+      // Remove the middle point
+      pts.splice(i % pts.length, 1);
+      num++;
+    }
+  }
+  return num;
+}
+
+function splitPaths(cmds) {
+
+  var paths = [], current;
+  for (var i = 0; i < cmds.length; i++) {
+    if (cmds[i].type === 'M') {
+      if (current) {
+        paths.push(current);
+      }
+      current = [];
+    }
+    current.push(cmdToArr(cmds[i]));
+  }
+  paths.push(current);
+
+  return paths;
+}
+
+function cmdToArr(cmd) {
+
+  var arr = [ cmd.type ];
+  if (cmd.type === 'M' || cmd.type === 'L') { // moveto or lineto
+    arr.push(cmd.x, cmd.y);
+  } else if (cmd.type === 'C') {
+    arr.push(cmd.x1, cmd.y1, cmd.x2, cmd.y2, cmd.x, cmd.y);
+  } else if (cmd.type === 'Q') {
+    arr.push(cmd.x1, cmd.y1, cmd.x, cmd.y);
+  }
+  // else if (cmd.type === 'Z') { /* no-op */ }
+  return arr;
+}
+
+function parseOpts(options, defaults) {
+
+  if (typeof options !== 'object') {
+    options = defaults;
+  }
+  else {
+    for (var key in defaults) {
+      if (typeof options[key] === 'undefined') {
+        options[key] = defaults[key];
+      }
+    }
+  }
+  return options;
+}
+
+//////////////////////// Helpers ////////////////////////////
+
+function at(v, i) {
+  var s = v.length;
+  return v[i < 0 ? i % s + s : i % s];
+}
+
+function collinear(a, b, c, thresholdAngle) {
+
+  if (!thresholdAngle) {
+    return areaTriangle(a, b, c) === 0;
+  }
+
+  if (typeof collinear.tmpPoint1 === 'undefined') {
+    collinear.tmpPoint1 = [];
+    collinear.tmpPoint2 = [];
+  }
+
+  var ab = collinear.tmpPoint1, bc = collinear.tmpPoint2;
+  ab.x = b.x - a.x;
+  ab.y = b.y - a.y;
+  bc.x = c.x - b.x;
+  bc.y = c.y - b.y;
+
+  var dot = ab.x * bc.x + ab.y * bc.y,
+    magA = Math.sqrt(ab.x * ab.x + ab.y * ab.y),
+    magB = Math.sqrt(bc.x * bc.x + bc.y * bc.y),
+    angle = Math.acos(dot / (magA * magB));
+
+  return angle < thresholdAngle;
+}
+
+function areaTriangle(a, b, c) {
+  return (((b[0] - a[0]) * (c[1] - a[1])) - ((c[0] - a[0]) * (b[1] - a[1])));
+}
+
+// Portions of below code copyright 2008 Dmitry Baranovskiy (via MIT license)
+
+function findDotsAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {
+
+  var t1 = 1 - t, t13 = Math.pow(t1, 3), t12 = Math.pow(t1, 2), t2 = t * t,
+    t3 = t2 * t, x = t13 * p1x + t12 * 3 * t * c1x + t1 * 3 * t * t * c2x +
+    t3 * p2x, y = t13 * p1y + t12 * 3 * t * c1y + t1 * 3 * t * t * c2y +
+    t3 * p2y, mx = p1x + 2 * t * (c1x - p1x) + t2 * (c2x - 2 * c1x + p1x),
+    my = p1y + 2 * t * (c1y - p1y) + t2 * (c2y - 2 * c1y + p1y),
+    nx = c1x + 2 * t * (c2x - c1x) + t2 * (p2x - 2 * c2x + c1x),
+    ny = c1y + 2 * t * (c2y - c1y) + t2 * (p2y - 2 * c2y + c1y),
+    ax = t1 * p1x + t * c1x, ay = t1 * p1y + t * c1y,
+    cx = t1 * c2x + t * p2x, cy = t1 * c2y + t * p2y,
+    alpha = (90 - Math.atan2(mx - nx, my - ny) * 180 / Math.PI);
+
+  if (mx > nx || my < ny) { alpha += 180; }
+
+  return { x: x, y: y, m: { x: mx, y: my }, n: { x: nx, y: ny },
+    start: { x: ax, y: ay }, end: { x: cx, y: cy }, alpha: alpha
+  };
+}
+
+function getPointAtSegmentLength(p1x,p1y,c1x,c1y,c2x,c2y,p2x,p2y,length) {
+  return (length == null) ? bezlen(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y) :
+    findDotsAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y,
+      getTatLen(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, length));
+}
+
+function pointAtLength(path, length, istotal) {
+  path = path2curve(path);
+  var x, y, p, l, sp = '', subpaths = {}, point, len = 0;
+  for (var i = 0, ii = path.length; i < ii; i++) {
+    p = path[i];
+    if (p[0] === 'M') {
+      x = +p[1];
+      y = +p[2];
+    } else {
+      l = getPointAtSegmentLength(x, y, p[1], p[2], p[3], p[4], p[5], p[6]);
+      if (len + l > length) {
+        if (!istotal) {
+          point = getPointAtSegmentLength(x, y, p[1], p[2], p[3], p[4], p[5],
+            p[6], length - len);
+          return { x: point.x, y: point.y, alpha: point.alpha };
+        }
+      }
+      len += l;
+      x = +p[5];
+      y = +p[6];
+    }
+    sp += p.shift() + p;
+  }
+  subpaths.end = sp;
+
+  point = istotal ? len : findDotsAtSegment
+    (x, y, p[0], p[1], p[2], p[3], p[4], p[5], 1);
+
+  if (point.alpha) {
+    point = { x: point.x, y: point.y, alpha: point.alpha };
+  }
+
+  return point;
+}
+
+function pathToAbsolute(pathArray) {
+
+  var res = [], x = 0, y = 0, mx = 0, my = 0, start = 0;
+  if (pathArray[0][0] === 'M') {
+    x = +pathArray[0][1];
+    y = +pathArray[0][2];
+    mx = x;
+    my = y;
+    start++;
+    res[0] = ['M', x, y];
+  }
+
+  var dots,crz = pathArray.length===3 && pathArray[0][0]==='M' &&
+    pathArray[1][0].toUpperCase()==='R' && pathArray[2][0].toUpperCase()==='Z';
+
+  for (var r, pa, i = start, ii = pathArray.length; i < ii; i++) {
+    res.push(r = []);
+    pa = pathArray[i];
+    if (pa[0] !== String.prototype.toUpperCase.call(pa[0])) {
+      r[0] = String.prototype.toUpperCase.call(pa[0]);
+      switch (r[0]) {
+        case 'A':
+          r[1] = pa[1];
+          r[2] = pa[2];
+          r[3] = pa[3];
+          r[4] = pa[4];
+          r[5] = pa[5];
+          r[6] = +(pa[6] + x);
+          r[7] = +(pa[7] + y);
+          break;
+        case 'V':
+          r[1] = +pa[1] + y;
+          break;
+        case 'H':
+          r[1] = +pa[1] + x;
+          break;
+        case 'R':
+          dots = [x, y].concat(pa.slice(1));
+          for (var j = 2, jj = dots.length; j < jj; j++) {
+            dots[j] = +dots[j] + x;
+            dots[++j] = +dots[j] + y;
+          }
+          res.pop();
+          res = res.concat(catmullRom2bezier(dots, crz));
+          break;
+        case 'M':
+          mx = +pa[1] + x;
+          my = +pa[2] + y;
+          break;
+        default:
+          for (j = 1, jj = pa.length; j < jj; j++) {
+            r[j] = +pa[j] + ((j % 2) ? x : y);
+          }
+      }
+    } else if (pa[0] === 'R') {
+      dots = [x, y].concat(pa.slice(1));
+      res.pop();
+      res = res.concat(catmullRom2bezier(dots, crz));
+      r = ['R'].concat(pa.slice(-2));
+    } else {
+      for (var k = 0, kk = pa.length; k < kk; k++) {
+        r[k] = pa[k];
+      }
+    }
+    switch (r[0]) {
+      case 'Z':
+        x = mx;
+        y = my;
+        break;
+      case 'H':
+        x = r[1];
+        break;
+      case 'V':
+        y = r[1];
+        break;
+      case 'M':
+        mx = r[r.length - 2];
+        my = r[r.length - 1];
+        break;
+      default:
+        x = r[r.length - 2];
+        y = r[r.length - 1];
+    }
+  }
+  return res;
+}
+
+function path2curve(path, path2) {
+
+  var p = pathToAbsolute(path), p2 = path2 && pathToAbsolute(path2),
+    attrs = { x: 0, y: 0, bx: 0, by: 0, X: 0, Y: 0, qx: null, qy: null },
+    attrs2 = { x: 0, y: 0, bx: 0, by: 0, X: 0, Y: 0, qx: null, qy: null },
+
+    processPath = function(path, d, pcom) {
+      var nx, ny, tq = { T: 1, Q: 1 };
+      if (!path) { return ['C', d.x, d.y, d.x, d.y, d.x, d.y]; }
+      if (!(path[0] in tq)) { d.qx = d.qy = null; }
+      switch (path[0]) {
+        case 'M':
+          d.X = path[1];
+          d.Y = path[2];
+          break;
+        case 'A':
+          path = ['C'].concat(a2c.apply(0, [d.x, d.y].concat(path.slice(1))));
+          break;
+        case 'S':
+          if (pcom === 'C' || pcom === 'S') {
+            nx = d.x * 2 - d.bx;
+            ny = d.y * 2 - d.by;
+          } else {
+            nx = d.x;
+            ny = d.y;
+          }
+          path = ['C', nx, ny].concat(path.slice(1));
+          break;
+        case 'T':
+          if (pcom === 'Q' || pcom === 'T') {
+            d.qx = d.x * 2 - d.qx;
+            d.qy = d.y * 2 - d.qy;
+          } else {
+            d.qx = d.x;
+            d.qy = d.y;
+          }
+          path = ['C'].concat(q2c(d.x, d.y, d.qx, d.qy, path[1], path[2]));
+          break;
+        case 'Q':
+          d.qx = path[1];
+          d.qy = path[2];
+          path = ['C'].concat(q2c(d.x,d.y,path[1],path[2],path[3],path[4]));
+          break;
+        case 'L':
+          path = ['C'].concat(l2c(d.x, d.y, path[1], path[2]));
+          break;
+        case 'H':
+          path = ['C'].concat(l2c(d.x, d.y, path[1], d.y));
+          break;
+        case 'V':
+          path = ['C'].concat(l2c(d.x, d.y, d.x, path[1]));
+          break;
+        case 'Z':
+          path = ['C'].concat(l2c(d.x, d.y, d.X, d.Y));
+          break;
+      }
+      return path;
+    },
+
+    fixArc = function(pp, i) {
+      if (pp[i].length > 7) {
+        pp[i].shift();
+        var pi = pp[i];
+        while (pi.length) {
+          pcoms1[i] = 'A';
+          if (p2) { pcoms2[i] = 'A'; }
+          pp.splice(i++, 0, ['C'].concat(pi.splice(0, 6)));
+        }
+        pp.splice(i, 1);
+        ii = Math.max(p.length, p2 && p2.length || 0);
+      }
+    },
+
+    fixM = function(path1, path2, a1, a2, i) {
+      if (path1 && path2 && path1[i][0] === 'M' && path2[i][0] !== 'M') {
+        path2.splice(i, 0, ['M', a2.x, a2.y]);
+        a1.bx = 0;
+        a1.by = 0;
+        a1.x = path1[i][1];
+        a1.y = path1[i][2];
+        ii = Math.max(p.length, p2 && p2.length || 0);
+      }
+    },
+
+    pcoms1 = [], // path commands of original path p
+    pcoms2 = [], // path commands of original path p2
+    pfirst = '', // temporary holder for original path command
+    pcom = ''; // holder for previous path command of original path
+
+  for (var i = 0, ii = Math.max(p.length, p2 && p2.length || 0); i < ii; i++) {
+    if (p[i]) { pfirst = p[i][0]; } // save current path command
+
+    if (pfirst !== 'C') {
+      pcoms1[i] = pfirst; // Save current path command
+      if (i) { pcom = pcoms1[i - 1]; } // Get previous path command pcom
+    }
+    p[i] = processPath(p[i], attrs, pcom);
+
+    if (pcoms1[i] !== 'A' && pfirst === 'C') { pcoms1[i] = 'C'; }
+
+    fixArc(p, i); // fixArc adds also the right amount of A:s to pcoms1
+
+    if (p2) { // the same procedures is done to p2
+      if (p2[i]) { pfirst = p2[i][0]; }
+      if (pfirst !== 'C') {
+        pcoms2[i] = pfirst;
+        if (i) { pcom = pcoms2[i - 1]; }
+      }
+      p2[i] = processPath(p2[i], attrs2, pcom);
+
+      if (pcoms2[i] !== 'A' && pfirst === 'C') { pcoms2[i] = 'C'; }
+
+      fixArc(p2, i);
+    }
+    fixM(p, p2, attrs, attrs2, i);
+    fixM(p2, p, attrs2, attrs, i);
+    var seg = p[i], seg2 = p2 && p2[i], seglen = seg.length,
+      seg2len = p2 && seg2.length;
+    attrs.x = seg[seglen - 2];
+    attrs.y = seg[seglen - 1];
+    attrs.bx = parseFloat(seg[seglen - 4]) || attrs.x;
+    attrs.by = parseFloat(seg[seglen - 3]) || attrs.y;
+    attrs2.bx = p2 && (parseFloat(seg2[seg2len - 4]) || attrs2.x);
+    attrs2.by = p2 && (parseFloat(seg2[seg2len - 3]) || attrs2.y);
+    attrs2.x = p2 && seg2[seg2len - 2];
+    attrs2.y = p2 && seg2[seg2len - 1];
+  }
+
+  return p2 ? [p, p2] : p;
+}
+
+function a2c(x1, y1, rx, ry, angle, lac, sweep_flag, x2, y2, recursive) {
+  // for more information of where this Math came from visit:
+  // http://www.w3.org/TR/SVG11/implnote.html#ArcImplementationNotes
+  var PI = Math.PI, _120 = PI * 120 / 180, f1, f2, cx, cy,
+    rad = PI / 180 * (+angle || 0), res = [], xy,
+    rotate = function (x, y, rad) {
+      var X = x * Math.cos(rad) - y * Math.sin(rad),
+        Y = x * Math.sin(rad) + y * Math.cos(rad);
+      return { x: X, y: Y };
+    };
+  if (!recursive) {
+    xy = rotate(x1, y1, -rad);
+    x1 = xy.x;
+    y1 = xy.y;
+    xy = rotate(x2, y2, -rad);
+    x2 = xy.x;
+    y2 = xy.y;
+    var x = (x1 - x2) / 2, y = (y1 - y2) / 2,
+      h = (x * x) / (rx * rx) + (y * y) / (ry * ry);
+    if (h > 1) {
+      h = Math.sqrt(h);
+      rx = h * rx;
+      ry = h * ry;
+    }
+    var rx2 = rx * rx, ry2 = ry * ry,
+      k = (lac === sweep_flag ? -1 : 1) * Math.sqrt(Math.abs
+        ((rx2 * ry2 - rx2 * y * y - ry2 * x * x)/(rx2 * y * y + ry2 * x * x)));
+
+    cx = k * rx * y / ry + (x1 + x2) / 2;
+    cy = k * -ry * x / rx + (y1 + y2) / 2;
+    f1 = Math.asin(((y1 - cy) / ry).toFixed(9));
+    f2 = Math.asin(((y2 - cy) / ry).toFixed(9));
+
+    f1 = x1 < cx ? PI - f1 : f1;
+    f2 = x2 < cx ? PI - f2 : f2;
+
+    if (f1 < 0) { f1 = PI * 2 + f1; }
+    if (f2 < 0) { f2 = PI * 2 + f2; }
+
+    if (sweep_flag && f1 > f2) {
+      f1 = f1 - PI * 2;
+    }
+    if (!sweep_flag && f2 > f1) {
+      f2 = f2 - PI * 2;
+    }
+  } else {
+    f1 = recursive[0];
+    f2 = recursive[1];
+    cx = recursive[2];
+    cy = recursive[3];
+  }
+  var df = f2 - f1;
+  if (Math.abs(df) > _120) {
+    var f2old = f2, x2old = x2, y2old = y2;
+    f2 = f1 + _120 * (sweep_flag && f2 > f1 ? 1 : -1);
+    x2 = cx + rx * Math.cos(f2);
+    y2 = cy + ry * Math.sin(f2);
+    res = a2c(x2, y2, rx, ry, angle, 0, sweep_flag, x2old, y2old,
+      [f2, f2old, cx, cy]);
+  }
+  df = f2 - f1;
+  var c1 = Math.cos(f1),
+    s1 = Math.sin(f1),
+    c2 = Math.cos(f2),
+    s2 = Math.sin(f2),
+    t = Math.tan(df / 4),
+    hx = 4 / 3 * rx * t,
+    hy = 4 / 3 * ry * t,
+    m1 = [x1, y1],
+    m2 = [x1 + hx * s1, y1 - hy * c1],
+    m3 = [x2 + hx * s2, y2 - hy * c2],
+    m4 = [x2, y2];
+  m2[0] = 2 * m1[0] - m2[0];
+  m2[1] = 2 * m1[1] - m2[1];
+  if (recursive) {
+    return [m2, m3, m4].concat(res);
+  } else {
+    res = [m2, m3, m4].concat(res).join().split(',');
+    var newres = [];
+    for (var i = 0, ii = res.length; i < ii; i++) {
+      newres[i] = i % 2 ? rotate(res[i - 1], res[i], rad).y : rotate(res[i],
+        res[i + 1], rad).x;
+    }
+    return newres;
+  }
+}
+
+// http://schepers.cc/getting-to-the-point
+function catmullRom2bezier(crp, z) {
+  var d = [];
+  for (var i = 0, iLen = crp.length; iLen - 2 * !z > i; i += 2) {
+    var p = [{
+      x: +crp[i - 2],
+      y: +crp[i - 1]
+    }, {
+      x: +crp[i],
+      y: +crp[i + 1]
+    }, {
+      x: +crp[i + 2],
+      y: +crp[i + 3]
+    }, {
+      x: +crp[i + 4],
+      y: +crp[i + 5]
+    }];
+    if (z) {
+      if (!i) {
+        p[0] = {
+          x: +crp[iLen - 2],
+          y: +crp[iLen - 1]
+        };
+      } else if (iLen - 4 === i) {
+        p[3] = {
+          x: +crp[0],
+          y: +crp[1]
+        };
+      } else if (iLen - 2 === i) {
+        p[2] = {
+          x: +crp[0],
+          y: +crp[1]
+        };
+        p[3] = {
+          x: +crp[2],
+          y: +crp[3]
+        };
+      }
+    } else {
+      if (iLen - 4 === i) {
+        p[3] = p[2];
+      } else if (!i) {
+        p[0] = {
+          x: +crp[i],
+          y: +crp[i + 1]
+        };
+      }
+    }
+    d.push(['C', (-p[0].x + 6 * p[1].x + p[2].x) / 6, (-p[0].y + 6 * p[1].y +
+      p[2].y) / 6, (p[1].x + 6 * p[2].x - p[3].x) / 6, (p[1].y + 6 * p[2].y -
+      p[3].y) / 6, p[2].x, p[2].y ]);
+  }
+
+  return d;
+}
+
+function l2c(x1, y1, x2, y2) { return [x1, y1, x2, y2, x2, y2]; }
+
+function q2c(x1, y1, ax, ay, x2, y2) {
+  var _13 = 1 / 3, _23 = 2 / 3;
+  return [
+    _13 * x1 + _23 * ax, _13 * y1 + _23 * ay,
+    _13 * x2 + _23 * ax, _13 * y2 + _23 * ay, x2, y2
+  ];
+}
+
+function bezlen(x1, y1, x2, y2, x3, y3, x4, y4, z) {
+  if (z == null) { z = 1; }
+  z = z > 1 ? 1 : z < 0 ? 0 : z;
+  var z2 = z / 2,
+    n = 12, Tvalues = [-0.1252, 0.1252, -0.3678, 0.3678, -0.5873, 0.5873,
+       -0.7699, 0.7699, -0.9041, 0.9041, -0.9816, 0.9816],
+    sum = 0, Cvalues = [0.2491, 0.2491, 0.2335, 0.2335, 0.2032, 0.2032,
+      0.1601, 0.1601, 0.1069, 0.1069, 0.0472, 0.0472 ];
+  for (var i = 0; i < n; i++) {
+    var ct = z2 * Tvalues[i] + z2,
+      xbase = base3(ct, x1, x2, x3, x4),
+      ybase = base3(ct, y1, y2, y3, y4),
+      comb = xbase * xbase + ybase * ybase;
+    sum += Cvalues[i] * Math.sqrt(comb);
+  }
+  return z2 * sum;
+}
+
+function getTatLen(x1, y1, x2, y2, x3, y3, x4, y4, ll) {
+  if (ll < 0 || bezlen(x1, y1, x2, y2, x3, y3, x4, y4) < ll) {
+    return;
+  }
+  var t = 1, step = t / 2, t2 = t - step, l, e = 0.01;
+  l = bezlen(x1, y1, x2, y2, x3, y3, x4, y4, t2);
+  while (Math.abs(l - ll) > e) {
+    step /= 2;
+    t2 += (l < ll ? 1 : -1) * step;
+    l = bezlen(x1, y1, x2, y2, x3, y3, x4, y4, t2);
+  }
+  return t2;
+}
+
+function base3(t, p1, p2, p3, p4) {
+  var t1 = -3 * p1 + 9 * p2 - 9 * p3 + 3 * p4,
+    t2 = t * t1 + 6 * p1 - 12 * p2 + 6 * p3;
+  return t * t2 - 3 * p1 + 3 * p2;
+}
+
 function cacheKey() {
   var args = new Array(arguments.length);
   for (var i = 0; i < args.length; ++i) {
@@ -27108,7 +27962,6 @@ function cacheKey() {
   }
   i = args.length;
   var hash = '';
-
   while (i--) {
     hash += (args[i] === Object(args[i])) ?
       JSON.stringify(args[i]) : args[i];
@@ -27162,11 +28015,11 @@ p5.prototype.append = function(array, value) {
  * elements to copy is determined by length. Note that copying values
  * overwrites existing values in the destination array. To append values
  * instead of overwriting them, use concat().
- *
- * The simplified version with only two arguments — arrayCopy(src, dst) —
+ * <br><br>
+ * The simplified version with only two arguments, arrayCopy(src, dst),
  * copies an entire array to another of the same size. It is equivalent to
  * arrayCopy(src, 0, dst, 0, src.length).
- *
+ * <br><br>
  * Using this function is far more efficient for copying array data than
  * iterating through a for() loop and copying each element individually.
  *
@@ -27312,10 +28165,9 @@ p5.prototype.shorten = function(list) {
 };
 
 /**
- * Randomizes the order of the elements of an array.
- * Implements Fisher-Yates Shuffle Algorithm
- * http://Bost.Ocks.org/mike/shuffle/
- * http://en.Wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+ * Randomizes the order of the elements of an array. Implements
+ * <a href="http://Bost.Ocks.org/mike/shuffle/" target=_blank>
+ * Fisher-Yates Shuffle Algorithm</a>.
  *
  * @method shuffle
  * @param  {Array}   array  Array to shuffle
@@ -27337,7 +28189,8 @@ p5.prototype.shorten = function(list) {
  * </code></div>
  */
 p5.prototype.shuffle = function(arr, bool) {
-  arr = bool || ArrayBuffer.isView(arr)? arr : arr.slice();
+  var isView = ArrayBuffer && ArrayBuffer.isView && ArrayBuffer.isView(arr);
+  arr = bool || isView ? arr : arr.slice();
 
   var rnd, tmp, idx = arr.length;
   while (idx > 1) {
@@ -27772,11 +28625,11 @@ p5.prototype.join = function(list, separator) {
  * If no groups are specified in the regular expression, but the sequence
  * matches, an array of length 1 (with the matched text as the first element
  * of the array) will be returned.
- *
+ * <br><br>
  * To use the function, first check to see if the result is null. If the
  * result is null, then the sequence did not match at all. If the sequence
  * did match, an array is returned.
- *
+ * <br><br>
  * If there are groups (specified by sets of parentheses) in the regular
  * expression, then the contents of each will be returned in the array.
  * Element [0] of a regular expression match returns the entire matching
@@ -27808,11 +28661,11 @@ p5.prototype.match =  function(str, reg) {
  * will be returned. If no groups are specified in the regular expression,
  * but the sequence matches, a two dimensional array is still returned, but
  * the second dimension is only of length one.
- *
+ * <br><br>
  * To use the function, first check to see if the result is null. If the
  * result is null, then the sequence did not match at all. If the sequence
  * did match, a 2D array is returned.
- *
+ * <br><br>
  * If there are groups (specified by sets of parentheses) in the regular
  * expression, then the contents of each will be returned in the array.
  * Assuming a loop with counter variable i, element [i][0] of a regular
@@ -28136,11 +28989,11 @@ function addNfs() {
  * @method split
  * @param  {String} value the String to be split
  * @param  {String} delim the String used to separate the data
- * @return {Array}        Array of Strings
+ * @return {Array}  Array of Strings
  * @example
  * <div>
  * <code>
- *var names = "Pat,Xio,Alex"
+ * var names = "Pat,Xio,Alex"
  * var splitString = split(names, ",");
  * text(splitString[0], 5, 30);
  * text(splitString[1], 5, 50);
@@ -28156,7 +29009,7 @@ p5.prototype.split = function(str, delim) {
  * The splitTokens() function splits a String at one or many character
  * delimiters or "tokens." The delim parameter specifies the character or
  * characters to be used as a boundary.
- *
+ * <br><br>
  * If no delim characters are specified, any whitespace character is used to
  * split. Whitespace characters include tab (\t), line feed (\n), carriage
  * return (\r), form feed (\f), and space.
@@ -28175,8 +29028,8 @@ p5.prototype.split = function(str, delim) {
  *
  *   print(myStrArr); // prints : ["Mango"," Banana"," Lime"]
  * }
- * </div>
  * </code>
+ * </div>
  */
 p5.prototype.splitTokens = function() {
   var d,sqo,sqc,str;
@@ -28252,7 +29105,7 @@ var p5 = _dereq_('../core/core');
  * <div>
  * <code>
  * var day = day();
- * text("Current day: \n"+day, 5, 50);
+ * text("Current day: \n" + day, 5, 50);
  * </code>
  * </div>
  */
@@ -28270,7 +29123,7 @@ p5.prototype.day = function() {
  * <div>
  * <code>
  * var hour = hour();
- * text("Current hour:\n"+hour, 5, 50);
+ * text("Current hour:\n" + hour, 5, 50);
  * </code>
  * </div>
  */
@@ -28288,7 +29141,7 @@ p5.prototype.hour = function() {
  * <div>
  * <code>
  * var minute = minute();
- * text("Current minute: \n:"+minute, 5, 50);
+ * text("Current minute: \n" + minute, 5, 50);
  * </code>
  * </div>
  */
@@ -28307,7 +29160,7 @@ p5.prototype.minute = function() {
  * <div>
  * <code>
  * var millisecond = millis();
- * text("Milliseconds \nrunning: "+millisecond, 5, 50);
+ * text("Milliseconds \nrunning: \n" + millisecond, 5, 40);
  * </code>
  * </div>
  */
@@ -28325,7 +29178,7 @@ p5.prototype.millis = function() {
  * <div>
  * <code>
  * var month = month();
- * text("Current month: \n"+month, 5, 50);
+ * text("Current month: \n" + month, 5, 50);
  * </code>
  * </div>
  */
@@ -28343,7 +29196,7 @@ p5.prototype.month = function() {
  * <div>
  * <code>
  * var second = second();
- * text("Current second: \n" +second, 5, 50);
+ * text("Current second: \n" + second, 5, 50);
  * </code>
  * </div>
  */
@@ -28361,7 +29214,7 @@ p5.prototype.second = function() {
  * <div>
  * <code>
  * var year = year();
- * text("Current year: \n" +year, 5, 50);
+ * text("Current year: \n" + year, 5, 50);
  * </code>
  * </div>
  */

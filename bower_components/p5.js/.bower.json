@@ -12,15 +12,14 @@
     "processing"
   ],
   "license": "LGPL",
-  "version": "0.4.19",
-  "_release": "0.4.19",
+  "version": "0.4.21",
+  "_release": "0.4.21",
   "_resolution": {
     "type": "version",
-    "tag": "0.4.19",
-    "commit": "6b7b740daf44f2501ebcccbdeca304de1a26d1a8"
+    "tag": "0.4.21",
+    "commit": "d26d20eeea305b86a649467cda322745b479b59b"
   },
   "_source": "git://github.com/lmccart/p5.js-release.git",
   "_target": "~0.4.19",
-  "_originalSource": "p5js",
-  "_direct": true
+  "_originalSource": "p5js"
 }

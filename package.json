@@ -15,6 +15,7 @@
     "morgan": "~1.6.1",
     "node-sass": "^3.4.2",
     "node-sass-middleware": "^0.9.7",
+    "rainbowvis.js": "^1.0.1",
     "sentiment": "^1.0.2",
     "serve-favicon": "~2.3.0",
     "twitter": "^1.2.5"

@@ -1,4 +1,4 @@
-/*! p5.dom.js v0.2.6 November 10, 2015 */
+/*! p5.dom.js v0.2.7 January 4, 2016 */
 /**
  * <p>The web is much more than just canvas and p5.dom makes it easy to interact
  * with other HTML5 objects, including text, hyperlink, image, input, video,
@@ -743,6 +743,9 @@
 
   function createMedia(pInst, type, src, callback) {
     var elt = document.createElement(type);
+
+    // allow src to be empty
+    var src = src || '';
     if (typeof src === 'string') {
       src = [src];
     }
@@ -1003,10 +1006,11 @@
   /**
    *
    * Attaches the element  as a child to the parent specified.
-   * Accepts either a string ID, DOM node, or p5.Element
+   * Accepts either a string ID, DOM node, or p5.Element.
+   * If no argument is specified, an array of children DOM nodes is returned.
    *
    * @method child
-   * @param  {String|Object/p5.Element} child the ID, DOM node, or p5.Element
+   * @param  {String|Object|p5.Element} [child] the ID, DOM node, or p5.Element
    *                         to add to the current element
    * @return {p5.Element}
    * @example
@@ -1028,6 +1032,9 @@
    * </code></div>
    */
   p5.Element.prototype.child = function(c) {
+    if (c === null){
+      return this.elt.childNodes
+    }
     if (typeof c === 'string') {
       if (c[0] === '#') {
         c = c.substring(1);
@@ -1174,25 +1181,25 @@
    */
   p5.Element.prototype.translate = function(){
     this.elt.style.position = 'absolute';
-    if (arguments.length === 2){
-      var style = this.elt.style.transform.replace(/translate3d\(.*\)/g, '');
-      style = style.replace(/translate[X-Z]?\(.*\)/g, '');
-      this.elt.style.transform = 'translate('+arguments[0]+'px, '+arguments[1]+'px)';
-      this.elt.style.transform += style;
-    }else if (arguments.length === 3){
-      var style = this.elt.style.transform.replace(/translate3d\(.*\)/g, '');
-      style = style.replace(/translate[X-Z]?\(.*\)/g, '');
-      this.elt.style.transform = 'translate3d('+arguments[0]+'px,'+arguments[1]+'px,'+arguments[2]+'px)';
-      this.elt.style.transform += style;
-      this.elt.parentElement.style.perspective = '1000px';
-    }else if (arguments.length === 4){
-      var style = this.elt.style.transform.replace(/translate3d\(.*\)/g, '');
-      style = style.replace(/translate[X-Z]?\(.*\)/g, '');
-      this.elt.style.transform = 'translate3d('+arguments[0]+'px,'+arguments[1]+'px,'+arguments[2]+'px)';
-      this.elt.style.transform += style;
-      this.elt.parentElement.style.perspective = arguments[3]+'px';
+    // save out initial non-translate transform styling
+    var transform = '';
+    if (this.elt.style.transform) {
+      transform = this.elt.style.transform.replace(/translate3d\(.*\)/g, '');
+      transform = transform.replace(/translate[X-Z]?\(.*\)/g, '');
     }
-      return this;
+    if (arguments.length === 2) {
+      this.elt.style.transform = 'translate('+arguments[0]+'px, '+arguments[1]+'px)';
+    } else if (arguments.length > 2) {
+      this.elt.style.transform = 'translate3d('+arguments[0]+'px,'+arguments[1]+'px,'+arguments[2]+'px)';
+      if (arguments.length === 3) {
+        this.elt.parentElement.style.perspective = '1000px';
+      } else {
+        this.elt.parentElement.style.perspective = arguments[3]+'px';
+      }
+    }
+    // add any extra transform styling back on end
+    this.elt.style.transform += transform;
+    return this;
   };
 
   /**
@@ -1219,25 +1226,25 @@
    * </code></div>
    */
   p5.Element.prototype.rotate = function(){
+    // save out initial non-rotate transform styling
+    var transform = '';
+    if (this.elt.style.transform) {
+      var transform = this.elt.style.transform.replace(/rotate3d\(.*\)/g, '');
+      transform = transform.replace(/rotate[X-Z]?\(.*\)/g, '');
+    }
+
     if (arguments.length === 1){
-      var style = this.elt.style.transform.replace(/rotate3d\(.*\)/g, '');
-      style = style.replace(/rotate[X-Z]?\(.*\)/g, '');
       this.elt.style.transform = 'rotate('+arguments[0]+'deg)';
-      this.elt.style.transform += style;
     }else if (arguments.length === 2){
-      var style = this.elt.style.transform.replace(/rotate3d\(.*\)/g, '');
-      style = style.replace(/rotate[X-Z]?\(.*\)/g, '');
       this.elt.style.transform = 'rotate('+arguments[0]+'deg, '+arguments[1]+'deg)';
-      this.elt.style.transform += style;
     }else if (arguments.length === 3){
-      var style = this.elt.style.transform.replace(/rotate3d\(.*\)/g, '');
-      style = style.replace(/rotate[X-Z]?\(.*\)/g, '');
       this.elt.style.transform = 'rotateX('+arguments[0]+'deg)';
       this.elt.style.transform += 'rotateY('+arguments[1]+'deg)';
       this.elt.style.transform += 'rotateZ('+arguments[2]+'deg)';
-      this.elt.style.transform += style;
     }
-      return this;
+    // add remaining transform back on
+    this.elt.style.transform += transform;
+    return this;
   };
 
   /**
@@ -1262,15 +1269,37 @@
    * var myDiv = createDiv("I like pandas.");
    * myDiv.style("font-size", "18px");
    * myDiv.style("color", "#ff0000");
+   * </code></div>
+   * <div><code class="norender">
    * var col = color(25,23,200,50);
-   * createButton.style("background-color", col);
+   * var button = createButton("button");
+   * button.style("background-color", col);
+   * button.position(10, 10);
+   * </code></div>
+   * <div><code class="norender">
+   * var myDiv = createDiv("I like lizards.");
+   * myDiv.style("position", 20, 20);
+   * myDiv.style("rotate", 45);
+   * </code></div>
+   * <div><code class="norender">
+   * var myDiv;
+   * function setup() {
+   *   background(200);
+   *   myDiv = createDiv("I like gray.");
+   *   myDiv.position(20, 20);
+   * }
+   *
+   * function draw() {
+   *   myDiv.style("font-size", mouseX+"px");
+   * }
    * </code></div>
    */
   p5.Element.prototype.style = function(prop, val) {
     var self = this;
 
-    if (val instanceof p5.Color)
+    if (val instanceof p5.Color) {
       val = 'rgba(' + val.levels[0] + ',' + val.levels[1] + ',' + val.levels[2] + ',' + val.levels[3]/255 + ')'
+    }
 
     if (typeof val === 'undefined') {
       if (prop.indexOf(':') === -1) {
@@ -1287,54 +1316,14 @@
         }
       }
     } else {
-      if (prop === 'rotate'){
-        if (arguments.length === 2) {
-          var style = this.elt.style.transform.replace(/rotate3d\(.*\)/g, '');
-          style = style.replace(/rotate[X-Z]?\(.*\)/g, '');
-          this.elt.style.transform = 'rotate(' + arguments[0] + 'deg)';
-          this.elt.style.transform += style;
-        } else if (arguments.length === 3) {
-          var style = this.elt.style.transform.replace(/rotate3d\(.*\)/g, '');
-          style = style.replace(/rotate[X-Z]?\(.*\)/g, '');
-          this.elt.style.transform = 'rotate(' + arguments[0] + 'deg, ' + arguments[1] + 'deg)';
-          this.elt.style.transform += style;
-        } else if (arguments.length === 4) {
-          var style = this.elt.style.transform.replace(/rotate3d\(.*\)/g, '');
-          style = style.replace(/rotate[X-Z]?\(.*\)/g, '');
-          this.elt.style.transform = 'rotateX(' + arguments[0] + 'deg)';
-          this.elt.style.transform += 'rotateY(' + arguments[1] + 'deg)';
-          this.elt.style.transform += 'rotateZ(' + arguments[2] + 'deg)';
-          this.elt.style.transform += style;
-        }
-      } else if (prop === 'translate') {
-        if (arguments.length === 3) {
-          var style = this.elt.style.transform.replace(/translate3d\(.*\)/g, '');
-          style = style.replace(/translate[X-Z]?\(.*\)/g, '');
-          this.elt.style.transform = 'translate(' + arguments[0] + 'px, ' + arguments[1] + 'px)';
-          this.elt.style.transform += style;
-        } else if (arguments.length === 4) {
-          var style = this.elt.style.transform.replace(/translate3d\(.*\)/g, '');
-          style = style.replace(/translate[X-Z]?\(.*\)/g, '');
-          this.elt.style.transform = 'translate3d(' + arguments[0] + 'px,' + arguments[1] + 'px,' + arguments[2] + 'px)';
-          this.elt.style.transform += style;
-          this.elt.parentElement.style.perspective = '1000px';
-        } else if (arguments.length === 5) {
-          var style = this.elt.style.transform.replace(/translate3d\(.*\)/g, '');
-          style = style.replace(/translate[X-Z]?\(.*\)/g, '');
-          this.elt.style.transform = 'translate3d(' + arguments[0] + 'px,' + arguments[1] + 'px,' + arguments[2] + 'px)';
-          this.elt.style.transform += style;
-          this.elt.parentElement.style.perspective = arguments[3] + 'px';
-        }
-      } else if (prop === 'position') {
-        this.elt.style.left = arguments[1] + 'px';
-        this.elt.style.top = arguments[2] + 'px';
-        this.x = arguments[1];
-        this.y = arguments[2];
+      if (prop === 'rotate' || prop === 'translate' || prop === 'position'){
+        var trans = Array.prototype.shift.apply(arguments);
+        this[trans].apply(this, arguments);
       } else {
         this.elt.style[prop] = val;
         if (prop === 'width' || prop === 'height' || prop === 'left' || prop === 'top') {
           var numVal = val.replace(/\D+/g, '');
-          this[prop] = parseInt(numVal, 10);
+          this[prop] = parseInt(numVal, 10); // pend: is this necessary?
         }
       }
     }
@@ -1514,12 +1503,43 @@
   p5.MediaElement = function(elt, pInst) {
     p5.Element.call(this, elt, pInst);
 
+    var self = this;
+    this.elt.crossOrigin = 'anonymous';
 
     this._prevTime = 0;
     this._cueIDCounter = 0;
     this._cues = [];
     this._pixelDensity = 1;
 
+    /**
+     *  Path to the media element source.
+     *
+     *  @property src
+     *  @return {String} src
+     */
+    Object.defineProperty(self, 'src', {
+      get: function() {
+        var firstChildSrc = self.elt.children[0].src;
+        var srcVal = self.elt.src === window.location.href ? '' : self.elt.src;
+        var ret = firstChildSrc === window.location.href ? srcVal : firstChildSrc;
+        return ret;
+      },
+      set: function(newValue) {
+        for (var i = 0; i < self.elt.children.length; i++) {
+          self.elt.removeChild(self.elt.children[i]);
+        }
+        var source = document.createElement('source');
+        source.src = newValue;
+        elt.appendChild(source);
+        self.elt.src = newValue;
+      },
+    });
+
+    // private _onended callback, set by the method: onended(callback)
+    self._onended = function() {};
+    self.elt.onended = function() {
+      self._onended(self);
+    }
   };
   p5.MediaElement.prototype = Object.create(p5.Element.prototype);
 
@@ -1656,8 +1676,8 @@
         this.drawingContext = this.canvas.getContext('2d');
       }
       if (this.canvas.width !== this.elt.width) {
-        this.canvas.width = this.elt.width;
-        this.canvas.height = this.elt.height;
+        this.canvas.width = this.elt.videoWidth;
+        this.canvas.height = this.elt.videoHeight;
         this.width = this.canvas.width;
         this.height = this.canvas.height;
       }
@@ -1682,6 +1702,37 @@
       p5.Renderer2D.prototype.set.call(this, x, y, imgOrCol);
     }
   };
+  /**
+   *  Schedule an event to be called when the audio or video
+   *  element reaches the end. If the element is looping,
+   *  this will not be called. The element is passed in
+   *  as the argument to the onended callback.
+   *  
+   *  @method  onended
+   *  @param  {Function} callback function to call when the
+   *                              soundfile has ended. The
+   *                              media element will be passed
+   *                              in as the argument to the
+   *                              callback.                            
+   *  @return {Object/p5.MediaElement}
+   *  @example
+   *  <div><code>
+   *  function setup() {
+   *    audioEl = createAudio('assets/beat.mp3');
+   *    audioEl.showControls(true);
+   *    audioEl.onended(sayDone);
+   *  }
+   *
+   *  function sayDone(elt) {
+   *    alert('done playing ' + elt.src );
+   *  }
+   *  </code></div>
+   */
+  p5.MediaElement.prototype.onended = function(callback) {
+    this._onended = callback;
+    return this;
+  };
+
 
   /*** CONNECT TO WEB AUDIO API / p5.sound.js ***/
 
@@ -1774,7 +1825,6 @@
   p5.MediaElement.prototype.hideControls = function() {
     this.elt.controls = false;
   };
-
 
   /*** SCHEDULE EVENTS ***/
 
@@ -1954,7 +2004,11 @@
      */
     this.size = file.size;
 
-    // Data not loaded yet
+    /**
+     * URL string containing image data.
+     *
+     * @property data
+     */
     this.data = undefined;
   };
 

@@ -2,7 +2,9 @@
   {
     "title":"Plasmic Reflection",
     "imgsrc": "/images/pulse_square.png",
-    "desc": "A private, reflective experience",
+    "thumbnail": "/images/pulse_square_thumb.png",
+    "desc": "An arduino based infinity mirror that reflects the user's hearbeat in light and sound",
+    "date": "ITP | DEC 2015",
     "id": "reflected",
     "hasVideo":true,
     "credits": "An ITP Project by Jamie Charry & Ella Dagan. Dec 2015",
@@ -11,7 +13,9 @@
   {
     "title": "Question a Day",
     "imgsrc": "/images/qadsquare.png",
-    "desc": "A public journal-a-day",
+    "thumbnail":"/images/qadsquare_thumb.png",
+    "desc": "Node.js Express app leveraging basic sentiment analysis to create a public journal-a-day where all our feelings are heard equally",
+    "date": "ITP | DEC 2015",
     "id":"qad",
     "projectLink":"http://questionaday.herokuapp.com/",
     "hasVideo": false,
@@ -20,7 +24,9 @@
   {
     "title":"Solar Synthesizer",
     "imgsrc": "/images/solarsynthsquare.png",
-    "desc": "A musical solar system",
+    "thumbnail":"/images/solarsynthsquare_thumb.png",
+    "desc": "A p5.js based synth where our solar system becomes the instrument",
+    "date": "ITP | OCT 2015",
     "id": "solarsynth",
     "projectLink":"http://itp.jcharry.com/solarSystem/",
     "hasVideo": false,
@@ -29,7 +35,9 @@
   {
     "title":"Artist Comparator",
     "imgsrc": "/images/artistcompsquare.png",
-    "desc": "How do your two favorite artists compare?",
+    "thumbnail": "/images/artistcompsquare_thumb.png",
+    "desc": "Utilizing p5.js and the EchoNest API, check out how your two favorite artists compare",
+    "date": "ITP | NOV 2015",
     "id":"artistcomp",
     "projectLink":"http://itp.jcharry.com/artistComparator/",
     "hasVideo": false,
