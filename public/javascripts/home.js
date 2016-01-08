@@ -1,9 +1,10 @@
 var SEPARATION = 80, AMOUNTX = 7, AMOUNTY = 8;
 
-var homePos = new THREE.Vector3(0,300,800);
+var currentPos = 'home';
 
 var container;
 var scene, renderer;
+var cssScene, cssRenderer, cssObject, cssObjectBack;
 var groups = [];
 var pageGroup;
 
@@ -24,7 +25,12 @@ var selectableObjects = [];
 var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
 
-//var intersecting = false;
+// camera positions
+var homePos = new THREE.Vector3(0,300,800);
+var projectPos = new THREE.Vector3(0,1000 + windowHalfY-150, 800);
+var rightPos = new THREE.Vector3(1000, 300, 800);
+var leftPos = new THREE.Vector3(-1000, 300, 800);
+
 
 // Get rainbow colors for main balls
 var rainbow = new Rainbow();
@@ -50,6 +56,9 @@ $.ajax('/projectInfo',{
 var $projectToHomeDownArrow;
 var $projectRightArrow;
 var $projectLeftArrow;
+var $homeRightArrow;
+var $homeLeftArrow;
+var $homeDownArrow;
 function setupArrows() {
     // Arrow to move back to home from the project position
     $projectToHomeDownArrow = $("<img id='projectToHomeDownArrow' class='arrow' src='/images/downarrow.png'>");
@@ -65,19 +74,37 @@ function setupArrows() {
     $projectLeftArrow.hide();
     $projectLeftArrow.click(arrowClicked);
 
+    // Project arrows to rotate to next plane with new image
+    $homeRightArrow = $("<img id='homeRightArrow' class='arrow' src='/images/rightarrow.png'>");
+    $homeLeftArrow = $("<img id='homeLeftArrow' class='arrow' src='/images/leftarrow.png'>");
+    $homeDownArrow = $("<img id='homeDownArrow' class='arrow' src='/images/downarrow.png'>");
+    $homeRightArrow.click(arrowClicked);
+    $homeLeftArrow.click(arrowClicked);
+    $homeDownArrow.click(arrowClicked);
+
     positionArrows();
 
     $('#body').append($projectRightArrow);
     $('#body').append($projectLeftArrow);
+    $('#body').append($homeRightArrow);
+    $('#body').append($homeLeftArrow);
+    $('#body').append($homeDownArrow);
 }
 
 function positionArrows() {
     $projectToHomeDownArrow.css('left', windowHalfX - $projectToHomeDownArrow.width()/2 + 'px');
     $projectToHomeDownArrow.css('top', window.innerHeight - 50 + 'px');
     $projectRightArrow.css('left', window.innerWidth - 50 + 'px');
-    $projectRightArrow.css('top',windowHalfY);
+    $projectRightArrow.css('top',windowHalfY + 'px');
     $projectLeftArrow.css('left', '20px');
-    $projectLeftArrow.css('top',windowHalfY);
+    $projectLeftArrow.css('top',windowHalfY + 'px');
+
+    $homeRightArrow.css('left', window.innerWidth - 50 + 'px');
+    $homeRightArrow.css('top',windowHalfY + 'px');
+    $homeLeftArrow.css('left', '20px');
+    $homeLeftArrow.css('top',windowHalfY + 'px');
+    $homeDownArrow.css('left', windowHalfX - $homeDownArrow.width()/2 + 'px');
+    $homeDownArrow.css('top', window.innerHeight - 50 + 'px');
 
 }
 
@@ -88,36 +115,142 @@ function arrowClicked(e) {
             $('#projectRightArrow').fadeOut(1000);
             $('#projectLeftArrow').fadeOut(1000);
             setupTween(camera.position, homePos, 5000, function() {
-                scene.remove(projectSurface);
-                scene.remove(projectBackSurface);
-                projectSurface = null;
-                projectBackSurface = null;
+                //scene.remove(projectSurface);
+                //scene.remove(projectBackSurface);
+                //projectSurface = null;
+                //projectBackSurface = null;
+                var elt = document.getElementById('cssRendererElement');
+                elt.parentNode.removeChild(elt);
+                cssScene.remove(cssObject);
+                cssScene.remove(cssObjectBack);
+                cssRenderer = null;
+
+                // bring back home arrows
+                $('#homeRightArrow').fadeIn(1000);
+                $('#homeLeftArrow').fadeIn(1000);
+                $('#homeDownArrow').fadeIn(1000);
                 console.log('back to home');
             });
             break;
         case 'projectRightArrow':
-            //$(this).off('click');
-            console.log('should twist right');
-            new TWEEN.Tween(projectSurface.rotation).to({y:-Math.PI}, 1000).easing(TWEEN.Easing.Quadratic.InOut).start();
-            new TWEEN.Tween(projectBackSurface.rotation).to({y:0}, 1000).easing(TWEEN.Easing.Quadratic.InOut).start();
+
+            // Tween rotation of css objects
+            new TWEEN.Tween(cssObject.rotation)
+            .to({y:-Math.PI}, 1000)
+            .easing(TWEEN.Easing.Quadratic.InOut)
+            .onUpdate(function() {
+                // when the rotation is halfway, switch positions so back object shows
+                //if(cssObject.rotation.y < -Math.PI/2) {
+                    //// bring back object to front
+                    //cssObjectBack.position.z = 1;
+                //}
+            }).start();
+            new TWEEN.Tween(cssObjectBack.rotation)
+            .to({y:0}, 1000)
+            .easing(TWEEN.Easing.Quadratic.InOut)
+            .onUpdate(function() {
+                console.log(cssObjectBack.rotation.y);
+                if (cssObjectBack.rotation.y < Math.PI/2) {
+                    cssObjectBack.position.z = 1;
+                } 
+            })
+            .start();
+
+            // fade the appropriate arrows into view
             $projectRightArrow.fadeOut(1000);
             $projectLeftArrow.fadeIn(1000);
-            //setTimeout(function() {
-                //$projectRightArrow.click(arrowClicked);
-            //}, 1000);
             break;
+
         case 'projectLeftArrow':
-            //$(this).off('click');
-            new TWEEN.Tween(projectSurface.rotation).to({y:0}, 1000).easing(TWEEN.Easing.Quadratic.InOut).start();
-            new TWEEN.Tween(projectBackSurface.rotation).to({y:Math.PI}, 1000).easing(TWEEN.Easing.Quadratic.InOut).start();
+
+            // Tween back
+            new TWEEN.Tween(cssObject.rotation)
+            .to({y:0}, 1000)
+            .easing(TWEEN.Easing.Quadratic.InOut)
+            .onUpdate(function() {
+                //if (cssObject.rotation.y > -Math.PI/2) {
+                    //cssObjectBack.position.z = -1;
+                //}
+            })
+            .start();
+            new TWEEN.Tween(cssObjectBack.rotation)
+            .to({y:Math.PI}, 1000)
+            .easing(TWEEN.Easing.Quadratic.InOut)
+            .onUpdate(function(){
+                if (cssObjectBack.rotation.y > Math.PI/2) {
+                    cssObjectBack.position.z = -1;
+                }
+            })
+            .start();
             $projectRightArrow.fadeIn(1000);
             $projectLeftArrow.fadeOut(1000);
             //setTimeout(function() {
                 //$projectLeftArrow.click(arrowClicked);
             //}, 1000);
+            cssObjectBack.position.z = -1;
+            break;
+
+        case 'homeRightArrow':
+            console.log('right tapped');
+            $('#homeLeftArrow').fadeIn(1000);
+            if (currentPos === 'home') {
+                $(this).fadeOut(1000);
+                $('#homeDownArrow').fadeOut(1000);
+                setupRightScene();
+                currentPos = 'right';
+                setupTween(camera.position, rightPos, 5000, function() {
+                    console.log(currentPos);
+                });
+            } else if (currentPos === 'left') {
+                currentPos = 'home';
+                $('#homeDownArrow').fadeIn(1000);
+                setupTween(camera.position, homePos, 5000, function() {
+                    console.log(currentPos);
+                    removeLeftScene();
+                });
+            }
+            break;
+        case 'homeLeftArrow':
+            console.log('left tapped'); 
+            $('#homeRightArrow').fadeIn(1000);
+            if (currentPos === 'home') {
+                $(this).fadeOut(1000);
+                $('#homeDownArrow').fadeOut(1000);
+                setupLeftScene();
+                currentPos = 'left';
+                setupTween(camera.position, leftPos, 5000, function() {
+                    console.log(currentPos);
+                });
+            } else if (currentPos === 'right') {
+                currentPos = 'home';
+                $('#homeDownArrow').fadeIn(1000);
+                setupTween(camera.position, homePos, 5000, function() {
+                    console.log(currentPos);
+                    removeRightScene();
+                });
+            }
+            break;
+        case 'homeDownArrow':
+            console.log('down tapped');
             break;
     }
 } 
+
+function setupRightScene() {
+    console.log('should setup right scene');
+
+}
+function removeRightScene() {
+    console.log('should remove right scene');
+}
+function setupLeftScene() {
+    console.log('should setup left scene');
+
+}
+function removeLeftScene() {
+    console.log('should remove left scene');
+
+}
 
 function init() {
 
@@ -132,7 +265,8 @@ function init() {
     //console.log(camera);
 
     scene = new THREE.Scene();
-    camera.lookAt(scene.position);
+    
+
 
     particles = [];
 
@@ -191,8 +325,8 @@ function init() {
                 selectableObjects.push(singleParticleGroup);
 
                 // add a halo to particles that should contain a project
-                var haloGeo = new THREE.SphereGeometry(10,32,32);
-                var haloMat = new THREE.MeshLambertMaterial({color: ballColors[i], transparent: true, opacity: 0.3});
+                var haloGeo = new THREE.SphereGeometry(12,32,32);
+                var haloMat = new THREE.MeshLambertMaterial({color: ballColors[i], transparent: true, opacity: 0.5});
                 var haloMesh = new THREE.Mesh(haloGeo, haloMat);
                 haloMesh.userData.type = 'particle';
                 particle.add(haloMesh);
@@ -236,12 +370,21 @@ function init() {
     raycaster = new THREE.Raycaster();
 
     renderer = new THREE.WebGLRenderer();
+    //renderer = new THREE.CanvasRenderer();
+    //renderer.domElement.style.position = 'absolute';
+    //renderer.domElement.style.top = 0;
+    //renderer.domElement.style.left = 0;
+    //renderer.domElement.style.zIndex = 1;
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
     renderer.setClearColor( 0x333333);
     renderer.sortObjects = false;
-    container.appendChild( renderer.domElement );
+    document.body.appendChild( renderer.domElement );
 
+
+
+
+    camera.lookAt(scene.position);
     document.addEventListener( 'mousemove', onDocumentMouseMove, false );
     document.addEventListener('mousedown', onDocumentMouseDown, false);
     document.addEventListener( 'touchstart', onDocumentTouchStart, false );
@@ -284,34 +427,85 @@ function onDocumentMouseDown(event) {
 
                     // When the loader is done, create the plane geometry,
                     // and map the image onto it
-                    var projectSurfaceGeo = new THREE.PlaneGeometry(windowHalfY*1.7777,windowHalfY,3);
-                    var projectSurfaceMat = new THREE.MeshPhongMaterial({map:texture});
-                    projectSurface = new THREE.Mesh(projectSurfaceGeo, projectSurfaceMat);
-                    projectSurface.position.z = 0;
-                    projectSurface.position.y = 1000;
-                    projectSurface.rotation.x -= 0.3;
-                    projectSurface.userData.type = 'projectSurface';
-                    scene.add(projectSurface);          // add it to the scene
+                    //var projectSurfaceGeo = new THREE.PlaneGeometry(windowHalfY*1.7777,windowHalfY,3);
+                    //var projectSurfaceMat = new THREE.MeshPhongMaterial({wireframe: true});
+                    //projectSurface = new THREE.Mesh(projectSurfaceGeo, projectSurfaceMat);
+                    //projectSurface.position.z = 0;
+                    //projectSurface.position.y = 1000;
+                    //projectSurface.rotation.x -= 0.3;
+                    //projectSurface.userData.type = 'projectSurface';
+                    //scene.add(projectSurface);          // add it to the scene
 
-                    var dynamicTexture = new THREEx.DynamicTexture(windowHalfY*1.777, windowHalfY);
-                    dynamicTexture.context.font = '12px Verdana';
-                    dynamicTexture.texture.anisotropy = renderer.getMaxAnisotropy();
-                    dynamicTexture.clear('white');
-                    var text = 'asdfasdfasdfasdfasdflajsdfkja asldkfj askld fals dfklajsdkfla lf as dfka wk ef a weg as dg asdfa sdf as dg as gda sekrj alksjd lkafj gsdlkfj alskjd glkasj dlkja glksjd glkasj dlkfj asldkj glkaj lwkejg asd';
-                    dynamicTexture.drawText(text, 32, 256, 'red')
-                    var projectBackSurfaceGeo = new THREE.PlaneGeometry(windowHalfY*1.7777, windowHalfY, 3);
-                    var projectBackSurfaceMat = new THREE.MeshPhongMaterial({map: dynamicTexture.texture});
-                    projectBackSurface = new THREE.Mesh(projectBackSurfaceGeo, projectBackSurfaceMat);
-                    projectBackSurface.position.z = 0;
-                    projectBackSurface.position.y = 1000;
-                    projectBackSurface.rotation.x -= 0.3;
-                    projectBackSurface.rotation.y = Math.PI;
-                    scene.add(projectBackSurface);
 
-                    //selectableObjects.push(projectSurface);
-
-                    var projectPos = new THREE.Vector3(0,projectSurface.position.y + windowHalfY-150, 800);
+                    // Setup css scene and renderer;
+                    cssScene = new THREE.Scene();
+                    cssRenderer = new THREE.CSS3DRenderer();
+                    cssRenderer.setSize(window.innerWidth,window.innerHeight);
+                    cssRenderer.domElement.style.position = 'absolute';
+                    cssRenderer.domElement.style.top = 0;
+                    cssRenderer.domElement.id = 'cssRendererElement';
+                    //cssRenderer.domElement.style.margin = 0;
+                    //cssRenderer.domElement.padding = 0;
+                    document.body.appendChild(cssRenderer.domElement);
                     
+                    var elt = document.createElement('iframe');
+                    //document.body.appendChild(elt);
+                    elt.style.opacity = 1;
+                    elt.src = proj.src;
+                    var eltWidth = windowHalfY*1.7777;
+                    var eltHeight = windowHalfY;
+                    elt.style.width = eltWidth + 'px';
+                    elt.style.height = eltHeight + 'px';
+                    elt.style.backgroundColor = 'black';
+                    if (proj.title === 'Casual HSB Drawings') {
+                        elt.style.backgroundColor = 'white';
+                    }
+                    cssObject = new THREE.CSS3DObject(elt);
+                    cssObject.position.z = 0;
+                    cssObject.position.y = 1000;
+                    cssObject.rotation.x -= 0.3;
+                    cssScene.add(cssObject);
+
+                    // back surface
+                    var elt = document.createElement('div');
+                    elt.id = 'cssBackSurface';
+                    elt.style.backgroundColor = '#DEDEDE';
+                    var eltTitle = document.createElement('h2');
+                    eltTitle.id = 'cssBackSurfaceTitle';
+                    eltTitle.innerHTML = proj.title;
+                    eltTitle.className = 'backSurfaceText';
+                    var eltDesc = document.createElement('p');
+                    eltDesc.id = 'cssBackSurfaceDesc';
+                    eltDesc.innerHTML = proj.longdesc;
+                    eltDesc.className = 'backSurfaceText';
+                    var eltLink = document.createElement('a');
+                    eltLink.id = 'cssBackSurfaceLink';
+                    eltLink.innerHTML = 'View Full Size Project';
+                    eltLink.className = 'backSurfaceText';
+                    eltLink.setAttribute('href',proj.projectLink);
+                    elt.appendChild(eltTitle);
+                    elt.appendChild(eltLink);
+                    elt.appendChild(eltDesc);
+                    elt.style.opacity = 1;
+                    var eltWidth = windowHalfY*1.7777;
+                    var eltHeight = windowHalfY;
+                    elt.style.width = eltWidth + 'px';
+                    elt.style.height = eltHeight + 'px';
+                    if (proj.title === 'Question a Day') {
+                        //elt.style.backgroundColor = 'black';
+                    }
+                    cssObjectBack = new THREE.CSS3DObject(elt);
+                    cssObjectBack.position.z = -1;
+                    cssObjectBack.position.y = 1000;
+                    cssObjectBack.rotation.x -= 0.3;
+                    cssObjectBack.rotation.y = Math.PI;
+                    cssScene.add(cssObjectBack);
+
+                   // Hide home arrows
+                    $('#homeRightArrow').fadeOut(1000);
+                    $('#homeLeftArrow').fadeOut(1000);
+                    $('#homeDownArrow').fadeOut(1000);
+
 
                     // Also, when the image is loaded, run the tween animation to move the camera
                     setupTween(camera.position, projectPos, 5000, function() {
@@ -405,9 +599,9 @@ function render() {
                 INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
                 INTERSECTED.material.emissive.setHex( 0xff0000 );
                 INTERSECTED.parent.parent.holdPosition = true;
-                INTERSECTED.scale.x = 2;
-                INTERSECTED.scale.y = 2;
-                INTERSECTED.scale.z = 2;
+                INTERSECTED.scale.x = 1.5;
+                INTERSECTED.scale.y = 1.5;
+                INTERSECTED.scale.z = 1.5;
 
                 console.log(INTERSECTED.parent.parent);
                 showDetailPopup(INTERSECTED.parent.parent, INTERSECTED.parent.userData.project);
@@ -434,6 +628,9 @@ function render() {
     }
 
     renderer.render(scene, camera);
+    if (cssRenderer) {
+        cssRenderer.render(cssScene, camera);
+    }
     count += 0.1;
 }
 

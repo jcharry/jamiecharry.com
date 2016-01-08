@@ -18,6 +18,23 @@ $title-border-color: #405769;
 $about-page-section-color:#283844;
 /*$title-border-color: #0F0F0F;*/
 
+@font-face {
+    font-family: Altera;
+    src: url('/fonts/Altera.ttf');
+}
+@font-face {
+    font-family: Roboto-Thin;
+    src: url('/fonts/Roboto-Thin.ttf');
+}
+@font-face {
+    font-family: Roboto-Light;
+    src: url('/fonts/Roboto-Light.ttf');
+}
+@font-face {
+    font-family: Roboto-Medium;
+    src: url('/fonts/Roboto-Medium.ttf');
+}
+
 #projectPopup {
     display:none;
     position: absolute;
@@ -33,6 +50,7 @@ $about-page-section-color:#283844;
     margin-top:8px;
     margin-bottom: 0px;
     text-align:center;
+    font-family: Roboto-Thin;
 }
 #projectDescription {
     width: 200px;
@@ -41,6 +59,7 @@ $about-page-section-color:#283844;
     margin-right: 20px;
     margin-bottom: 0px;
     text-align:center;
+    font-family: Roboto-Light;
 }
 #projectDate {
     margin-top: 8px;
@@ -48,6 +67,7 @@ $about-page-section-color:#283844;
     margin-left: 20px;
     margin-right: 20px;
     font-size: 0.6rem;
+    font-family: Roboto-Light;
 }
 #projectImg {
     margin-top: 20px;
@@ -58,15 +78,49 @@ $about-page-section-color:#283844;
 }
 .arrow {
     position: absolute;
+    z-index: 1;
+    /*-webkit-animation: arrowBlink 4s infinite; [> Safari 4+ <]*/
+    /*-moz-animation:    arrowBlink 4s infinite; [> Fx 5+ <]*/
+    /*-o-animation:      arrowBlink 4s infinite; [> Opera 12+ <]*/
+    /*animation:         arrowBlink 4s infinite; [> IE 10+, Fx 29+ <]*/
 }
 #projectToHomeDownArrow {
     /*display: none;*/
     position: absolute;
+    z-index: 1;
     /*opacity: 0;*/
-    -webkit-animation: arrowBlink 4s infinite; /* Safari 4+ */
-    -moz-animation:    arrowBlink 4s infinite; /* Fx 5+ */
-    -o-animation:      arrowBlink 4s infinite; /* Opera 12+ */
-    animation:         arrowBlink 4s infinite; /* IE 10+, Fx 29+ */
+    /*-webkit-animation: arrowBlink 4s infinite; [> Safari 4+ <]*/
+    /*-moz-animation:    arrowBlink 4s infinite; [> Fx 5+ <]*/
+    /*-o-animation:      arrowBlink 4s infinite; [> Opera 12+ <]*/
+    /*animation:         arrowBlink 4s infinite; [> IE 10+, Fx 29+ <]*/
+}
+.backSurfaceText {
+  color: black;
+  /*margin-left:10px; */
+}
+#cssBackSurface {
+    display: flex;
+    flex-direction: column;
+}
+#cssBackSurfaceTitle {
+    flex: 1;
+    margin:3%;
+  display: inline-block;
+}
+#cssBackSurfaceLink {
+    flex: 1;
+    margin:3%;
+  display: inline-block;
+  float: right;
+  /*margin-right: 10px;*/
+  /*margin-top:5px;*/
+
+}
+#cssBackSurfaceDesc {
+    flex: 10;
+    margin:3%;
+  display:block;
+  /*margin-right:10px;*/
 }
 /**{*/
   /*border: 1px solid red;*/
@@ -77,34 +131,40 @@ html {
     /*height:100%;*/
 }
 body {
-  margin: 0px;
-  padding: 0px;
-  font: 14px Arial,Helvetica, sans-serif;
-  background-color: $page-color;
-  /*height: 100%;*/
+    margin: 0px;
+    padding: 0px;
+    /*font: 14px Arial,Helvetica, sans-serif;*/
+    font-family: Roboto-Light;
+    background-color: $page-color;
+    /*height: 100%;*/
 }
 h1 {
-  /*color: #083800;*/
-  color: $general-text-color;
-  font-family: Arial;
+    /*color: #083800;*/
+    color: $general-text-color;
+    font-family: Arial;
+    font-family: Roboto-Medium;
 }
 p {
-  color: $general-text-color;
-  /*color: #083800*/
-  font-family: Arial;
+    color: $general-text-color;
+    /*color: #083800*/
+    font-family: Arial;
+    font-family: Roboto-Light;
 }
 h2 {
-  color: $general-text-color;
-  /*color:#083800*/
-  font-family: Arial;
+    color: $general-text-color;
+    /*color:#083800*/
+    font-family: Arial;
+    font-family: Roboto-Medium;
 }
 h3 {
-  color: $general-text-color;
-  font-family: Arial;
+    color: $general-text-color;
+    font-family: Arial;
+    font-family: Roboto-Medium;
 }
 li {
     color: $general-text-color;
     font-family: Arial;
+    font-family: Roboto-Medium;
 }
 .pageTitle {
   text-align: center;
@@ -115,6 +175,7 @@ li {
 }
 /* Nav bar */
 #menu {
+    z-index:1;
   position:fixed;
   display: flex;
   align-items: center;
