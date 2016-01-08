@@ -76,13 +76,24 @@ $about-page-section-color:#283844;
     margin-bottom:0px;
     width: 150px;
 }
+/** {*/
+    /*border: 1px red solid;*/
+/*}*/
 .arrow {
     position: absolute;
     z-index: 1;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     /*-webkit-animation: arrowBlink 4s infinite; [> Safari 4+ <]*/
     /*-moz-animation:    arrowBlink 4s infinite; [> Fx 5+ <]*/
     /*-o-animation:      arrowBlink 4s infinite; [> Opera 12+ <]*/
     /*animation:         arrowBlink 4s infinite; [> IE 10+, Fx 29+ <]*/
+}
+.arrow p {
+    color: DimGrey;
+    font-family: Roboto-Light;
 }
 #projectToHomeDownArrow {
     /*display: none;*/
@@ -121,6 +132,14 @@ $about-page-section-color:#283844;
     margin:3%;
   display:block;
   /*margin-right:10px;*/
+}
+#contactinfo {
+    display:none;
+    position:absolute;
+}
+#contactinfo p {
+    font-family:Roboto-Light;
+    color: DimGrey;
 }
 /**{*/
   /*border: 1px solid red;*/

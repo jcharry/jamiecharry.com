@@ -1,6 +1,7 @@
 var SEPARATION = 80, AMOUNTX = 7, AMOUNTY = 8;
 
 var currentPos = 'home';
+var isTweening = false;
 
 var container;
 var scene, renderer;
@@ -47,7 +48,6 @@ $.ajax('/projectInfo',{
     success: function(data) {
         setupArrows();
         projects = data;
-        createHTMLElements();
         init();
         animate();
     }
@@ -75,9 +75,12 @@ function setupArrows() {
     $projectLeftArrow.click(arrowClicked);
 
     // Project arrows to rotate to next plane with new image
-    $homeRightArrow = $("<img id='homeRightArrow' class='arrow' src='/images/rightarrow.png'>");
-    $homeLeftArrow = $("<img id='homeLeftArrow' class='arrow' src='/images/leftarrow.png'>");
-    $homeDownArrow = $("<img id='homeDownArrow' class='arrow' src='/images/downarrow.png'>");
+    //$homeRightArrow = $("<img id='homeRightArrow' class='arrow' src='/images/rightarrow.png'>");
+    $homeRightArrow = $('#homeRightArrow');
+    $homeLeftArrow = $('#homeLeftArrow');
+    $homeDownArrow = $('#homeDownArrow');
+    //$homeLeftArrow = $("<img id='homeLeftArrow' class='arrow' src='/images/leftarrow.png'>");
+    //$homeDownArrow = $("<img id='homeDownArrow' class='arrow' src='/images/downarrow.png'>");
     $homeRightArrow.click(arrowClicked);
     $homeLeftArrow.click(arrowClicked);
     $homeDownArrow.click(arrowClicked);
@@ -99,150 +102,232 @@ function positionArrows() {
     $projectLeftArrow.css('left', '20px');
     $projectLeftArrow.css('top',windowHalfY + 'px');
 
-    $homeRightArrow.css('left', window.innerWidth - 50 + 'px');
+    $homeRightArrow.css('left', window.innerWidth - 70 + 'px');
     $homeRightArrow.css('top',windowHalfY + 'px');
     $homeLeftArrow.css('left', '20px');
     $homeLeftArrow.css('top',windowHalfY + 'px');
     $homeDownArrow.css('left', windowHalfX - $homeDownArrow.width()/2 + 'px');
-    $homeDownArrow.css('top', window.innerHeight - 50 + 'px');
+    $homeDownArrow.css('top', window.innerHeight - $homeDownArrow.height() -10 + 'px');
 
 }
 
 function arrowClicked(e) {
-    switch ($(this)[0].id) {
-        case 'projectToHomeDownArrow':
-            $(this).fadeOut(1000);
-            $('#projectRightArrow').fadeOut(1000);
-            $('#projectLeftArrow').fadeOut(1000);
-            setupTween(camera.position, homePos, 5000, function() {
-                //scene.remove(projectSurface);
-                //scene.remove(projectBackSurface);
-                //projectSurface = null;
-                //projectBackSurface = null;
-                var elt = document.getElementById('cssRendererElement');
-                elt.parentNode.removeChild(elt);
-                cssScene.remove(cssObject);
-                cssScene.remove(cssObjectBack);
-                cssRenderer = null;
+    if (!isTweening) {
+        switch ($(this)[0].id) {
+            case 'projectToHomeDownArrow':
+                $(this).fadeOut(1000);
+                $('#projectRightArrow').fadeOut(1000);
+                $('#projectLeftArrow').fadeOut(1000);
+                //isTweening = true;
+                setupTween(camera.position, homePos, 5000, function() {
+                    isTweening = false;
+                    //scene.remove(projectSurface);
+                    //scene.remove(projectBackSurface);
+                    //projectSurface = null;
+                    //projectBackSurface = null;
+                    var elt = document.getElementById('cssRendererElement');
+                    elt.parentNode.removeChild(elt);
+                    cssScene.remove(cssObject);
+                    cssScene.remove(cssObjectBack);
+                    cssRenderer = null;
 
-                // bring back home arrows
-                $('#homeRightArrow').fadeIn(1000);
-                $('#homeLeftArrow').fadeIn(1000);
-                $('#homeDownArrow').fadeIn(1000);
-                console.log('back to home');
-            });
-            break;
-        case 'projectRightArrow':
+                    // bring back home arrows
+                    $('#homeRightArrow').fadeIn(1000);
+                    $('#homeLeftArrow').fadeIn(1000);
+                    $('#homeDownArrow').fadeIn(1000);
+                    console.log('back to home');
+                });
+                break;
+            case 'projectRightArrow':
 
-            // Tween rotation of css objects
-            new TWEEN.Tween(cssObject.rotation)
-            .to({y:-Math.PI}, 1000)
-            .easing(TWEEN.Easing.Quadratic.InOut)
-            .onUpdate(function() {
-                // when the rotation is halfway, switch positions so back object shows
-                //if(cssObject.rotation.y < -Math.PI/2) {
-                    //// bring back object to front
-                    //cssObjectBack.position.z = 1;
-                //}
-            }).start();
-            new TWEEN.Tween(cssObjectBack.rotation)
-            .to({y:0}, 1000)
-            .easing(TWEEN.Easing.Quadratic.InOut)
-            .onUpdate(function() {
-                console.log(cssObjectBack.rotation.y);
-                if (cssObjectBack.rotation.y < Math.PI/2) {
-                    cssObjectBack.position.z = 1;
-                } 
-            })
-            .start();
+                // Tween rotation of css objects
+                new TWEEN.Tween(cssObject.rotation)
+                .to({y:-Math.PI}, 1000)
+                .easing(TWEEN.Easing.Quadratic.InOut)
+                .onUpdate(function() {
+                    // when the rotation is halfway, switch positions so back object shows
+                    //if(cssObject.rotation.y < -Math.PI/2) {
+                        //// bring back object to front
+                        //cssObjectBack.position.z = 1;
+                    //}
+                }).start();
+                new TWEEN.Tween(cssObjectBack.rotation)
+                .to({y:0}, 1000)
+                .easing(TWEEN.Easing.Quadratic.InOut)
+                .onUpdate(function() {
+                    console.log(cssObjectBack.rotation.y);
+                    if (cssObjectBack.rotation.y < Math.PI/2) {
+                        cssObjectBack.position.z = 1;
+                    } 
+                })
+                .start();
 
-            // fade the appropriate arrows into view
-            $projectRightArrow.fadeOut(1000);
-            $projectLeftArrow.fadeIn(1000);
-            break;
+                // fade the appropriate arrows into view
+                $projectRightArrow.fadeOut(1000);
+                $projectLeftArrow.fadeIn(1000);
+                break;
 
-        case 'projectLeftArrow':
+            case 'projectLeftArrow':
 
-            // Tween back
-            new TWEEN.Tween(cssObject.rotation)
-            .to({y:0}, 1000)
-            .easing(TWEEN.Easing.Quadratic.InOut)
-            .onUpdate(function() {
-                //if (cssObject.rotation.y > -Math.PI/2) {
-                    //cssObjectBack.position.z = -1;
-                //}
-            })
-            .start();
-            new TWEEN.Tween(cssObjectBack.rotation)
-            .to({y:Math.PI}, 1000)
-            .easing(TWEEN.Easing.Quadratic.InOut)
-            .onUpdate(function(){
-                if (cssObjectBack.rotation.y > Math.PI/2) {
-                    cssObjectBack.position.z = -1;
+                // Tween back
+                new TWEEN.Tween(cssObject.rotation)
+                .to({y:0}, 1000)
+                .easing(TWEEN.Easing.Quadratic.InOut)
+                .onUpdate(function() {
+                    //if (cssObject.rotation.y > -Math.PI/2) {
+                        //cssObjectBack.position.z = -1;
+                    //}
+                })
+                .onComplete(function() {
+                    isTweening = false;
+                })
+                .start();
+                new TWEEN.Tween(cssObjectBack.rotation)
+                .to({y:Math.PI}, 1000)
+                .easing(TWEEN.Easing.Quadratic.InOut)
+                .onUpdate(function(){
+                    if (cssObjectBack.rotation.y > Math.PI/2) {
+                        cssObjectBack.position.z = -1;
+                    }
+                })
+                .onComplete(function() {
+                        isTweening = false;
+                })
+                .start();
+                $projectRightArrow.fadeIn(1000);
+                $projectLeftArrow.fadeOut(1000);
+                //setTimeout(function() {
+                    //$projectLeftArrow.click(arrowClicked);
+                //}, 1000);
+                cssObjectBack.position.z = -1;
+                break;
+
+            case 'homeRightArrow':
+                console.log('right tapped');
+                if (currentPos === 'home') {
+                    $(this).fadeOut(1000);
+                    $homeLeftArrow[0].children[0].innerHTML = 'Home';
+                    console.log($homeLeftArrow);
+                    $('#homeDownArrow').fadeOut(1000);
+                    setupRightScene();
+                    currentPos = 'right';
+                    setupTween(camera.position, rightPos, 5000, function() {
+                        console.log(currentPos);
+                        $('#homeLeftArrow').fadeIn(1000);
+                        $('#contactinfo').fadeIn(1000);
+                        isTweening = false;
+                    });
+                } else if (currentPos === 'left') {
+                    currentPos = 'home';
+                    $homeRightArrow[0].children[0].innerHTML = 'Contact';
+                    setupTween(camera.position, homePos, 5000, function() {
+                        console.log(currentPos);
+                        $('#homeDownArrow').fadeIn(1000);
+                        $('#homeLeftArrow').fadeIn(1000);
+                        removeLeftScene();
+                        isTweening = false;
+                    });
                 }
-            })
-            .start();
-            $projectRightArrow.fadeIn(1000);
-            $projectLeftArrow.fadeOut(1000);
-            //setTimeout(function() {
-                //$projectLeftArrow.click(arrowClicked);
-            //}, 1000);
-            cssObjectBack.position.z = -1;
-            break;
+                break;
 
-        case 'homeRightArrow':
-            console.log('right tapped');
-            $('#homeLeftArrow').fadeIn(1000);
-            if (currentPos === 'home') {
-                $(this).fadeOut(1000);
-                $('#homeDownArrow').fadeOut(1000);
-                setupRightScene();
-                currentPos = 'right';
-                setupTween(camera.position, rightPos, 5000, function() {
-                    console.log(currentPos);
-                });
-            } else if (currentPos === 'left') {
-                currentPos = 'home';
-                $('#homeDownArrow').fadeIn(1000);
-                setupTween(camera.position, homePos, 5000, function() {
-                    console.log(currentPos);
-                    removeLeftScene();
-                });
-            }
-            break;
-        case 'homeLeftArrow':
-            console.log('left tapped'); 
-            $('#homeRightArrow').fadeIn(1000);
-            if (currentPos === 'home') {
-                $(this).fadeOut(1000);
-                $('#homeDownArrow').fadeOut(1000);
-                setupLeftScene();
-                currentPos = 'left';
-                setupTween(camera.position, leftPos, 5000, function() {
-                    console.log(currentPos);
-                });
-            } else if (currentPos === 'right') {
-                currentPos = 'home';
-                $('#homeDownArrow').fadeIn(1000);
-                setupTween(camera.position, homePos, 5000, function() {
-                    console.log(currentPos);
-                    removeRightScene();
-                });
-            }
-            break;
-        case 'homeDownArrow':
-            console.log('down tapped');
-            break;
+            case 'homeLeftArrow':
+                console.log('left tapped'); 
+                if (currentPos === 'home') {
+                    $(this).fadeOut(1000);
+                    $homeRightArrow[0].children[0].innerHTML = 'Home';
+                    $('#homeDownArrow').fadeOut(1000);
+                    setupLeftScene();
+                    currentPos = 'left';
+                    setupTween(camera.position, leftPos, 5000, function() {
+                        console.log(currentPos);
+                        $('#homeRightArrow').fadeIn(1000);
+                        isTweening = false;
+                    });
+                } else if (currentPos === 'right') {
+                    currentPos = 'home';
+                    $homeLeftArrow[0].children[0].innerHTML = 'About';
+                    setupTween(camera.position, homePos, 5000, function() {
+                        console.log(currentPos);
+                        $('#homeDownArrow').fadeIn(1000);
+                        $('#homeRightArrow').fadeIn(1000);
+                        $('#contactinfo').fadeOut(1000);
+                        removeRightScene();
+                        isTweening = false;
+                    });
+                }
+                break;
+            case 'homeDownArrow':
+                console.log('down tapped');
+                break;
+        }
     }
 } 
 
+var contactBoxes = [];
+var contactLinks = ['https://github.com/jcharry/','https://www.facebook.com/jamie.charry','https://www.linkedin.com/in/jcharry', 'mailto:jamie.charry@gmail.com'];
+var imgURLs = ['/images/github.png','/images/facebook.png','/images/linkedin.png','/images/mail.png'];
+var posCounter = 0;
+// The 5th element in the materials array is the face towards us
 function setupRightScene() {
     console.log('should setup right scene');
     // Contact balls 
+    
+    console.log(textureCounter);
+    if (textureCounter === 4) {
+        var textures = [githubTexture, facebookTexture, linkedinTexture, emailTexture];
+        for (var i = 0; i < 4; i++) {
+            var materials = [
+                new THREE.MeshLambertMaterial({color:0x395842}),
+                new THREE.MeshLambertMaterial({color:0x123456}),
+                new THREE.MeshLambertMaterial({color:0x6a8b4c}),
+                new THREE.MeshLambertMaterial({color:0x824ca3}),
+                new THREE.MeshLambertMaterial({map:textures[i]}),
+                new THREE.MeshLambertMaterial({color:0x3a56b8})
+            ];
+            
+            var boxGeo = new THREE.BoxGeometry(100,100,100);
+            //var boxMat = new THREE.MeshLambertMaterial({color:0x123456});
+            var box = new THREE.Mesh(boxGeo, new THREE.MeshFaceMaterial(materials));
+            //var box = new THREE.Mesh(boxGeo, boxMat);
+            selectableObjects.push(box);
+            box.position.z = 0;
+            box.position.x = posCounter * 150 + 850;
+            posCounter++;
+            box.rotation.x -= 0.3;
+            box.userData.type = 'contactBox';
+            //box.material.emissive.setHex(0xf3a2b5);
+            box.userData.link = contactLinks[i];
 
+            if (Math.random() > 0.5) {
+                box.rotDirX = 1;
+            } else {
+                box.rotDirX = -1;
+            }
+            if (Math.random() > 0.5) {
+                box.rotDirY = 1;
+            } else {
+                box.rotDirY = -1;
+            }
+            if (Math.random() > 0.5) {
+                box.rotDirZ = 1;
+            } else {
+                box.rotDirZ = -1;
+            }
+            contactBoxes.push(box);
+            scene.add(box);
+        } 
+    } else {
+        setTimeout(setupRightScene, 1000);
+    }
 }
 function removeRightScene() {
     console.log('should remove right scene');
+    for (var i = 0; i < contactBoxes.length; i++) {
+       scene.remove(contactBoxes[i]); 
+    }
+    contactBoxes = [];
+    posCounter = 0;
+    console.log(scene.children);
 }
 function setupLeftScene() {
    console.log('should setup left scene');
@@ -254,7 +339,35 @@ function removeLeftScene() {
 
 }
 
+var githubTexture;
+var facebookTexture;
+var emailTexture;
+var linkedinTexture;
+var textureCounter = 0;
 function init() {
+
+    $('#contactinfo').css('left',windowHalfX - $('#contactinfo').width()/2 + 'px');
+    $('#contactinfo').css('top',window.innerHeight - $('#contactinfo').height() - 20 + 'px');
+
+    // load all textures for contact boxes
+    
+    var loader = new THREE.TextureLoader();
+    loader.load('/images/github.png',function(texture) {
+        githubTexture = texture;
+        textureCounter++;
+    });
+    loader.load('/images/facebook.png',function(texture) {
+        facebookTexture = texture;
+        textureCounter++;
+    });
+    loader.load('/images/mail.png',function(texture) {
+        emailTexture = texture;
+        textureCounter++;
+    });
+    loader.load('/images/linkedin.png',function(texture) {
+        linkedinTexture = texture;
+        textureCounter++;
+    });
 
     container = document.getElementById('threejsContainer');
 
@@ -275,6 +388,9 @@ function init() {
     var light = new THREE.AmbientLight(  0xffffff);
     light.position.set( 1, 1, 1 ).normalize();
     scene.add(light);
+    var dirlight = new THREE.DirectionalLight(0xffffff,0.5);
+    dirlight.position.set(0,1,0).normalize();
+    scene.add(dirlight);
 
     // pick as many random numbers as there are projects
     var randNumbers = [];
@@ -324,14 +440,17 @@ function init() {
             if ($.inArray(i, randNumbers) !== -1) {
 
                 // Hold reference to this particle to be selectable
-                selectableObjects.push(singleParticleGroup);
+                //selectableObjects.push(singleParticleGroup);
 
                 // add a halo to particles that should contain a project
                 var haloGeo = new THREE.SphereGeometry(12,32,32);
                 var haloMat = new THREE.MeshLambertMaterial({color: ballColors[i], transparent: true, opacity: 0.5});
                 var haloMesh = new THREE.Mesh(haloGeo, haloMat);
                 haloMesh.userData.type = 'particle';
+                haloMesh.userData.project = projects[projectCount];
                 particle.add(haloMesh);
+
+                selectableObjects.push(haloMesh);
 
                 // associate a project with this particle
                 particle.userData.project = projects[projectCount];
@@ -411,120 +530,39 @@ function onWindowResize() {
 
 }
 
-
-
-
 function onDocumentMouseDown(event) {
     // When the mouse is clicked on an object stored in INTERSECTED
-    if (INTERSECTED) {
-        console.log(INTERSECTED);
-        if (INTERSECTED.parent.parent.userData.type === 'particleGroup') {
+    if (INTERSECTED && !isTweening) {
+        if (INTERSECTED.userData.type === 'particle') {
             // get project info corresponding to clicked particle
-            var proj = INTERSECTED.parent.userData.project;
+            var proj = INTERSECTED.userData.project;
 
             if (proj) {
-                // Use projects.json to get image src and load the image
-                var loader = new THREE.TextureLoader();
-                loader.load(proj.imgsrc, function(texture) {
+                setupCssScene(proj);
 
-                    // When the loader is done, create the plane geometry,
-                    // and map the image onto it
-                    //var projectSurfaceGeo = new THREE.PlaneGeometry(windowHalfY*1.7777,windowHalfY,3);
-                    //var projectSurfaceMat = new THREE.MeshPhongMaterial({wireframe: true});
-                    //projectSurface = new THREE.Mesh(projectSurfaceGeo, projectSurfaceMat);
-                    //projectSurface.position.z = 0;
-                    //projectSurface.position.y = 1000;
-                    //projectSurface.rotation.x -= 0.3;
-                    //projectSurface.userData.type = 'projectSurface';
-                    //scene.add(projectSurface);          // add it to the scene
+               // Hide home arrows
+                $('#homeRightArrow').fadeOut(1000);
+                $('#homeLeftArrow').fadeOut(1000);
+                $('#homeDownArrow').fadeOut(1000);
 
-
-                    // Setup css scene and renderer;
-                    cssScene = new THREE.Scene();
-                    cssRenderer = new THREE.CSS3DRenderer();
-                    cssRenderer.setSize(window.innerWidth,window.innerHeight);
-                    cssRenderer.domElement.style.position = 'absolute';
-                    cssRenderer.domElement.style.top = 0;
-                    cssRenderer.domElement.id = 'cssRendererElement';
-                    //cssRenderer.domElement.style.margin = 0;
-                    //cssRenderer.domElement.padding = 0;
-                    document.body.appendChild(cssRenderer.domElement);
-                    
-                    var elt = document.createElement('iframe');
-                    //document.body.appendChild(elt);
-                    elt.style.opacity = 1;
-                    elt.src = proj.src;
-                    var eltWidth = windowHalfY*1.7777;
-                    var eltHeight = windowHalfY;
-                    elt.style.width = eltWidth + 'px';
-                    elt.style.height = eltHeight + 'px';
-                    elt.style.backgroundColor = 'black';
-                    if (proj.title === 'Casual HSB Drawings') {
-                        elt.style.backgroundColor = 'white';
-                    }
-                    cssObject = new THREE.CSS3DObject(elt);
-                    cssObject.position.z = 0;
-                    cssObject.position.y = 1000;
-                    cssObject.rotation.x -= 0.3;
-                    cssScene.add(cssObject);
-
-                    // back surface
-                    var elt = document.createElement('div');
-                    elt.id = 'cssBackSurface';
-                    elt.style.backgroundColor = '#DEDEDE';
-                    var eltTitle = document.createElement('h2');
-                    eltTitle.id = 'cssBackSurfaceTitle';
-                    eltTitle.innerHTML = proj.title;
-                    eltTitle.className = 'backSurfaceText';
-                    var eltDesc = document.createElement('p');
-                    eltDesc.id = 'cssBackSurfaceDesc';
-                    eltDesc.innerHTML = proj.longdesc;
-                    eltDesc.className = 'backSurfaceText';
-                    var eltLink = document.createElement('a');
-                    eltLink.id = 'cssBackSurfaceLink';
-                    eltLink.innerHTML = 'View Full Size Project';
-                    eltLink.className = 'backSurfaceText';
-                    eltLink.setAttribute('href',proj.projectLink);
-                    elt.appendChild(eltTitle);
-                    elt.appendChild(eltLink);
-                    elt.appendChild(eltDesc);
-                    elt.style.opacity = 1;
-                    var eltWidth = windowHalfY*1.7777;
-                    var eltHeight = windowHalfY;
-                    elt.style.width = eltWidth + 'px';
-                    elt.style.height = eltHeight + 'px';
-                    if (proj.title === 'Question a Day') {
-                        //elt.style.backgroundColor = 'black';
-                    }
-                    cssObjectBack = new THREE.CSS3DObject(elt);
-                    cssObjectBack.position.z = -1;
-                    cssObjectBack.position.y = 1000;
-                    cssObjectBack.rotation.x -= 0.3;
-                    cssObjectBack.rotation.y = Math.PI;
-                    cssScene.add(cssObjectBack);
-
-                   // Hide home arrows
-                    $('#homeRightArrow').fadeOut(1000);
-                    $('#homeLeftArrow').fadeOut(1000);
-                    $('#homeDownArrow').fadeOut(1000);
-
-
-                    // Also, when the image is loaded, run the tween animation to move the camera
-                    setupTween(camera.position, projectPos, 5000, function() {
-                        console.log('tween done');
-                        //$('#projectToHomeDownArrow').show();
-                        $('#projectToHomeDownArrow').fadeIn(1000);
-                        $('#projectRightArrow').fadeIn(1000);
-                        //$('#projectLeftArrow').fadeIn(1000);
-                    });
+                // Move camera upwards
+                setupTween(camera.position, projectPos, 5000, function() {
+                    isTweening = false;
+                    console.log('tween done');
+                    //$('#projectToHomeDownArrow').show();
+                    $('#projectToHomeDownArrow').fadeIn(1000);
+                    $('#projectRightArrow').fadeIn(1000);
+                    //$('#projectLeftArrow').fadeIn(1000);
                 });
                 
-                //video = document.getElementById('video');
-                //var loader2 = new THREE.VideoTexture(video);
-                //loader2.load('/images/pr.jpg');
             }
         } 
-        //if (INTERSECTED)
+
+        if (INTERSECTED.userData.type === 'contactBox') {
+            console.log('box clicked');
+            window.open(INTERSECTED.userData.link);
+
+        }
     }
 }
 
@@ -551,32 +589,30 @@ function onDocumentTouchMove( event ) {
 }
 
 function animate() {
-    requestAnimationFrame( animate );
+    requestAnimationFrame(animate);
     render();
 }
 
-var logged = false;
 function render() {
     TWEEN.update();
 
-    if (logged === false) {
-        logged= true;
-    }
-
     camera.updateMatrixWorld();
 
-    var i = 0;
-    for ( var ix = 0; ix < AMOUNTX; ix ++ ) {
-        for ( var iy = 0; iy < AMOUNTY; iy ++ ) {
+    // Particle motion
+    waveParticles();
+    // Box motion
+    wobbleBoxes();
+    // Raycaster & selection
+    raycastObjects();
 
-            particle = groups[i];
-            i++;
-            if (!particle.holdPosition) {
-                particle.position.y = ( Math.sin( ( ix + count ) * 0.3 ) * 10 ) + ( Math.sin( ( iy + count ) * 0.5 ) * 10 );
-            } 
-        }
+    // Render scenes
+    renderer.render(scene, camera);
+    if (cssRenderer) {
+        cssRenderer.render(cssScene, camera);
     }
+}
 
+function raycastObjects() {
     raycaster.setFromCamera(mouse,camera);
     var intersects = raycaster.intersectObjects(selectableObjects, true);
 
@@ -584,12 +620,19 @@ function render() {
         // check if intersected object is of type
         if (intersects[0].object.userData.type === 'particle') {
             console.log('particle');
+        } else if (intersects[0].object.userData.type === 'contactBox') {
+            console.log('contactBox');
         }
+
 
         if ( INTERSECTED != intersects[ 0 ].object ) {
             if ( INTERSECTED ) {
                 if (INTERSECTED.userData.type === 'particle') {
                     INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+                    INTERSECTED = null;
+                }
+                if (INTERSECTED.userData.type === 'contactBox') {
+                    //INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
                     INTERSECTED = null;
                 }
             }
@@ -607,14 +650,11 @@ function render() {
 
                 console.log(INTERSECTED.parent.parent);
                 showDetailPopup(INTERSECTED.parent.parent, INTERSECTED.parent.userData.project);
+            } else if (INTERSECTED.userData.type === 'contactBox') {
+                console.log('contact box in');
             }
         }
     } else {
-        //if (INTERSECTED.userData.type) {
-            
-            //console.log('particle');
-
-        //}
         if (INTERSECTED) {
             if (INTERSECTED.userData.type === 'particle') {
                 console.log('particle out');
@@ -623,35 +663,128 @@ function render() {
                 INTERSECTED.scale.x = 1;
                 INTERSECTED.scale.y = 1;
                 INTERSECTED.scale.z = 1;
+            } else if (INTERSECTED.userData.type === 'contactBox') {
+                console.log('contact box out');
             }
         }
         INTERSECTED = null;
         removeDetailPopup();
     }
 
-    renderer.render(scene, camera);
-    if (cssRenderer) {
-        cssRenderer.render(cssScene, camera);
+}
+
+// Move the particles in the home position in a wave motion
+function waveParticles() {
+    var i = 0;
+    for ( var ix = 0; ix < AMOUNTX; ix ++ ) {
+        for ( var iy = 0; iy < AMOUNTY; iy ++ ) {
+
+            particle = groups[i];
+            i++;
+            if (!particle.holdPosition) {
+                particle.position.y = ( Math.sin( ( ix + count ) * 0.3 ) * 10 ) + ( Math.sin( ( iy + count ) * 0.5 ) * 10 );
+            } 
+        }
     }
     count += 0.1;
 }
 
-function createHTMLElements() {
-    //var text2 = document.createElement('div');
-    //text2.style.position = 'absolute';
-    ////text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
-    //text2.style.width = 100;
-    //text2.style.height = 100;
-    //text2.style.backgroundColor = "blue";
-    //text2.innerHTML = "hi there!";
-    //text2.style.top = 200 + 'px';
-    //text2.style.left = 200 + 'px';
-    //document.body.appendChild(text2);
+// Wobble the contact boxes
+function wobbleBoxes() {
+    if (contactBoxes.length > 0) {
+        for (var i = 0; i < contactBoxes.length; i++) {
+            var box = contactBoxes[i];
+            if (box.rotation.y >= 0.3) {
+                box.rotDirY = -1;
+            } else if (box.rotation.y <= -0.5) {
+                box.rotDirY = 1;
+            }
+            if (box.rotation.x >= 0.15) {
+                box.rotDirX = -1;
+            } else if (box.rotation.x <= -0.3) {
+                box.rotDirX = 1;
+            }
+            if (box.rotation.z >= 0.2) {
+                box.rotDirZ = -1;
+            } else if (box.rotation.z <= -0.2) {
+                box.rotDirZ = 1;
+            }
+            box.rotation.y += 0.003*box.rotDirY;
+            box.rotation.x += 0.003*box.rotDirX;
+            box.rotation.z += 0.003*box.rotDirZ;
+        }
+    }
 }
 
-//var $('#projectPopup') = $('#projectPopup');
+// Setup CSS objects to project projects onto
+function setupCssScene(proj) {
+    // Setup css scene and renderer;
+    cssScene = new THREE.Scene();
+    cssRenderer = new THREE.CSS3DRenderer();
+    cssRenderer.setSize(window.innerWidth,window.innerHeight);
+    cssRenderer.domElement.style.position = 'absolute';
+    cssRenderer.domElement.style.top = 0;
+    cssRenderer.domElement.id = 'cssRendererElement';
+    //cssRenderer.domElement.style.margin = 0;
+    //cssRenderer.domElement.padding = 0;
+    document.body.appendChild(cssRenderer.domElement);
+    
+    var elt = document.createElement('iframe');
+    //document.body.appendChild(elt);
+    elt.style.opacity = 1;
+    elt.src = proj.src;
+    var eltWidth = windowHalfY*1.7777;
+    var eltHeight = windowHalfY;
+    elt.style.width = eltWidth + 'px';
+    elt.style.height = eltHeight + 'px';
+    elt.style.backgroundColor = 'black';
+    if (proj.title === 'Casual HSB Drawings') {
+        elt.style.backgroundColor = 'white';
+    }
+    cssObject = new THREE.CSS3DObject(elt);
+    cssObject.position.z = 0;
+    cssObject.position.y = 1000;
+    cssObject.rotation.x -= 0.3;
+    cssScene.add(cssObject);
 
-//var $('#projectPopup') = $("<div data-role='popup' id='myPop3' class='ui-content' data-arrow='r'>");
+    // back surface
+    var elt = document.createElement('div');
+    elt.id = 'cssBackSurface';
+    elt.style.backgroundColor = '#DEDEDE';
+    var eltTitle = document.createElement('h2');
+    eltTitle.id = 'cssBackSurfaceTitle';
+    eltTitle.innerHTML = proj.title;
+    eltTitle.className = 'backSurfaceText';
+    var eltDesc = document.createElement('p');
+    eltDesc.id = 'cssBackSurfaceDesc';
+    eltDesc.innerHTML = proj.longdesc;
+    eltDesc.className = 'backSurfaceText';
+    var eltLink = document.createElement('a');
+    eltLink.id = 'cssBackSurfaceLink';
+    eltLink.innerHTML = 'View Full Size Project';
+    eltLink.className = 'backSurfaceText';
+    eltLink.setAttribute('href',proj.projectLink);
+    elt.appendChild(eltTitle);
+    elt.appendChild(eltLink);
+    elt.appendChild(eltDesc);
+    elt.style.opacity = 1;
+    var eltWidth = windowHalfY*1.7777;
+    var eltHeight = windowHalfY;
+    elt.style.width = eltWidth + 'px';
+    elt.style.height = eltHeight + 'px';
+    if (proj.title === 'Question a Day') {
+        //elt.style.backgroundColor = 'black';
+    }
+    cssObjectBack = new THREE.CSS3DObject(elt);
+    cssObjectBack.position.z = -1;
+    cssObjectBack.position.y = 1000;
+    cssObjectBack.rotation.x -= 0.3;
+    cssObjectBack.rotation.y = Math.PI;
+    cssScene.add(cssObjectBack);
+}
+
+
+// When a particle is hovered over, show the detail popup
 function showDetailPopup(obj, data) {
     console.log(obj.position);
     console.log(data);
@@ -715,8 +848,12 @@ function setupTween (position, target, duration, callback)
             function() {
                 // copy incoming position into capera position
                 camera.position.copy (position);
+                console.log(isTweening);
             })
         .onComplete(callback)
+        .onStart(function() {
+            isTweening = true;
+        })
         .start();
 }
 
@@ -1027,35 +1164,3 @@ function ColourGradient()
 	}
 }
 
-// Camera animation help from - http://stackoverflow.com/questions/18401213/how-to-animate-the-camera-in-three-js-to-look-at-an-object
-function moveCamera(euler, zoom)
-{
-    // reset everything
-    endQ = new THREE.Quaternion();
-    iniQ = new THREE.Quaternion().copy(camera.quaternion);
-    curQ = new THREE.Quaternion();
-    vec3 = new THREE.Vector3();
-    tweenValue = 0;
-
-    endQ.setFromEuler(euler);
-    TweenLite.to(this, 5, { tweenValue:1, cameraZoom:zoom, onUpdate:onSlerpUpdate });
-}
-
-// on every update of the tween
-function onSlerpUpdate()
-{
-    // interpolate quaternions with the current tween value
-    THREE.Quaternion.slerp(iniQ, endQ, curQ, 1);//tweenObj.value);
-
-    // apply new quaternion to camera position
-    vec3.x = cameraPos0.x;
-    vec3.y = cameraPos0.y;
-    vec3.z = cameraZoom;
-    vec3.applyQuaternion(curQ);
-    camera.position.copy(vec3);
-
-    // apply new quaternion to camera up
-    vec3 = cameraUp0.clone();
-    vec3.applyQuaternion(curQ);
-    camera.up.copy(vec3);
-}
