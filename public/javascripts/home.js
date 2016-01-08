@@ -238,13 +238,15 @@ function arrowClicked(e) {
 
 function setupRightScene() {
     console.log('should setup right scene');
+    // Contact balls 
 
 }
 function removeRightScene() {
     console.log('should remove right scene');
 }
 function setupLeftScene() {
-    console.log('should setup left scene');
+   console.log('should setup left scene');
+   // About balls
 
 }
 function removeLeftScene() {
