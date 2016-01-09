@@ -153,6 +153,13 @@ $about-page-section-color:#283844;
     color: DimGrey;
     z-index: 1;
 }
+#bestExperience {
+    display:none;
+    position: absolute;
+    font-family: Roboto-Light;
+    color: DimGrey;
+    z-index: 1;
+}
 
 #skillsDiv {
     position: absolute;
@@ -280,5 +287,13 @@ li {
   50% { opacity: 0; }
 }
 
+#mobileMessage {
+    display:none;
+    padding-left:20px;
+    padding-right:20px;
+    position: absolute;
+    font-family: Roboto-Medium;
+    color:DimGrey;
+}
 
 
