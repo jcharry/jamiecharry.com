@@ -71,8 +71,14 @@ if (isMobile) {
     // just show a simple element telling the user to go to a desktop computer
     $('#mobileMessage').css('display','block');
     $('#mobileMessage').css('top',windowHalfY - $('#mobileMessage').height()/2);
-    console.log('hi');
     console.log($('#mobileMessage'));
+
+    //AMOUNTX = 5;
+    //AMOUTY = 5;
+
+    //initMobile();
+    //animateMobile();
+
     
 } else {
     //$('#mobileMessage').hide();
@@ -88,6 +94,139 @@ if (isMobile) {
     });
 }
 
+/* MOBILE STUFF - NOT WORKING YET
+var mobileScene;
+var mobileBoxes;
+var mobileCamera;
+var mobileRenderer;
+function initMobile() {
+
+    // Set camera
+    mobileCamera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 5000 );
+    mobileCamera.position.z = 800;
+    mobileCamera.position.y = 300;
+
+    // Set scene
+    mobileScene = new THREE.Scene();
+    mobileBoxes = [];
+
+
+    // Create lights
+    var light = new THREE.AmbientLight(  0xffffff);
+    light.position.set( 1, 1, 1 ).normalize();
+    mobileScene.add(light);
+    var dirlight = new THREE.DirectionalLight(0xffffff,0.5);
+    dirlight.position.set(0,1,0).normalize();
+    mobileScene.add(dirlight);
+    
+    mobileRenderer = new THREE.WebGLRenderer();
+    mobileRenderer.setPixelRatio( window.devicePixelRatio );
+    mobileRenderer.setSize( window.innerWidth, window.innerHeight );
+    mobileRenderer.setClearColor( 0x333333);
+    mobileRenderer.sortObjects = false;
+    document.body.appendChild(mobileRenderer.domElement);
+
+    // load all textures for contact boxes
+    var loader = new THREE.TextureLoader();
+    loader.load('/images/github.png',function(texture) {
+        githubTexture = texture;
+        textureCounter++;
+    });
+    loader.load('/images/facebook.png',function(texture) {
+        facebookTexture = texture;
+        textureCounter++;
+    });
+    loader.load('/images/mail.png',function(texture) {
+        emailTexture = texture;
+        textureCounter++;
+    });
+    loader.load('/images/linkedin.png',function(texture) {
+        linkedinTexture = texture;
+        textureCounter++;
+    });
+    loader.load('/images/vimeo.png',function(texture) {
+        vimeoTexture = texture;
+        textureCounter++;
+    });
+
+    setupMobileScene();
+
+}
+function animateMobile() {
+    requestAnimationFrame(animateMobile);
+    renderMobile();
+}
+function renderMobile() {
+    raycastObjects();
+    wobble(mobileBoxes);
+    mobileRenderer.render(mobileScene, mobileCamera);
+}
+function setupMobileScene() {
+    // Before we can actually setup the scene, we have to make sure all the textures have loaded
+    // if texture Count is less than it should be, wait a sec, then run this function again
+    // Note: textures are loaded within init() to give them time to load
+    if (textureCounter === 5) {
+        console.log('yes, counter === 5');
+
+        // Put all textures in an array to be used during the loop
+        var textures = [githubTexture, facebookTexture,vimeoTexture, linkedinTexture, emailTexture];
+
+        // Iterate through as many textures as we have
+        for (var i = 0; i < textures.length; i++) {
+            // NOTE: The 5th element in the materials array is the side facing us
+            var materials = [
+                new THREE.MeshLambertMaterial({color:0x363636}),
+                new THREE.MeshLambertMaterial({color:0x363636}),
+                new THREE.MeshLambertMaterial({color:0x696969}),
+                new THREE.MeshLambertMaterial({color:0x696969}),
+                new THREE.MeshLambertMaterial({map:textures[i]}),
+                new THREE.MeshLambertMaterial({color:0x696969})
+            ];
+            
+            var boxGeo = new THREE.BoxGeometry(60,60,60);
+            var box = new THREE.Mesh(boxGeo, new THREE.MeshFaceMaterial(materials));
+
+            // Add boxes to our selectable objects array
+            selectableObjects.push(box);
+
+            // Set position and info
+            box.position.z = 0;
+            box.position.x = 0;
+            box.position.y = i*80 + (windowHalfY-200);
+            box.rotation.x -= 0.3;
+            box.userData.type = 'contactBox';
+            box.userData.link = contactLinks[i];
+
+            // Add's a tiny bit of randomness to how the boxes wobble
+            // 50% chance they'll start rotating one way or the other for each axis
+            if (Math.random() > 0.5) {
+                box.rotDirX = 1;    //rotDir properties tell the box which direction to rotate
+            } else {
+                box.rotDirX = -1;
+            }
+            if (Math.random() > 0.5) {
+                box.rotDirY = 1;
+            } else {
+                box.rotDirY = -1;
+            }
+            if (Math.random() > 0.5) {
+                box.rotDirZ = 1;
+            } else {
+                box.rotDirZ = -1;
+            }
+
+            // Save reference to boxes for later
+            mobileBoxes.push(box);
+            // Add boxes to scene
+            mobileScene.add(box);
+        } 
+    } else {
+        console.log('running again');
+        // Here's where we run this function again if not all the textures were loaded
+        setTimeout(setupMobileScene, 1000);
+    }
+}
+*/
 
 // Hold textures in global var so I can access them from other functions
 var githubTexture;
@@ -237,7 +376,7 @@ function render() {
     camera.updateMatrixWorld();
 
     // Particle motion
-    waveParticles();
+    waveParticles(particles);
     // Box motion
     wobble(contactBoxes);
 
@@ -884,7 +1023,7 @@ function removeBottomScene() {
 
 // Move the particles in the home position in a wave motion
 var logged = false;
-function waveParticles() {
+function waveParticles(particles) {
     var i = 0;
     for ( var ix = 0; ix < AMOUNTX; ix ++ ) {
         for ( var iy = 0; iy < AMOUNTY; iy ++ ) {
