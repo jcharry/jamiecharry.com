@@ -13,6 +13,19 @@
     "longdesc":"A unique and personal experience, the Plasmic Reflection mirror encourages the user to fully inhabit their body and mind.  Developed over the course of several weeks at NYU ITP, the mirror acts as an extension of the user's heartbeat, allowing them to enter a meditative place where they are invited to look inward, or find silence.  Ultimately, the experience is up to the viewer."
   },
   {
+    "title": "Quppled",
+    "imgsrc":"/images/quppledsquare.png",
+    "thumbnail":"/images/quppled_thumb.png",
+    "desc": "Very much in progress (but back burnered) Swift iOS app for meeting new couple friends.  Some might call it double dating.",
+    "longdesc": "Because couple to couple interactions have a special cadence, and a unique place in peoples lives, we thought it woudl be a great idea to create a service that allows couples to easily connect  Thus, Quppled was born.  It's My first real dive into iOS development, and it leverages Parse as a user database to store saved matches as well as questions answered by the user.  Cloud Code, a parse feature that allows for simple server side logic, is used to parse user answers and determine the best match available in the user database.  Each day a user gets a new match, whom they can message, or save for later.",
+    "date": "In Development, Started 2015",
+    "src":"https://player.vimeo.com/video/151353179",
+    "id":"quppled",
+    "projectLink":"https://github.com/jcharry/quppled",
+    "hasVideo": false,
+    "credits":""
+  },
+  {
     "title": "Question a Day",
     "imgsrc": "/images/qadsquare.png",
     "thumbnail":"/images/qadsquare_thumb.png",
