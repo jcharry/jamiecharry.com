@@ -1162,8 +1162,11 @@ function showDetailPopup(obj, data) {
     $('#projectPopup').show();
 }
 
+var debug = false;
 function removeDetailPopup() {
-    $('#projectPopup').hide();
+    if (!debug) {
+        $('#projectPopup').hide();
+    }
 }
 
 // 3D to 2D projection - http://stackoverflow.com/questions/27409074/three-js-converting-3d-position-to-2d-screen-position-r69
