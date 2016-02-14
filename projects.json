@@ -45,9 +45,9 @@
     "desc": "A p5.js based synth where our solar system becomes the instrument",
     "longdesc": "What if there was sound in space?  What if the planets made music?  This began with wanting to create an accurate model of solar orbits, and leveragin Kepler's equations of planetary motion, these orbirts are indeed accurate to scale.  Combined with the pleasure of hearing some nice tones as they float through space, this becomes a peaceful way to appreciate the solar system in all it's vastness.",
     "date": "ITP | OCT 2015",
-    "src":"http://jcharry.com/solarSystem",
+    "src":"http://itp.jcharry.com/solarSystem",
     "id": "solarsynth",
-    "projectLink":"http://jcharry.com/solarSystem/",
+    "projectLink":"http://itp.jcharry.com/solarSystem/",
     "hasVideo": false,
     "credits": "By Jamie Charry"
   },
@@ -58,9 +58,9 @@
     "desc": "Utilizing p5.js and the EchoNest API, check out how your two favorite artists compare",
     "longdesc": "Echo Nest provides a great API that not only catalogs pretty much every musical artist alive, but attempts to qualify their music based on dozens of factors.  Most interestingly they attempt to quantify various aspects of a song, i.e. danceability or acousticness, among others.  So why not use this data to see how two artists stack up?",
     "date": "ITP | NOV 2015",
-    "src":"http://jcharry.com/artistComparator",
+    "src":"http://itp.jcharry.com/artistComparator",
     "id":"artistcomp",
-    "projectLink":"http://jcharry.com/artistComparator/",
+    "projectLink":"http://itp.jcharry.com/artistComparator/",
     "hasVideo": false,
     "credits": ""
   },
@@ -71,9 +71,9 @@
     "desc": "Exploring HSB color space with p5.js",
     "longdesc": "Getting a feel for color on the web takes some time, so playing with HSB in p5 was a nice way to get some practice.  These super quick sketches illustrate how easy it can be to get a pretty visual with only a few lines in p5.  Applying translations and rotations as well as iterating through HSB values gives a tremendous amount of opportunity to create beautiful visuals.",
     "date": "ITP | NOV 2015",
-    "src":"http://jcharry.com/colorFlowers",
+    "src":"http://itp.jcharry.com/colorFlowers",
     "id":"colorflowers",
-    "projectLink":"http://jcharry.com/colorFlowers",
+    "projectLink":"http://itp.jcharry.com/colorFlowers",
     "hasVideo": false,
     "credits": ""
   },
@@ -84,9 +84,9 @@
     "desc": "Playing with object interaction with p5.js",
     "longdesc": "A very early sketch to get a handle on object creation, interaction, and desctruction using p5 in the canvas.",
     "date": "ITP | NOV 2015",
-    "src":"http://jcharry.com/particlesAndWaves",
+    "src":"http://itp.jcharry.com/particlesAndWaves",
     "id":"particlesandwaves",
-    "projectLink":"http://jcharry.com/particlesAndWaves",
+    "projectLink":"http://itp.jcharry.com/particlesAndWaves",
     "hasVideo": false,
     "credits": ""
   }
