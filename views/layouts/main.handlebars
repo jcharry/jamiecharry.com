@@ -6,117 +6,15 @@
     <title>Jamie Charry</title>
     <script src='/bower_components/jquery/dist/jquery.min.js'></script>
     <script src='/bower_components/jquery-ui/jquery-ui.min.js'></script>
+    <!--<link rel='stylesheet' href='/bower_components/jquery-ui/themes/base/dialog.css'>-->
 
-    <script src='/bower_components/p5.js/lib/p5.min.js'></script>
-    <script src='/bower_components/typed.js/dist/typed.min.js'></script>
-    <script src='/bower_components/three.js/build/three.min.js'></script>
-
-    <script src="/bower_components/three.js/examples/js/renderers/Projector.js"></script>
-    <script src="/bower_components/three.js/examples/js/renderers/CanvasRenderer.js"></script>    
-    <script src="/bower_components/three.js/examples/js/renderers/CSS3DRenderer.js"></script>
-    <script src='/bower_components/three.js/examples/js/controls/OrbitControls.js'></script>
-    <script src='/bower_components/tweenlite/TweenLite.min.js'></script>
-    <script src='/bower_components/tween.js/src/Tween.js'></script>
-    <script src='/bower_components/threex.dynamictexture/threex.dynamictexture.js'></script>
-
-    <script src='/javascripts/nav.js'></script>
+    <script src='/js/main.js'></script>
     <link rel='stylesheet' href='/stylesheets/main.css'>
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Cabin" />
 </head>
 <body id='body'>
-
-
-  <nav id='menu'>
-      <h1 id='navTitle'>jc.</h1>
-    <ul>
-      <!--<li class='navItem'><a href='/about'>About</a></li>-->
-      <li class='navItem'><a href='http://itp.jcharry.com'>.blog</a>
-      <!--<li class='navItem'><a href='https://github.com/jcharry'>Github</a></li>-->
-      <!--<li class='navItem'><a href='/contact'>Contact</a></li>-->
-    </ul>
-  </nav>
-  <div id='projectPopup'>
-    <img id='projectImg' src='/images/loading.png' alt='popup image'>
-    <h2 id='projectTitle'></h2>
-    <p id='projectDescription'></p>
-    <p id='projectDate'></p>
-  </div>
-
-  <div id='projectRightArrow' class='arrow'>
-      <p>More</p>
-      <img alt='right arrow' src='/images/rightarrow.png'>
-  </div>
-  <div id='projectLeftArrow' class='arrow'>
-      <p>Flip</p>
-      <img alt='left arrow' src='/images/leftarrow.png'>
-  </div>
-  <div id='projectDownArrow' class='arrow'>
-      <p>Home</p>
-      <img alt='down arrow' src='/images/downarrow.png'>
-  </div>
-  <div id='homeRightArrow' class='arrow'>
-      <p>Contact</p>
-      <img alt='right arrow' src='/images/rightarrow.png'>
-  </div>
-  <div id='homeLeftArrow' class='arrow'>
-      <p>About</p>
-      <img alt='left arrow' src='/images/leftarrow.png'>
-  </div>
-  <div id='homeDownArrow' class='arrow'>
-      <p>Skills</p>
-      <img alt='down arrow' src='/images/downarrow.png'>
-  </div>
-  <div id='homeUpArrow' class='arrow'>
-      <img alt='up arrow' src='/images/uparrow.png'>
-      <p>Home</p>
-  </div>
-  <div id='contactinfo'>
-      <p>drop me a line at jamie.charry@gmail.com</p>
-  </div>
-  <div id='aboutDesc'>
-      <p>I'm what you might call a creative coder. But who am I, really?</p>
-  </div>
-  <p id='bestExperience'>For the proper experience, please use a desktop or laptop computer</p>
-  <p id='homeDesc'>Experiments<br/> Click on an orb to learn more</p>
-
-
-    <div id='skillsDiv'>
-        <div class='skill'>
-            <h3 class='skillHeader'>Full Stack Web</h3>
-            <div class='skillList'>
-                <ul>
-                    <li>HTML, CSS/Sass, Javascript</li>
-                    <li>Node.js with Express framework</li>
-                    <li>Templating with Handlebars and Jade</li>
-                    <li>MongoDB</li>
-                </ul>
-            </div>
-        </div>
-        <div class='skill'>
-            <h3 class='skillHeader'>Mobile</h3>
-            <div class='skillList'>
-                <ul>
-                    <li>Swift</li>
-                    <li>Working knowledge of Obj-c</li>
-                    <li>Cordova</li>
-                    <li>Parse</li>
-                </ul>
-            </div>
-        </div>
-        <div class='skill'>
-            <h3 class='skillHeader'>Prototyping &amp; Design</h3>
-            <div class='skillList'>
-                <ul>
-                    <li>Arduino &amp; Basic Electronics</li>
-                    <li>3D Modeling &amp; Printing</li>
-                    <li>Illustrator, Premiere, After Effects</li>
-                    <li>Fabrication</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <p id='mobileMessage'>For the proper experience, please view on a desktop or laptop computer</p>
-
-    <script src='/javascripts/home.js'></script>
+    {{>nav}}
+    <h1 class='pageTitle'>{{pagetitle}}</h1>
+    {{{body}}} 
 </body>
 </html>

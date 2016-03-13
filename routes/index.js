@@ -4,16 +4,25 @@ var projects = require('../projects.json');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('home', {projects: projects});
+    res.render('home', {projects: projects});
+});
+
+router.get('/work', function(req, res, next) {
+    res.render('home', {projects: projects, pagetitle: 'projects.'});
+});
+router.get('all', function(req, res, next) {
+    
 });
 
 router.get('/projectInfo', function(req,res, next) {
-    res.send(projects);
 });
 
 router.get('/about', function(req, res, next) {
-  res.render('about', {title:'About.', timeline: timeline});
+  res.render('about', {pagetitle: 'about.'});
 });
 
+router.get('/contact', function(req, res, next) {
+  res.render('contact', {pagetitle: 'contact.'});
+});
 
 module.exports = router;

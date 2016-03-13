@@ -1,6 +1,7 @@
 [
   {
     "title":"Plasmic Reflection",
+    "category": "experiments",
     "imgsrc": "/images/pulse_square.png",
     "thumbnail": "/images/pulse_square_thumb.png",
     "desc": "An arduino based infinity mirror that reflects the user's hearbeat in light and sound",
@@ -14,7 +15,8 @@
   },
   {
     "title": "Quppled",
-    "imgsrc":"/images/quppledsquare.png",
+    "category": "apps",
+    "imgsrc":"/images/quppled_thumb.png",
     "thumbnail":"/images/quppled_thumb.png",
     "desc": "Very much in progress (but back burnered) Swift iOS app for meeting new couple friends.  Some might call it double dating.",
     "longdesc": "Because couple to couple interactions have a special cadence, and a unique place in peoples lives, we thought it woudl be a great idea to create a service that allows couples to easily connect  Thus, Quppled was born.  It's My first real dive into iOS development, and it leverages Parse as a user database to store saved matches as well as questions answered by the user.  Cloud Code, a parse feature that allows for simple server side logic, is used to parse user answers and determine the best match available in the user database.  Each day a user gets a new match, whom they can message, or save for later.",
@@ -27,6 +29,7 @@
   },
   {
     "title": "Question a Day",
+    "category": "web",
     "imgsrc": "/images/qadsquare.png",
     "thumbnail":"/images/qadsquare_thumb.png",
     "desc": "Node.js Express app leveraging basic sentiment analysis to create a public journal-a-day where all our feelings are heard equally",
@@ -40,6 +43,7 @@
   },
   {
     "title":"Solar Synthesizer",
+    "category": "experiments",
     "imgsrc": "/images/solarsynthsquare.png",
     "thumbnail":"/images/solarsynthsquare_thumb.png",
     "desc": "A p5.js based synth where our solar system becomes the instrument",
@@ -53,6 +57,7 @@
   },
   {
     "title":"Artist Comparator",
+    "category":"experiments",
     "imgsrc": "/images/artistcompsquare.png",
     "thumbnail": "/images/artistcompsquare_thumb.png",
     "desc": "Utilizing p5.js and the EchoNest API, check out how your two favorite artists compare",
@@ -66,7 +71,8 @@
   },
   {
     "title":"Casual HSB Drawings",
-    "imgsrc": "/images/artistcompsquare.png",
+    "category": "experiments",
+    "imgsrc": "/images/hsbsquare_thumb.png",
     "thumbnail": "/images/hsbsquare_thumb.png",
     "desc": "Exploring HSB color space with p5.js",
     "longdesc": "Getting a feel for color on the web takes some time, so playing with HSB in p5 was a nice way to get some practice.  These super quick sketches illustrate how easy it can be to get a pretty visual with only a few lines in p5.  Applying translations and rotations as well as iterating through HSB values gives a tremendous amount of opportunity to create beautiful visuals.",
@@ -79,6 +85,7 @@
   },
   {
     "title":"Particles and Waves",
+    "category": "experiments",
     "imgsrc": "/images/particlesandwavessquare_thumb.png",
     "thumbnail": "/images/particlesandwavessquare_thumb.png",
     "desc": "Playing with object interaction with p5.js",

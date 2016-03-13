@@ -1,0 +1,24 @@
+
+<ul id='filter'>
+    <li class="filterItem selected" data-filter='all'>all</li>
+    <li class="filterItem" data-filter='apps'>apps</li>
+    <li class="filterItem" data-filter='web'>web</li>
+    <li class="filterItem" data-filter='experiments'>experiments</li>
+</ul>
+<div>
+    <ul id='projects'>
+        {{#each projects}}
+            <li class='project' data-id={{id}} data-category={{category}}>
+                <a href='/{{id}}'>
+                <div class='projectContainer'>
+                    <img src={{imgsrc}}>
+                    <div class="overlay">
+                        <h3 class='projectTitle'>{{title}}</h3>
+                        <p class='projectDesc'>{{desc}}</p>
+                    </div>
+                </div>
+                </a>
+            </li>
+        {{/each}}
+    </ul>
+</div>
