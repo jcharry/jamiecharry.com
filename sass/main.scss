@@ -9,6 +9,11 @@ body {
 h1 {    
     font-size: 2.5vmax;
 }
+
+/*p {*/
+    /*margin-left: 20vw;*/
+    /*margin-right: 20vw;*/
+/*}*/
 a {
     text-decoration: none;
     font-size: 1.3vmax;
@@ -112,12 +117,13 @@ ul li {
     width: 100vw;
     text-align: center;
 }
-
 #filter {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     font-size: 1.7vmax;
+    margin-left: 20vw;
+    margin-right: 20vw;
 }
 .filterItem {
     padding:10px;
@@ -148,8 +154,8 @@ ul li {
     margin: 5px;
     max-width:250px;
     max-height:250px;
-    min-width:150px;
-    min-height: 150px;
+    min-width:170px;
+    min-height: 170px;
 }
 .project img {
     position: absolute;
@@ -174,25 +180,50 @@ ul li {
 .overlay h3 {
     color: white;
     text-align: center;
+    font-size: 1.5vmax;
 }
 .overlay p {
     color: white;
     text-align: center;
     padding: 15px;
+    padding-bottom: 5px;
+    padding-top:0px;
 }
-#aboutdesc {
-    padding: 5vw;
+.centeredtext {
+    padding-left: 20vw;
+    padding-right: 20vw;
     font-size: 1.6vmax;
 }
-#resumelink {
-    margin: 5vw;
-    font-size: 10pt;
-}
+/*#resumelink {*/
+    /*margin: 5vw;*/
+    /*font-size: 10pt;*/
+/*}*/
 #aboutCanvas {
     width: 80%;
     height: 400px;
 }
-@media all and (max-width:400px) {
+
+#contactList {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0;
+}
+.contactItem img {
+    padding: 20px;
+    width: 100px;
+    height: 100px;
+}
+@media all and (max-width: 600px) {
+    .project p {
+        font-size: 10pt;
+    }
+}
+@media all and (max-width:450px) {
+    .centeredtext {
+        font-size: 10pt;
+    }
     #navLinks {
         display: none;
     }
@@ -203,6 +234,9 @@ ul li {
         width: 40vw;
         height: 40vw;
     }
+    .project p {
+        font-size: 8pt;
+    }
     .project a {
         font-size: 3vw;
     }
@@ -210,11 +244,21 @@ ul li {
         /*display: block;*/
     /*}*/
 }
+.iframeContainer {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.projectImg {
+    width: 100%;
+}
 @media all and (min-width: 1000px) {
     .project p {
-        font-size: 12pt;
+        font-size: 11pt;
     }
-    #aboutdesc {
+    
+    .aboutdesc {
         font-size: 12pt;
     }
     h1 {    
@@ -224,10 +268,23 @@ ul li {
         font-size: 12pt;
     }
     .filterItem {
+        font-size: 13pt;
+    }
+    .overlay h3 {
+        font-size: 14pt;
+    }
+    .overlay .projectDesc {
         font-size: 11pt;
     }
-    h2 {
-
+    .overlay .projectDate {
+        font-size: 9pt;
+    }
+    .centeredtext {
+        font-size: 11pt;
+    }
+    #projects {
+        padding-right:10vw;
+        padding-left: 10vw;
     }
 }
 

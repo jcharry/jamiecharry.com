@@ -9,12 +9,13 @@
     <ul id='projects'>
         {{#each projects}}
             <li class='project' data-id={{id}} data-category={{category}}>
-                <a href='/{{id}}'>
+                <a href='{{#if hasPage}}/{{id}}{{else}}{{projectLink}}{{/if}}'>
                 <div class='projectContainer'>
                     <img src={{imgsrc}}>
                     <div class="overlay">
                         <h3 class='projectTitle'>{{title}}</h3>
                         <p class='projectDesc'>{{desc}}</p>
+                        <p class='projectDate'>{{date}}</p>
                     </div>
                 </div>
                 </a>

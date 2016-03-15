@@ -8,6 +8,7 @@
     "date": "ITP | DEC 2015",
     "id": "reflected",
     "hasVideo":true,
+    "hasPage": true,
     "src":"https://player.vimeo.com/video/149091016",
     "projectLink":"http://itp.jcharry.com/2015/12/14/plasmic-reflections-final-documentation/",
     "credits": "An ITP Project by Jamie Charry & Ella Dagan. Dec 2015",
@@ -19,12 +20,13 @@
     "imgsrc":"/images/quppled_thumb.png",
     "thumbnail":"/images/quppled_thumb.png",
     "desc": "Very much in progress (but back burnered) Swift iOS app for meeting new couple friends.  Some might call it double dating.",
-    "longdesc": "Because couple to couple interactions have a special cadence, and a unique place in peoples lives, we thought it woudl be a great idea to create a service that allows couples to easily connect  Thus, Quppled was born.  It's My first real dive into iOS development, and it leverages Parse as a user database to store saved matches as well as questions answered by the user.  Cloud Code, a parse feature that allows for simple server side logic, is used to parse user answers and determine the best match available in the user database.  Each day a user gets a new match, whom they can message, or save for later.",
+    "longdesc": "Because couple to couple interactions have a special cadence, and a unique place in peoples lives, we thought it would be a great idea to create a service that allows couples to easily connect  Thus, Quppled was born.  It's My first real dive into iOS development, and it leverages Parse as a user database to store saved matches as well as questions answered by the user.  Cloud Code, a parse feature that allows for simple server side logic, is used to parse user answers and determine the best match available in the user database.  Each day a user gets a new match, whom they can message, or save for later.",
     "date": "In Development, Started 2015",
     "src":"https://player.vimeo.com/video/151353179",
     "id":"quppled",
     "projectLink":"https://github.com/jcharry/quppled",
     "hasVideo": false,
+    "hasPage": true,
     "credits":""
   },
   {
@@ -39,6 +41,7 @@
     "id":"qad",
     "projectLink":"http://questionaday.herokuapp.com/",
     "hasVideo": false,
+    "hasPage": true,
     "credits": ""
   },
   {
@@ -70,7 +73,7 @@
     "credits": ""
   },
   {
-    "title":"Casual HSB Drawings",
+    "title":"HSB Drawings",
     "category": "experiments",
     "imgsrc": "/images/hsbsquare_thumb.png",
     "thumbnail": "/images/hsbsquare_thumb.png",

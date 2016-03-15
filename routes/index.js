@@ -4,6 +4,7 @@ var projects = require('../projects.json');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+    console.log(req.query);
     res.render('home', {projects: projects, pagetitle: 'work.'});
 });
 
@@ -23,6 +24,18 @@ router.get('/about', function(req, res, next) {
 
 router.get('/contact', function(req, res, next) {
   res.render('contact', {pagetitle: 'contact.'});
+});
+
+// Project Pages
+router.get('/quppled', function(req, res, next) {
+    res.render('quppled');
+});
+
+router.get('/reflected', function(req, res, next) {
+    res.render('reflected');
+});
+router.get('/qad', function(req, res, next) {
+    res.render('qad');
 });
 
 module.exports = router;
