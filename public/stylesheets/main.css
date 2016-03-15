@@ -10,11 +10,13 @@ h1 {
 a {
   text-decoration: none;
   font-size: 1.3vmax;
-  color: #710071; }
+  color: #710071;
+  color: #006100; }
 
 a:hover {
   opacity: 0.5;
-  border-bottom: 1px solid #710071; }
+  border-bottom: 1px solid #710071;
+  border-bottom: 1px solid #006100; }
 
 #nav {
   height: 60px;
@@ -29,7 +31,8 @@ a:hover {
 .nohover:hover {
   opacity: 1;
   color: black;
-  border-bottom: 1px solid #710071; }
+  border-bottom: 1px solid #710071;
+  border-bottom: 1px solid #006100; }
 
 a {
   text-decoration: none; }
@@ -70,8 +73,16 @@ ul li {
   top: 0px;
   height: 100vh;
   width: 100vw;
-  background-color: rgba(0, 0, 0, 0.8);
-  z-index: 20; }
+  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 20;
+  animation-name: fadein;
+  animation-duration: 1s; }
+
+@keyframes fadein {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
 
 #menupopup ul {
   display: flex;
@@ -108,8 +119,10 @@ ul li {
 
 .selected {
   color: #710071;
+  color: #006100;
   opacity: 0.5;
   border-bottom: 1px solid #710071;
+  border-bottom: 1px solid #006100;
   padding-bottom: 2px;
   /*background-color:#710071; */
   /*border-radius:20px;*/ }
@@ -159,7 +172,19 @@ ul li {
   text-align: center;
   padding: 15px; }
 
-@media (max-width: 400px) {
+#aboutdesc {
+  padding: 5vw;
+  font-size: 1.6vmax; }
+
+#resumelink {
+  margin: 5vw;
+  font-size: 10pt; }
+
+#aboutCanvas {
+  width: 80%;
+  height: 400px; }
+
+@media all and (max-width: 400px) {
   #navLinks {
     display: none; }
   #nav button {
@@ -167,6 +192,20 @@ ul li {
   .project {
     width: 40vw;
     height: 40vw; }
+  .project a {
+    font-size: 3vw; }
   /*.overlay {*/
   /*display: block;*/
   /*}*/ }
+
+@media all and (min-width: 1000px) {
+  .project p {
+    font-size: 12pt; }
+  #aboutdesc {
+    font-size: 12pt; }
+  h1 {
+    font-size: 16pt; }
+  a {
+    font-size: 12pt; }
+  .filterItem {
+    font-size: 11pt; } }

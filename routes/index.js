@@ -4,11 +4,11 @@ var projects = require('../projects.json');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    res.render('home', {projects: projects});
+    res.render('home', {projects: projects, pagetitle: 'work.'});
 });
 
 router.get('/work', function(req, res, next) {
-    res.render('home', {projects: projects, pagetitle: 'projects.'});
+    res.render('home', {projects: projects, pagetitle: 'work.'});
 });
 router.get('all', function(req, res, next) {
     
