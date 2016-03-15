@@ -1,5 +1,21 @@
 [
   {
+    "title":"An Interactive History of the Cocoa Bean",
+    "category": "web",
+    "imgsrc": "/images/cocoa_thumb.png",
+    "thumbnail": "/images/cocoa_thumb.png",
+    "desc": "A slideshow style web page developed from scratch to educate folks about the humble cocoa bean.",
+    "date": "ITP | FEB 2016",
+    "id": "cocoa",
+    "hasVideo":false,
+    "hasPage": true,
+    "src":"http://cocoa.jcharry.com",
+    "projectLink":"http://cocoa.jcharry.com",
+    "credits": "An ITP Project by Jamie Charry. Feb 2016",
+    "longdesc":""
+  },
+  
+  {
     "title":"Plasmic Reflection",
     "category": "experiments",
     "imgsrc": "/images/pulse_square.png",

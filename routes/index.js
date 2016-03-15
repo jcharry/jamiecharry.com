@@ -28,14 +28,17 @@ router.get('/contact', function(req, res, next) {
 
 // Project Pages
 router.get('/quppled', function(req, res, next) {
-    res.render('quppled');
+    res.render('quppled', {pagetitle: 'quppled.'});
 });
 
 router.get('/reflected', function(req, res, next) {
-    res.render('reflected');
+    res.render('reflected', {pagetitle: 'reflected'});
 });
 router.get('/qad', function(req, res, next) {
-    res.render('qad');
+    res.render('qad', {pagetitle: 'question a day.'});
+});
+router.get('/cocoa', function(req, res, next) {
+    res.render('cocoa', {pagetitle: 'cocoa bean.'});
 });
 
 module.exports = router;
