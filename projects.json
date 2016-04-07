@@ -1,7 +1,7 @@
 [
   {
     "title":"EAFUS Twitter Bot",
-    "category": "web",
+    "category": "experiments",
     "imgsrc": "/images/eafus_thumb.png",
     "thumbnail": "/images/eafus_thumb.png",
     "desc": "Simple bot that tweets out, one by one, everything allowed to be added to food in the US.",
