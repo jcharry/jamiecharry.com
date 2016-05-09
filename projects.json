@@ -1,5 +1,20 @@
 [
   {
+    "title":"Tale of <user_defined_location>",
+    "category": "web",
+    "imgsrc": "/images/tale.png",
+    "thumbnail": "/images/tale_thumb.png",
+    "desc": "Location based generative text project using Python, Flask, and a bunch of API's.",
+    "date": "ITP | MAY 2016",
+    "id": "tale",
+    "hasVideo":false,
+    "hasPage": false,
+    "src":"http://tale.town",
+    "projectLink":"http://tale.town",
+    "credits": "Jamie Charry. MAY 2016",
+    "longdesc":""
+  },
+  {
     "title":"EAFUS Twitter Bot",
     "category": "experiments",
     "imgsrc": "/images/eafus_thumb.png",

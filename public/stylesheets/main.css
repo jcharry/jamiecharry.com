@@ -246,7 +246,8 @@ ul li {
 .overlay h3 {
   color: white;
   text-align: center;
-  font-size: 1.5vmax; }
+  font-size: 1.5vmax;
+  padding: 2px; }
 
 .overlay p {
   color: white;
