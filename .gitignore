@@ -1,3 +1,4 @@
 *.swp
 lib/cred.json
 *.DS_STORE
+*.sketch

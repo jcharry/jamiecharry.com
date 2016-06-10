@@ -17,7 +17,7 @@
   {
     "title":"EAFUS Twitter Bot",
     "category": "experiments",
-    "imgsrc": "/images/eafus_thumb.png",
+    "imgsrc": "/images/eafus.png",
     "thumbnail": "/images/eafus_thumb.png",
     "desc": "Simple bot that tweets out, one by one, everything allowed to be added to food in the US.",
     "date": "ITP | FEB 2016",
@@ -32,7 +32,7 @@
   {
     "title":"An Interactive History of the Cocoa Bean",
     "category": "web",
-    "imgsrc": "/images/cocoa_thumb.png",
+    "imgsrc": "/images/cocoa.png",
     "thumbnail": "/images/cocoa_thumb.png",
     "desc": "A slideshow style web page developed from scratch to educate folks about the humble cocoa bean.",
     "date": "ITP | FEB 2016",
@@ -77,7 +77,7 @@
   {
     "title": "Question a Day",
     "category": "web",
-    "imgsrc": "/images/qadsquare.png",
+    "imgsrc": "/images/qad.png",
     "thumbnail":"/images/qadsquare_thumb.png",
     "desc": "Node.js Express app leveraging basic sentiment analysis to create a public journal-a-day where all our feelings are heard equally",
     "longdesc": "In today's facebook flooded internet world, we're often inundated with other people's feelings.  But so often it feels forced, as if they're asking for sympathy or looking for someone to acknowledge them.  Question a Day is a simple attempt to allow for sharing of deep feelings without the need for sympathy or attention, just the idea that by putting your feelings out there, we just might all feel a bit more connected.",
@@ -120,7 +120,7 @@
   {
     "title":"HSB Drawings",
     "category": "experiments",
-    "imgsrc": "/images/hsbsquare_thumb.png",
+    "imgsrc": "/images/hsb.png",
     "thumbnail": "/images/hsbsquare_thumb.png",
     "desc": "Exploring HSB color space with p5.js",
     "longdesc": "Getting a feel for color on the web takes some time, so playing with HSB in p5 was a nice way to get some practice.  These super quick sketches illustrate how easy it can be to get a pretty visual with only a few lines in p5.  Applying translations and rotations as well as iterating through HSB values gives a tremendous amount of opportunity to create beautiful visuals.",
@@ -134,7 +134,7 @@
   {
     "title":"Particles and Waves",
     "category": "experiments",
-    "imgsrc": "/images/particlesandwavessquare_thumb.png",
+    "imgsrc": "/images/particlesandwaves.png",
     "thumbnail": "/images/particlesandwavessquare_thumb.png",
     "desc": "Playing with object interaction with p5.js",
     "longdesc": "A very early sketch to get a handle on object creation, interaction, and desctruction using p5 in the canvas.",
