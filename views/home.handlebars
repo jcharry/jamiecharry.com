@@ -5,10 +5,10 @@
     <li class="filterItem" data-filter='web'>web</li>
     <li class="filterItem" data-filter='experiments'>experiments</li>
 </ul>
-<div>
+<div id='projectsContainer'>
     <ul id='projects'>
         {{#each projects}}
-            <li class='project' data-id={{id}} data-category={{category}}>
+            <li class='project visible' data-id={{id}} data-category={{category}}>
                 <a href='{{#if hasPage}}/{{id}}{{else}}{{projectLink}}{{/if}}'>
                 <div class='projectContainer'>
                     <img src={{imgsrc}}>
