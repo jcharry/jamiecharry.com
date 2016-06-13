@@ -1,4 +1,5 @@
 $green-color: #006100;
+$light-gray-color: #a0a0a0;
 
 body {
     margin:0px;
@@ -254,16 +255,16 @@ ul li {
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.8);
+    background-color: rgba(0,0,0,0.9);
 }
 .overlay h3 {
-    color: white;
+    color: $light-gray-color;
     text-align: center;
     font-size: 2.0vmax;
     padding: 2px;
 }
 .overlay p {
-    color: white;
+    color: $light-gray-color;
     text-align: center;
     padding: 15px;
     padding-bottom: 5px;
