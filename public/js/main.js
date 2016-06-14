@@ -44,6 +44,9 @@
                 $('.filterItem').removeClass('selected');
                 $(this).addClass('selected');
 
+                // Remove 'visible' class from all projects
+                $('.project').removeClass('visible');
+
                 // fade out all projects
                 var projects = $('.project');
 
@@ -61,10 +64,15 @@
                         matches = $('.project');
                     }
 
+                    //matches.addClass('visible')
+                        //.height($(this).width())
+                        //.fadeIn()
                     // fade the matches in
                     for (var q = 0; q < matches.length; q++) {
-                        $(matches[q])
-                            .addClass('visible')
+                        //$(matches[q])
+                            //.addClass('visible')
+                            //.fadeIn();
+                        matches.addClass('visible')
                             .fadeIn();
                     }
                 }, 200);
@@ -73,9 +81,11 @@
         // Setup project items
         initProjects: function() {
             // Set height
-            var w = $('.visible').width();
+            var w = $('.project').width();
 
-            $('.visible').css('height', w);
+            console.log(w);
+
+            $('.project').css('height', w);
             //height($('.project').width());
 
             // Hover functionality
@@ -107,9 +117,7 @@
         windowResized: function() {
             var w = $('.visible').width();
 
-            $('.visible').css('height', w);
-            //$('iframe').attr('width', window.innerWidth-20);
-            //$('iframe').attr('height', (window.innerWidth-20)*9/16);
+            $('.project').height(w);
         }
     };
 
@@ -117,7 +125,7 @@
 
 }(this));
 
-$(document).ready(function() {
+window.addEventListener('load', function() {
     jc.detectSmall();
     jc.detectMobile();
     console.log(jc.isMobile);
