@@ -47,7 +47,7 @@
   {
     "title":"Plasmic Reflection",
     "category": "experiments",
-    "imgsrc": "/images/pulse_square.png",
+    "imgsrc": "/images/plasmic_reflections.png",
     "thumbnail": "/images/pulse_square_thumb.png",
     "desc": "An arduino based infinity mirror that reflects the user's hearbeat in light and sound",
     "date": "ITP | DEC 2015",
