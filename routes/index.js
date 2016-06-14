@@ -5,18 +5,17 @@ var projects = require('../projects.json');
 /* GET home page. */
 router.get('/', function(req, res, next) {
     console.log(req.query);
-    res.render('home', {projects: projects, pagetitle: 'work.'});
+    res.render('home', {projects: projects, pagetitle: 'stuff.'});
 });
 
-router.get('/work', function(req, res, next) {
-    res.render('home', {projects: projects, pagetitle: 'work.'});
+router.get('/stuff', function(req, res, next) {
+    res.render('home', {projects: projects, pagetitle: 'stuff.'});
 });
-router.get('all', function(req, res, next) {
-    
-});
+//router.get('all', function(req, res, next) {
+//});
 
-router.get('/projectInfo', function(req,res, next) {
-});
+//router.get('/projectInfo', function(req, res, next) {
+//});
 
 router.get('/about', function(req, res, next) {
   res.render('about', {pagetitle: 'about.'});
