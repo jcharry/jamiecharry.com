@@ -13,7 +13,7 @@ a {
   color: #710071;
   color: #006100; }
 
-a:hover {
+.navItem:hover {
   opacity: 0.5;
   filter: alpha(opacity=50);
   border-bottom: 1px solid #710071;
@@ -45,9 +45,7 @@ a:hover {
 .nohover:hover {
   opacity: 1;
   filter: alpha(opacity=100);
-  color: black;
-  border-bottom: 1px solid #710071;
-  border-bottom: 1px solid #006100; }
+  color: black; }
 
 a {
   text-decoration: none; }
@@ -182,7 +180,9 @@ ul li {
   padding: 10px; }
 
 .filterItem:hover {
-  cursor: pointer; }
+  cursor: pointer;
+  color: #006100;
+  opacity: 0.4; }
 
 .selected {
   color: #710071;
@@ -352,11 +352,11 @@ ul li {
   .aboutdesc {
     font-size: 12pt; }
   h1 {
-    font-size: 16pt; }
+    font-size: 20pt; }
   a {
     font-size: 12pt; }
   .filterItem {
-    font-size: 13pt; }
+    font-size: 16pt; }
   .overlay h3 {
     font-size: 14pt; }
   .overlay .projectDesc {
