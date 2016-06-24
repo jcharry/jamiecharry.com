@@ -7,13 +7,20 @@ body {
     background-color: #F3F3F3;
     font-family: Cabin;
 }
+canvas {
+    padding: 0;
+    margin: 0;
+    position: fixed;
+    z-index: -10;
+}
+
 h1 {    
     font-size: 2.5vmax;
 }
 
 a {
     text-decoration: none;
-    font-size: 1.3vmax;
+    font-size: 12pt;
     color: #710071;
     color: $green-color;
 }
@@ -166,9 +173,24 @@ ul li {
     width: 25px;
     padding-left: 20px;
 }
-.pageTitle {
+#homepageTitle {
+    display: flex;
     width: 100vw;
-    text-align: center;
+    justify-content: center;
+    align-items: center;
+
+    .pageTitle {
+        width: auto;
+        padding-left: 0;
+    }
+}
+.pageTitle {
+    /*width: 100vw;*/
+    padding-left: 20%;
+    /*text-align: center;*/
+}
+#filterContainer {
+    display: flex;
 }
 #filter {
     display: -webkit-box;
@@ -184,8 +206,8 @@ ul li {
         -ms-flex-pack: distribute;
             justify-content: space-around;
     font-size: 1.7vmax;
-    margin-left: 20vw;
-    margin-right: 20vw;
+    /*margin-left: 20vw;*/
+    /*margin-right: 20vw;*/
 }
 .filterItem {
     padding:10px;
@@ -398,8 +420,8 @@ ul li {
         font-size: 11pt;
     }
     #projectsContainer {
-        padding-left: 10%;
-        padding-right: 10%;
+        padding-left: 15%;
+        padding-right: 15%;
     }
     #projects {
         /*padding-right:10vw;*/

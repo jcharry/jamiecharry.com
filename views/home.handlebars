@@ -1,10 +1,12 @@
-
-<ul id='filter'>
-    <li class="filterItem selected" data-filter='all'>all</li>
-    <li class="filterItem" data-filter='apps'>apps</li>
-    <li class="filterItem" data-filter='web'>web</li>
-    <li class="filterItem" data-filter='experiments'>experiments</li>
-</ul>
+<div id='homepageTitle'>
+    <h1 class='pageTitle'>{{pagetitle}}</h1>
+    <ul id='filter'>
+        <li class="filterItem selected" data-filter='all'>all</li>
+        <li class="filterItem" data-filter='apps'>apps</li>
+        <li class="filterItem" data-filter='web'>web</li>
+        <li class="filterItem" data-filter='experiments'>experiments</li>
+    </ul>
+</div>
 <div id='projectsContainer'>
     <ul id='projects'>
         {{#each projects}}
