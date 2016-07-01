@@ -56,7 +56,7 @@ var Board = function() {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     var numCols = this.width / cellWidth;
-    var numRows = this.width / cellHeight;
+    var numRows = this.height / cellHeight;
 
     console.log(numRows + ' rows and ' + numCols + ' cols');
 
@@ -65,11 +65,10 @@ var Board = function() {
     this.cells = (function() {
         var cells = [];
 
-        var offset = 0;
-
         for (var i = -1; i < numRows + 1; i++) {
             for (var j = -1; j < numCols + 1; j++) {
-                offset = j % 2 === 0 ? 0 : 30;
+                var offset = j % 2 === 0 ? 0 : 30;
+
                 cells.push(new Cell(j * cellWidth, i * cellHeight + offset, j, i));
             }
         }
@@ -77,24 +76,11 @@ var Board = function() {
         return cells;
     }.call(this));
     console.log(this.cells);
-
-    //var that = this;
-
-    //this.cells.forEach(function(cell) {
-        //cell.findNeighbors(that.cells);
-    //});
-
 };
 
 Board.prototype.display = function() {
     var ctx = this.ctx;
 
-    //for (var i = 0; i < this.cells.length; i++) {
-        //var cell = this.cells[i];
-
-        //ctx.fillStyle = cell.fill;
-        //ctx.fillRect(cell.x, cell.y, cell.width, cell.height);
-    //}
     this.cells.forEach(function(cell) {
         ctx.fillStyle = cell.fill;
         ctx.fillRect(cell.x, cell.y, cell.width, cell.height);
@@ -147,7 +133,12 @@ Board.prototype.update = function() {
         cnv: document.getElementById('canvas'),
         ctx: document.getElementById('canvas').getContext('2d'),
         fps: 8,
-        board: new window.Board(),
+        board: (function() {
+            console.log(window.innerHeight);
+            console.log(window.innerWidth);
+
+            return new window.Board();
+        }()),
         detectMobile: function() {
             if (window.innerWidth < 450 || window.innerHeight < 700) {
                 this.isMobile = true;
@@ -276,7 +267,6 @@ Board.prototype.update = function() {
             var render = function() {
                 var numOfCells = that.board.cells.length;
 
-                //that.board.cells[Math.floor(Math.random() * numOfCells)].fill = 'rgba(' + Math.floor(Math.random() * 255) + ',' + Math.floor(Math.random() * 255) + ',' + Math.floor(Math.random() * 255) + ',' + Math.random() + ')';
                 that.board.update();
                 that.board.display();
             };
@@ -309,22 +299,31 @@ Board.prototype.update = function() {
                         }
                 });
             });
+        },
+        initAboutPageAnimation: function() {
+            $('.typed').typed({
+                strings: ['Hi. ^800', 'I\'m Jamie ^800', 'Thanks for stopping by ^800'],
+                typeSpeed: 10,
+                startDelay: 300,
+                backDelay: 500,
+                showCursor: true,
+                cursorChar: '|',
+                callback: function() {
+                    $('.typed').animate({
+                        'font-size': '3vmax'
+                    }, 1000);
+                    $('.typed-cursor').animate({
+                        'font-size': '3vmax'
+                    }, 1000);
+                    $('.hidden').fadeIn(1000);
+                }
+            });
         }
     };
 
     global.jc = obj;
 
 }(window));
-
-// Fallback for browser peculiarities
-//window.requestAnimFrame = (function() {
-    //return window.requestAnimationFrame ||
-        //window.webkitRequestAnimationFrame ||
-        //window.mozRequestAnimationFrame ||
-        //function(callback) {
-            //window.setTimeout(callback, 1000 / 60);
-        //};
-//}());
 
 jc.detectSmall();
 jc.detectMobile();
@@ -336,7 +335,9 @@ jc.sizeiFrames();
 jc.animateCanvas();
 //jc.initMouseMove();
 
-
+if (window.location.pathname === '/about') {
+    jc.initAboutPageAnimation();
+}
 window.addEventListener('resize', jc.sizeiFrames);
 window.addEventListener('resize', jc.windowResized);
 

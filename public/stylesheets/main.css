@@ -63,7 +63,10 @@ a {
   padding: 5px; }
 
 hr {
-  width: 80vw; }
+  /*width: 80vw;*/ }
+
+h2 {
+  margin-left: 20%; }
 
 #navLinks {
   display: -webkit-box;
@@ -282,13 +285,35 @@ ul li {
   padding-right: 20vw;
   font-size: 1.6vmax; }
 
-/*#resumelink {*/
-/*margin: 5vw;*/
-/*font-size: 10pt;*/
-/*}*/
+.fully-centered {
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+
+.big-text {
+  font-size: 5vmax;
+  margin-top: 0;
+  margin-bottom: 0; }
+
+.typed-cursor {
+  font-size: 5vmax; }
+
+.hidden {
+  display: none; }
+
+.bold-text {
+  font-weight: bolder;
+  font-style: italic; }
+
+.strong {
+  font-size: 13pt; }
+
 #aboutCanvas {
   width: 80%;
   height: 400px; }
+
+#profile-img {
+  width: 100%; }
 
 #contactList {
   display: -webkit-box;
@@ -390,3 +415,33 @@ ul li {
   #projects {
     /*padding-right:10vw;*/
     /*padding-left: 10vw;*/ } }
+
+.typed-cursor {
+  opacity: 1;
+  -webkit-animation: blink 0.7s infinite;
+  -moz-animation: blink 0.7s infinite;
+  animation: blink 0.7s infinite; }
+
+@keyframes blink {
+  0% {
+    opacity: 1; }
+  50% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+
+@-webkit-keyframes blink {
+  0% {
+    opacity: 1; }
+  50% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+
+@-moz-keyframes blink {
+  0% {
+    opacity: 1; }
+  50% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }

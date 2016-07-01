@@ -11,11 +11,6 @@ router.get('/', function(req, res, next) {
 router.get('/projects', function(req, res, next) {
     res.render('home', {projects: projects, pagetitle: 'projects.'});
 });
-//router.get('all', function(req, res, next) {
-//});
-
-//router.get('/projectInfo', function(req, res, next) {
-//});
 
 router.get('/about', function(req, res, next) {
   res.render('about', {pagetitle: 'about.'});
