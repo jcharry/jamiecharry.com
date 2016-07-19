@@ -15,6 +15,21 @@
     "longdesc":""
   },
   {
+    "title":"What's in my food?",
+    "category": "apps",
+    "imgsrc": "/images/foodapp.png",
+    "thumbnail": "/images/foodapp.png",
+    "desc": "iOS app to deciper all those tricky ingredients in your food.",
+    "date": "ITP | JUL 2016",
+    "id": "foodapp",
+    "hasVideo":true,
+    "hasPage": true,
+    "src":"https://vimeo.com/175415250",
+    "projectLink":"https://vimeo.com/175415250",
+    "credits": "Jamie Charry. JUL 2016",
+    "longdesc":""
+  },
+  {
     "title":"An Interactive History of the Cocoa Bean",
     "category": "web",
     "imgsrc": "/images/cocoa.png",

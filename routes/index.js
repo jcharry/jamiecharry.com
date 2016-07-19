@@ -25,6 +25,10 @@ router.get('/quppled', function(req, res, next) {
     res.render('quppled', {pagetitle: 'quppled.'});
 });
 
+router.get('/foodapp', function(req, res, next) {
+    res.render('foodapp', {pagetitle: 'what\'s in my food?'});
+});
+
 router.get('/reflected', function(req, res, next) {
     res.render('reflected', {pagetitle: 'reflected'});
 });
